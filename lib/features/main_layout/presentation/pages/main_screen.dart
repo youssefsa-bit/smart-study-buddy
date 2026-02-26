@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/features/home/presentation/pages/home_screen.dart';
+import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -35,9 +36,10 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     final List<Widget> screens = [
       HomeScreen(onNavigateToUpload:() => _changeTab(1),onNavigateToHistory: () => _changeTab(2),),
-      const Center(
-          child: Text('Upload Screen',
-              style: TextStyle(color: Colors.white, fontSize: 20))),
+      UploadScreen(),
+      // const Center(
+      //     child: Text('Upload Screen',
+      //         style: TextStyle(color: Colors.white, fontSize: 20))),
       const Center(
           child: Text('History Screen',
               style: TextStyle(color: Colors.white, fontSize: 20))),
