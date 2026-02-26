@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
-import '../../domain/entities/upload_action.dart';
+import '../../../upload/domain/entities/upload_action.dart';
 
 class ProcessingStatusView extends StatelessWidget {
   final UploadAction action;
@@ -96,18 +96,21 @@ class ProcessingStatusView extends StatelessWidget {
             AppSizes.gapV24,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(steps.length, (index) {
-                return _buildStepItem(index, steps[index], currentStepIndex);
-              },),
+              children: List.generate(
+                steps.length,
+                (index) {
+                  return _buildStepItem(index, steps[index], currentStepIndex);
+                },
+              ),
             )
-
           ],
         ),
       ),
     );
   }
 }
-Widget _buildStepItem(int index, String text, int currentIndex){
+
+Widget _buildStepItem(int index, String text, int currentIndex) {
   bool isCompleted = index < currentIndex;
   bool isActive = index == currentIndex;
   Color circleColor;
@@ -117,14 +120,20 @@ Widget _buildStepItem(int index, String text, int currentIndex){
     circleColor = Colors.green;
     textColor = Colors.white;
     insideCircle = const Icon(Icons.check, color: Colors.white, size: 16);
-  }else if (isActive) {
+  } else if (isActive) {
     circleColor = Colors.blue;
     textColor = Colors.white;
-    insideCircle = Text('${index + 1}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12));
+    insideCircle = Text('${index + 1}',
+        style: const TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12));
   } else {
     circleColor = const Color(0xFF1A1F26);
     textColor = const Color(0xFF3A4655);
-    insideCircle = Text('${index + 1}', style: const TextStyle(color: Color(0xFF3A4655), fontWeight: FontWeight.bold, fontSize: 12));
+    insideCircle = Text('${index + 1}',
+        style: const TextStyle(
+            color: Color(0xFF3A4655),
+            fontWeight: FontWeight.bold,
+            fontSize: 12));
   }
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -132,7 +141,8 @@ Widget _buildStepItem(int index, String text, int currentIndex){
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 28, height: 28,
+          width: 28,
+          height: 28,
           decoration: BoxDecoration(color: circleColor, shape: BoxShape.circle),
           alignment: Alignment.center,
           child: insideCircle,
@@ -143,7 +153,8 @@ Widget _buildStepItem(int index, String text, int currentIndex){
           style: TextStyle(
             color: textColor,
             fontSize: 16,
-            fontWeight: isActive || isCompleted ? FontWeight.w600 : FontWeight.normal,
+            fontWeight:
+                isActive || isCompleted ? FontWeight.w600 : FontWeight.normal,
           ),
         ),
       ],

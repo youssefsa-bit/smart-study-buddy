@@ -15,10 +15,9 @@ import '../../features/home/presentation/manager/home_bloc.dart';
 import '../../features/upload/data/datasource/upload_remote_data_source.dart';
 import '../../features/upload/data/repositories/upload_repository_impl.dart';
 import '../../features/upload/domain/repositories/upload_repository.dart';
-import '../../features/upload/domain/usecase/check_job_status_usecase.dart';
-import '../../features/upload/domain/usecase/get_job_result_usecase.dart';
 import '../../features/upload/domain/usecase/upload_file_usecase.dart';
 import '../../features/upload/presentation/manager/upload_bloc.dart';
+import 'network_service.dart';
 
 final sl = GetIt.instance;
 
@@ -52,6 +51,7 @@ Future<void> init() async {
   sl.registerLazySingleton<HomeRemoteDataSource>(
     () => HomeRemoteDataSourceImpl(),
   );
+  sl.registerLazySingleton<NetworkService>(() => NetworkService());
 // ==========================================
   // Feature: Flashcards
   // ==========================================
@@ -69,7 +69,7 @@ Future<void> init() async {
 
   // 4. Data Layer: Data Sources
   sl.registerLazySingleton<FlashcardRemoteDataSource>(
-    () => FlashcardRemoteDataSourceImpl(),
+    () => FlashcardRemoteDataSourceImpl(networkService: sl()),
   );
   // Note: We will add the HomeBloc here later once we create it in the Presentation layer!
   // ==========================================
@@ -79,15 +79,11 @@ Future<void> init() async {
   sl.registerFactory(
     () => UploadBloc(
       uploadFileUseCase: sl(),
-      checkJobStatusUseCase: sl(),
-      getJobResultUseCase: sl(),
     ),
   );
 
   // 2. Use Cases
   sl.registerLazySingleton(() => UploadFileUseCase(sl()));
-  sl.registerLazySingleton(() => CheckJobStatusUseCase(sl()));
-  sl.registerLazySingleton(() => GetJobResultUseCase(sl()));
 
   // 3. Repositories
   sl.registerLazySingleton<UploadRepository>(

@@ -1,32 +1,57 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+
+import '../../../../core/services/network_service.dart';
 import '../models/flashcard_model.dart';
 
 abstract class FlashcardRemoteDataSource {
-  Future<List<FlashcardModel>> getFlashcards();
+  // We change the return type to a Stream that yields lists of flashcards incrementally
+  Stream<List<FlashcardModel>> generateFlashcardsStream(String pdfId);
 }
 
 class FlashcardRemoteDataSourceImpl implements FlashcardRemoteDataSource {
+  final NetworkService networkService;
+
+  FlashcardRemoteDataSourceImpl({required this.networkService});
+
   @override
-  Future<List<FlashcardModel>> getFlashcards() async {
-    await Future.delayed(const Duration(seconds: 2));
+  Stream<List<FlashcardModel>> generateFlashcardsStream(String pdfId) async* {
+    try {
+      final response = await networkService.dio.post<ResponseBody>(
+        'http://10.0.2.2:3000/api/pdfs/$pdfId/flashcards/stream',
+        options: Options(
+          responseType: ResponseType.stream,
+          headers: {'Accept': 'text/event-stream'},
+          receiveTimeout: const Duration(minutes: 10),
+        ),
+      );
 
-    final List<Map<String, dynamic>> mockData = [
-      {
-        "question": "What is Artificial Intelligence?",
-        "answer":
-            "A branch of computer science that focuses on creating intelligent machines."
-      },
-      {
-        "question": "What is Flutter?",
-        "answer":
-            "An open-source UI software development kit created by Google."
-      },
-      {
-        "question": "What is Clean Architecture?",
-        "answer":
-            "A software design philosophy that separates the elements of a design into ring levels."
+      final stream = response.data!.stream
+          .cast<List<int>>()
+          .transform(utf8.decoder)
+          .transform(const LineSplitter());
+
+      String currentEvent = '';
+
+      await for (final line in stream) {
+        if (line.isEmpty) continue;
+
+        if (line.startsWith('event:')) {
+          currentEvent = line.substring(6).trim();
+        } else if (line.startsWith('data:')) {
+          final dataString = line.substring(5).trim();
+
+          if (currentEvent == 'flashcards') {
+            final Map<String, dynamic> jsonData = jsonDecode(dataString);
+            final List<dynamic> cardsList = jsonData['flashcards'];
+
+            yield cardsList.map((c) => FlashcardModel.fromJson(c)).toList();
+          }
+        }
       }
-    ];
-
-    return mockData.map((json) => FlashcardModel.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Stream failed: $e');
+    }
   }
 }

@@ -8,8 +8,8 @@ class FlashcardModel extends Flashcard {
 
   factory FlashcardModel.fromJson(Map<String, dynamic> json) {
     return FlashcardModel(
-      question: json['question'] ?? '',
-      answer: json['answer'] ?? '',
+      question: json['question'] ?? json['front'] ?? '',
+      answer: json['answer'] ?? json['back'] ?? '',
     );
   }
 

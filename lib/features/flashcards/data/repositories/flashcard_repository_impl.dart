@@ -8,12 +8,8 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
   FlashcardRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<List<Flashcard>> getFlashcards() async {
-    try {
-      final remoteCards = await remoteDataSource.getFlashcards();
-      return remoteCards;
-    } catch (e) {
-      throw Exception("Failed to load flashcards from AI service");
-    }
+  @override
+  Stream<List<Flashcard>> generateFlashcardsStream(String pdfId) {
+    return remoteDataSource.generateFlashcardsStream(pdfId);
   }
 }

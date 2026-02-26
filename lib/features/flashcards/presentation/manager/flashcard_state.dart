@@ -11,7 +11,14 @@ abstract class FlashcardState extends Equatable {
 
 class FlashcardInitial extends FlashcardState {}
 
-class FlashcardLoading extends FlashcardState {}
+class FlashcardLoading extends FlashcardState {
+  final int stepIndex;
+
+  const FlashcardLoading({this.stepIndex = 0});
+
+  @override
+  List<Object?> get props => [stepIndex];
+}
 
 class FlashcardLoaded extends FlashcardState {
   final List<Flashcard> cards;
