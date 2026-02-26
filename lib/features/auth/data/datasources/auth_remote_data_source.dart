@@ -1,33 +1,45 @@
-// lib/features/auth/data/datasources/auth_remote_data_source.dart
 import 'package:dio/dio.dart';
-
 import '../models/user_model.dart';
 
-class AuthRemoteDataSource {
-  final Dio dio = Dio(BaseOptions(baseUrl: 'YOUR_API_BASE_URL')); // ضع رابط السيرفر هنا
+abstract class AuthRemoteDataSource {
+  Future<UserModel> login(String email, String password);
+  Future<UserModel> register(String name, String email, String password);
+}
 
-  Future<AuthResponse> register(String name, String email, String password) async {
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  final Dio dio;
+
+  AuthRemoteDataSourceImpl({required this.dio});
+
+  @override
+  Future<UserModel> login(String email, String password) async {
     try {
-      final response = await dio.post('/api/auth/register', data: {
-        'name': name,
-        'email': email,
-        'password': password,
-      });
-      return AuthResponse.fromJson(response.data);
+      final response = await dio.post(
+        '/auth/login',
+        data: {'email': email, 'password': password},
+      );
+      if (response.data == null) throw "Server returned an empty response.";
+      return UserModel.fromJson(response.data);
     } on DioException catch (e) {
-      throw e.response?.data['message'] ?? "Registration Failed";
+      throw e.response?.data['message'] ?? "Login failed. Check your credentials.";
+    } catch (e) {
+      rethrow;
     }
   }
 
-  Future<AuthResponse> login(String email, String password) async {
+  @override
+  Future<UserModel> register(String name, String email, String password) async {
     try {
-      final response = await dio.post('/api/auth/login', data: {
-        'email': email,
-        'password': password,
-      });
-      return AuthResponse.fromJson(response.data);
+      final response = await dio.post(
+        '/auth/register',
+        data: {'name': name, 'email': email, 'password': password},
+      );
+      if (response.data == null) throw "Server returned an empty response.";
+      return UserModel.fromJson(response.data);
     } on DioException catch (e) {
-      throw e.response?.data['message'] ?? "Login Failed";
+      throw e.response?.data['message'] ?? "Registration failed. Try again.";
+    } catch (e) {
+      rethrow;
     }
   }
 }

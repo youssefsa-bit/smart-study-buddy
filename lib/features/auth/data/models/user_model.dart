@@ -1,35 +1,27 @@
-// lib/features/auth/data/models/user_model.dart
-class UserModel {
-  final String id;
-  final String name;
-  final String email;
+import '../../domain/entities/user.dart';
 
-  UserModel({required this.id, required this.name, required this.email});
+class UserModel extends User {
+  const UserModel({
+    required super.id,
+    required super.email,
+    super.name,
+    required super.accessToken,
+    required super.refreshToken,
+  });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-    );
-  }
-}
-
-// موديل الرد الكامل (Response)
-class AuthResponse {
-  final UserModel user;
-  final String accessToken;
-  final String refreshToken;
-
-  AuthResponse({required this.user, required this.accessToken, required this.refreshToken});
-
-  factory AuthResponse.fromJson(Map<String, dynamic> json) {
-    // نلاحظ أن الباك إند يرسل البيانات داخل حقل 'data' حسب ApiResponse.js
     final data = json['data'];
-    return AuthResponse(
-      user: UserModel.fromJson(data['user']),
-      accessToken: data['accessToken'],
-      refreshToken: data['refreshToken'],
+    if (data == null) throw Exception("Missing 'data' field in server response");
+
+    final userData = data['user'];
+    if (userData == null) throw Exception("Missing 'user' inside 'data' field");
+
+    return UserModel(
+      id: userData['id'].toString(),
+      email: userData['email'] ?? '',
+      name: userData['name'],
+      accessToken: data['accessToken'] ?? '',
+      refreshToken: data['refreshToken'] ?? '',
     );
   }
 }
