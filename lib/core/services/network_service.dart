@@ -35,7 +35,7 @@ class NetworkService {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           String? token =
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc3MjE0NzkyNiwiZXhwIjoxNzcyMTU4NzI2fQ.6BVvjr6ckiz72XOisYFtTIRsttKBhFjt7r1Td_X8oP4";
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc3MjIyODY3NSwiZXhwIjoxNzcyMjM5NDc1fQ.Pzasv2A3uQIhNZHLA-w59-bTnF3EpiiRj8_gN0ts0bo";
 
           options.headers['Authorization'] = 'Bearer $token';
 

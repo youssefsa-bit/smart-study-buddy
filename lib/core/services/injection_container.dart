@@ -23,6 +23,11 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // ==========================================
+  // Core
+  // ==========================================
+  sl.registerLazySingleton<NetworkService>(() => NetworkService());
+
+  // ==========================================
   // Feature: Home
   // ==========================================
 
@@ -51,7 +56,7 @@ Future<void> init() async {
   sl.registerLazySingleton<HomeRemoteDataSource>(
     () => HomeRemoteDataSourceImpl(),
   );
-  sl.registerLazySingleton<NetworkService>(() => NetworkService());
+
 // ==========================================
   // Feature: Flashcards
   // ==========================================
