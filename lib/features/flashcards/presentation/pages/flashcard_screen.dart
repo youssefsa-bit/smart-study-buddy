@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/features/flashcards/presentation/widgets/control_buttons.dart';
-import 'package:study_buddy/features/flashcards/presentation/widgets/processing_status_view.dart';
+import 'package:study_buddy/core/core_widgets/processing_status_view.dart';
 import 'package:study_buddy/features/flashcards/presentation/widgets/progress_bar_header.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
 import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
-import '../../../upload/domain/entities/upload_action.dart';
+import '../../features/upload/domain/entities/upload_action.dart';
 
 class ProcessingStatusView extends StatelessWidget {
   final UploadAction action;
