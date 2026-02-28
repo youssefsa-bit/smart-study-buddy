@@ -1,6 +1,14 @@
 // Create a global instance of GetIt (Our Service Locator / Waiter)
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/auth/data/datasources/auth_local_data_source.dart';
+import '../../features/auth/data/datasources/auth_remote_data_source.dart';
+import '../../features/auth/data/repositories/auth_repository_impl.dart';
+import '../../features/auth/domain/repositories/auth_repository.dart';
+import '../../features/auth/domain/usecases/login_usecase.dart';
+import '../../features/auth/domain/usecases/register_usecase.dart';
+import '../../features/auth/presentation/manager/auth_bloc.dart';
 import '../../features/flashcards/data/datasources/flashcard_remote_data_source.dart';
 import '../../features/flashcards/data/repositories/flashcard_repository_impl.dart';
 import '../../features/flashcards/domain/repositories/flashcard_repository.dart';
@@ -11,6 +19,7 @@ import '../../features/home/data/repositories/home_repository_impl.dart';
 import '../../features/home/domain/repositories/home_repository.dart';
 import '../../features/home/domain/usecase/get_recent_files.dart';
 import '../../features/home/presentation/manager/home_bloc.dart';
+
 // --- Upload Feature Imports ---
 import '../../features/upload/data/datasource/upload_remote_data_source.dart';
 import '../../features/upload/data/repositories/upload_repository_impl.dart';
@@ -25,7 +34,40 @@ Future<void> init() async {
   // ==========================================
   // Core
   // ==========================================
-  sl.registerLazySingleton<NetworkService>(() => NetworkService());
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton<NetworkService>(() => NetworkService(sharedPreferences: sl()));
+
+
+  // ==========================================
+  // Feature: Auth
+  // ==========================================
+  // 1. BLoC
+  sl.registerFactory(() => AuthBloc(
+        loginUseCase: sl(),
+        registerUseCase: sl(),
+      ));
+
+  // 2. Use Cases
+  sl.registerLazySingleton(() => LoginUseCase(sl()));
+  sl.registerLazySingleton(() => RegisterUseCase(sl()));
+
+  // 3. Repository
+  sl.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(
+      remoteDataSource: sl(),
+      localDataSource: sl(),
+    ),
+  );
+
+  // 4. Data Sources
+  sl.registerLazySingleton<AuthLocalDataSource>(
+    () => AuthLocalDataSourceImpl(sharedPreferences: sl()),
+  );
+
+  sl.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSourceImpl(dio: sl<NetworkService>().dio),
+  );
 
   // ==========================================
   // Feature: Home
@@ -76,10 +118,11 @@ Future<void> init() async {
   sl.registerLazySingleton<FlashcardRemoteDataSource>(
     () => FlashcardRemoteDataSourceImpl(networkService: sl()),
   );
-  // Note: We will add the HomeBloc here later once we create it in the Presentation layer!
+
   // ==========================================
   // Feature: Upload
   // ==========================================
+
   // 1. BLoCs
   sl.registerFactory(
     () => UploadBloc(

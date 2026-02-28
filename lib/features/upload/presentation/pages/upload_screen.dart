@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:study_buddy/features/flashcards/presentation/pages/flashcard_screen.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
 import 'package:study_buddy/features/upload/presentation/manager/upload_bloc.dart';
 import 'package:study_buddy/features/upload/presentation/manager/upload_state.dart';
@@ -11,6 +10,7 @@ import 'package:study_buddy/features/upload/presentation/widgets/action_card.dar
 import 'package:study_buddy/features/upload/presentation/widgets/upload_box.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
 import '../manager/upload_event.dart';
@@ -53,11 +53,10 @@ class _UploadScreenContent extends StatelessWidget {
               final String pdfId = state.resultData!;
 
               if (state.selectedAction == UploadAction.flashcards) {
-                Navigator.pushReplacement(
+                Navigator.pushReplacementNamed(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => FlashcardScreen(pdfId: pdfId),
-                  ),
+                  AppRoutesName.flashcards,
+                  arguments: pdfId,
                 );
               }
             } else if (state.status == UploadRequestStatus.error) {

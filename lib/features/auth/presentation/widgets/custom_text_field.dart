@@ -4,7 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 
 
 class CustomTextField extends StatelessWidget {
-  final String labelText; // غيرنا hintText إلى labelText
+  final String labelText;
   final IconData prefixIcon;
   final bool isPassword;
   final TextEditingController? controller;
@@ -28,7 +28,6 @@ class CustomTextField extends StatelessWidget {
         labelText: labelText,
         labelStyle: const TextStyle(color: AppColors.textGrey, fontSize: 14),
 
-        // هذا السطر يضمن أن الـ label يصعد للأعلى دائماً عند التفاعل
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         floatingLabelStyle: const TextStyle(color: AppColors.primaryBlue, fontWeight: FontWeight.bold),
 

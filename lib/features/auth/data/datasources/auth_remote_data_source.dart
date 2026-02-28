@@ -3,6 +3,7 @@ import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> login(String email, String password);
+
   Future<UserModel> register(String name, String email, String password);
 }
 
@@ -18,12 +19,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         '/auth/login',
         data: {'email': email, 'password': password},
       );
-      if (response.data == null) throw "Server returned an empty response.";
-      return UserModel.fromJson(response.data);
+      if (response.data != null && response.data['success'] == true) {
+        return UserModel.fromJson(response.data);
+      } else {
+        throw response.data['message'] ??
+            "Login failed. Please check your credentials.";
+      }
     } on DioException catch (e) {
-      throw e.response?.data['message'] ?? "Login failed. Check your credentials.";
+      throw e.response?.data['message'] ??
+          "Connection error. Please try again.";
     } catch (e) {
-      rethrow;
+      throw e.toString();
     }
   }
 
@@ -34,12 +40,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         '/auth/register',
         data: {'name': name, 'email': email, 'password': password},
       );
-      if (response.data == null) throw "Server returned an empty response.";
-      return UserModel.fromJson(response.data);
+      if (response.data != null && response.data['success'] == true) {
+        return UserModel.fromJson(response.data);
+      } else {
+        throw response.data['message'] ?? "Registration failed. Try again.";
+      }
     } on DioException catch (e) {
-      throw e.response?.data['message'] ?? "Registration failed. Try again.";
+      throw e.response?.data['message'] ??
+          "Connection error. Please try again.";
     } catch (e) {
-      rethrow;
+      throw e.toString();
     }
   }
 }

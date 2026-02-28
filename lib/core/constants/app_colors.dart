@@ -1,6 +1,9 @@
 import 'dart:ui';
 
 class AppColors {
+  static const Color cardBg = Color(0xFF121212);
+  static const Color textGrey = Color(0xFF9E9E9E);
+  static const Color accentOrange = Color(0xFFFF8C42);
   static const Color background =
       Color(0xFF0D0D0D); // Main background color (very dark)
   static const Color surface = Color(0xFF1A1C20); // Card background color

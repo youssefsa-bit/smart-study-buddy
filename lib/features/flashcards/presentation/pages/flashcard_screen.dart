@@ -5,8 +5,8 @@ import 'package:study_buddy/features/flashcards/presentation/widgets/control_but
 import 'package:study_buddy/core/core_widgets/processing_status_view.dart';
 import 'package:study_buddy/features/flashcards/presentation/widgets/progress_bar_header.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
-import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dart';
 
+import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../manager/flashcard_bloc.dart';
 import '../manager/flashcard_event.dart';
@@ -15,6 +15,7 @@ import '../widgets/flashcard_view.dart';
 
 class FlashcardScreen extends StatelessWidget {
   final String pdfId;
+
   const FlashcardScreen({super.key, required this.pdfId});
 
   @override
@@ -30,8 +31,11 @@ class FlashcardScreen extends StatelessWidget {
           leading: IconButton(
             color: AppColors.leading,
             onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => const UploadScreen()));
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutesName.main,
+                arguments: 1,
+              );
             },
             icon: const Icon(Icons.arrow_back),
           ),

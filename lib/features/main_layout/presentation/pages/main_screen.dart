@@ -4,14 +4,20 @@ import 'package:study_buddy/features/home/presentation/pages/home_screen.dart';
 import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final int initialIndex;
+  const MainScreen({super.key,this.initialIndex=0});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
+  late int _currentIndex;
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex=widget.initialIndex;
+  }
   void _changeTab(int index) {
     setState(() {
       _currentIndex = index;
@@ -37,9 +43,6 @@ class _MainScreenState extends State<MainScreen> {
     final List<Widget> screens = [
       HomeScreen(onNavigateToUpload:() => _changeTab(1),onNavigateToHistory: () => _changeTab(2),),
       UploadScreen(),
-      // const Center(
-      //     child: Text('Upload Screen',
-      //         style: TextStyle(color: Colors.white, fontSize: 20))),
       const Center(
           child: Text('History Screen',
               style: TextStyle(color: Colors.white, fontSize: 20))),

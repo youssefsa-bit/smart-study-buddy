@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/usecases/login_use_case.dart';
-import '../../../../../core/usecases/register_use_case.dart';
+import '../../domain/usecases/login_usecase.dart';
+import '../../domain/usecases/register_usecase.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
