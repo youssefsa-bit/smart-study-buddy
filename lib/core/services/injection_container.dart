@@ -20,6 +20,11 @@ import '../../features/home/domain/repositories/home_repository.dart';
 import '../../features/home/domain/usecase/get_recent_files.dart';
 import '../../features/home/presentation/manager/home_bloc.dart';
 // --- Upload Feature Imports ---
+import '../../features/summary/data/datasources/summary_remote_data_source.dart';
+import '../../features/summary/data/repositories/summary_repository_impl.dart';
+import '../../features/summary/domain/repositories/summary_repository.dart';
+import '../../features/summary/domain/usecases/get_summary_usecase.dart';
+import '../../features/summary/presentation/manager/summary_bloc.dart';
 import '../../features/upload/data/datasource/upload_remote_data_source.dart';
 import '../../features/upload/data/repositories/upload_repository_impl.dart';
 import '../../features/upload/domain/repositories/upload_repository.dart';
@@ -130,5 +135,20 @@ Future<void> init() async {
   // 4. Data Sources
   sl.registerLazySingleton<UploadRemoteDataSource>(
     () => UploadRemoteDataSourceImpl(networkService: sl()),
+  );
+  // ==========================================
+  // Feature: Summary
+  // ==========================================
+
+  sl.registerFactory(() => SummaryBloc(getSummaryUseCase: sl()));
+
+  sl.registerLazySingleton(() => GetSummaryUseCase(sl()));
+
+  sl.registerLazySingleton<SummaryRepository>(
+    () => SummaryRepositoryImpl(sl()),
+  );
+
+  sl.registerLazySingleton<SummaryRemoteDataSource>(
+    () => SummaryRemoteDataSourceImpl(networkService: sl()),
   );
 }

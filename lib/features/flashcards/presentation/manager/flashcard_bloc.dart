@@ -22,6 +22,7 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
     on<LoadFlashcards>((event, emit) async {
       int currentStep = 0;
       emit(FlashcardLoading(stepIndex: currentStep));
+
       _progressTimer?.cancel();
       _progressTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
         if (currentStep < 3) {
@@ -34,14 +35,28 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
 
       try {
         List<Flashcard> accumulatedCards = [];
+        List<Flashcard> reviewDeck = [];
+
         await emit.forEach<List<Flashcard>>(
           getFlashcardsUseCase.call(event.pdfId),
           onData: (newCardsChunk) {
-            if (newCardsChunk.isEmpty) {
-              return state;
-            }
+            if (newCardsChunk.isEmpty) return state;
+
             _progressTimer?.cancel();
+
+            for (var card in newCardsChunk) {
+              final diff = card.difficulty.toLowerCase();
+
+              if (diff == 'medium') {
+                reviewDeck.add(card);
+              } else if (diff == 'hard') {
+                reviewDeck.add(card);
+                reviewDeck.add(card);
+              }
+            }
+
             accumulatedCards = [...accumulatedCards, ...newCardsChunk];
+
             return FlashcardLoaded(
               cards: accumulatedCards,
               currentIndex: state is FlashcardLoaded
@@ -53,16 +68,32 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
             );
           },
           onError: (error, stackTrace) {
-            return FlashcardError("Failed to fetch flashcards: $error");
+            _progressTimer?.cancel();
+            return FlashcardError("Error: $error");
           },
         );
 
+        if (reviewDeck.isNotEmpty) {
+          reviewDeck.shuffle();
+          accumulatedCards = [...accumulatedCards, ...reviewDeck];
+
+          emit(FlashcardLoaded(
+            cards: accumulatedCards,
+            currentIndex: state is FlashcardLoaded
+                ? (state as FlashcardLoaded).currentIndex
+                : 0,
+            isFlipped: state is FlashcardLoaded
+                ? (state as FlashcardLoaded).isFlipped
+                : false,
+          ));
+        }
+
         if (accumulatedCards.isEmpty) {
-          emit(const FlashcardError(
-              "No flashcards generated for this document."));
+          emit(const FlashcardError("No flashcards generated."));
         }
       } catch (e) {
-        emit(FlashcardError("Failed to fetch flashcards: $e"));
+        _progressTimer?.cancel();
+        emit(FlashcardError("Failed to fetch: $e"));
       }
     });
 

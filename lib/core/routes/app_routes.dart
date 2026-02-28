@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:study_buddy/features/summary/presentation/pages/summary_screen.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
@@ -25,6 +25,9 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => FlashcardScreen(pdfId: pdfId),
         );
+      case AppRoutesName.summarize:
+        final pdfId = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => SummaryScreen(pdfId: pdfId));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

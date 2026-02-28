@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
-import 'package:study_buddy/features/flashcards/presentation/widgets/control_buttons.dart';
 import 'package:study_buddy/core/core_widgets/processing_status_view.dart';
+import 'package:study_buddy/features/flashcards/presentation/widgets/control_buttons.dart';
 import 'package:study_buddy/features/flashcards/presentation/widgets/progress_bar_header.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
 
@@ -46,39 +46,6 @@ class FlashcardScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ],
           ),
-          actions: [
-            BlocBuilder<FlashcardBloc, FlashcardState>(
-              builder: (context, state) {
-                if (state is FlashcardLoaded && state.cards.isNotEmpty) {
-                  int current = state.currentIndex + 1;
-                  int total = state.cards.length;
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1A1A1A),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "$current/$total",
-                          style: const TextStyle(
-                            color: AppColors.primaryBlue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-          ],
         ),
         body: BlocBuilder<FlashcardBloc, FlashcardState>(
           builder: (context, state) {

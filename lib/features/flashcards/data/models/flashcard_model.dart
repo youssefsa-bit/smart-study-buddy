@@ -4,12 +4,14 @@ class FlashcardModel extends Flashcard {
   const FlashcardModel({
     required super.question,
     required super.answer,
+    required super.difficulty,
   });
 
   factory FlashcardModel.fromJson(Map<String, dynamic> json) {
     return FlashcardModel(
       question: json['question'] ?? json['front'] ?? '',
       answer: json['answer'] ?? json['back'] ?? '',
+      difficulty: json['difficulty'] ?? 'easy',
     );
   }
 
@@ -17,6 +19,7 @@ class FlashcardModel extends Flashcard {
     return {
       'question': question,
       'answer': answer,
+      'difficulty': difficulty,
     };
   }
 }

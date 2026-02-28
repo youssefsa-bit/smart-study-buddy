@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
 import 'package:study_buddy/features/upload/presentation/manager/upload_bloc.dart';
 import 'package:study_buddy/features/upload/presentation/manager/upload_state.dart';
@@ -58,6 +59,12 @@ class _UploadScreenContent extends StatelessWidget {
                   AppRoutesName.flashcards,
                   arguments: pdfId,
                 );
+              } else if (state.selectedAction == UploadAction.summarize) {
+                Navigator.pushReplacementNamed(
+                  context,
+                  AppRoutesName.summarize,
+                  arguments: pdfId,
+                );
               }
             } else if (state.status == UploadRequestStatus.error) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -67,11 +74,12 @@ class _UploadScreenContent extends StatelessWidget {
           },
           builder: (context, state) {
             if (state.status == UploadRequestStatus.loading) {
-              return const Center(
+              return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(color: Color(0xFF2E8CFF)),
+                    Lottie.asset('assets/lottie/Uploading.json',
+                        width: 150, height: 150),
                     SizedBox(height: 16),
                     Text(
                       "Uploading document...",
