@@ -14,6 +14,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<User> login(String email, String password) async {
     final user = await remoteDataSource.login(email, password);
     await localDataSource.cacheTokens(user.accessToken, user.refreshToken);
+    await localDataSource.cacheUserName(user.name ?? "");
     return user;
   }
 
@@ -21,6 +22,12 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<User> register(String name, String email, String password) async {
     final user = await remoteDataSource.register(name, email, password);
     await localDataSource.cacheTokens(user.accessToken, user.refreshToken);
+    await localDataSource.cacheUserName(name);
     return user;
+  }
+
+  @override
+  Future<String?> getCachedUserName() async {
+    return await localDataSource.getCachedUserName();
   }
 }

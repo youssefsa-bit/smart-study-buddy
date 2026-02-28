@@ -5,7 +5,7 @@ import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dar
 
 class MainScreen extends StatefulWidget {
   final int initialIndex;
-  const MainScreen({super.key,this.initialIndex=0});
+  const MainScreen({super.key, this.initialIndex = 0});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -16,14 +16,17 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _currentIndex=widget.initialIndex;
+    _currentIndex = widget.initialIndex;
   }
+
   void _changeTab(int index) {
     setState(() {
       _currentIndex = index;
     });
   }
-  BottomNavigationBarItem _buildNavItem(IconData icon, String label, int index) {
+
+  BottomNavigationBarItem _buildNavItem(
+      IconData icon, String label, int index) {
     final isSelected = _currentIndex == index;
     return BottomNavigationBarItem(
       icon: AnimatedContainer(
@@ -38,10 +41,14 @@ class _MainScreenState extends State<MainScreen> {
       label: label,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
-      HomeScreen(onNavigateToUpload:() => _changeTab(1),onNavigateToHistory: () => _changeTab(2),),
+      HomeScreen(
+        onNavigateToUpload: () => _changeTab(1),
+        onNavigateToHistory: () => _changeTab(2),
+      ),
       UploadScreen(),
       const Center(
           child: Text('History Screen',
@@ -68,9 +75,9 @@ class _MainScreenState extends State<MainScreen> {
           child: BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: _changeTab,
-            backgroundColor:  AppColors.surface,
+            backgroundColor: AppColors.surface,
             type: BottomNavigationBarType.fixed,
-            selectedItemColor:  AppColors.primaryBlue,
+            selectedItemColor: AppColors.primaryBlue,
             unselectedItemColor: Colors.grey,
             showSelectedLabels: true,
             showUnselectedLabels: true,
