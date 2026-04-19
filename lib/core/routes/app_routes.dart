@@ -5,6 +5,7 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/flashcards/presentation/pages/flashcard_screen.dart';
 import '../../features/main_layout/presentation/pages/main_screen.dart';
+import '../../features/mcq/presentation/pages/mcq_screen.dart';
 import 'app_routes_name.dart';
 
 class AppRoutes {
@@ -20,14 +21,23 @@ class AppRoutes {
           builder: (_) => MainScreen(initialIndex: initialIndex),
         );
       case AppRoutesName.flashcards:
-        final pdfId = settings.arguments as String;
+        final args = settings.arguments as Map<String, dynamic>;
 
         return MaterialPageRoute(
-          builder: (_) => FlashcardScreen(pdfId: pdfId),
+          builder: (_) =>
+              FlashcardScreen(pdfId: args['pdfId'], fileName: args['fileName']),
         );
       case AppRoutesName.summarize:
-        final pdfId = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => SummaryScreen(pdfId: pdfId));
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (_) => SummaryScreen(
+                pdfId: args['pdfId'], fileName: args['fileName']));
+      case AppRoutesName.mcq:
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) =>
+              McqScreen(pdfId: args['pdfId'], fileName: args['fileName']),
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

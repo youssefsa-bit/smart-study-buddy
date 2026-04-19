@@ -52,19 +52,27 @@ class _UploadScreenContent extends StatelessWidget {
             if (state.status == UploadRequestStatus.success &&
                 state.resultData != null) {
               final String pdfId = state.resultData!;
+              final String fileName = state.selectedFile?.path.split('/').last ?? "Document";
+              final args = {
+                'pdfId': pdfId,
+                'fileName': fileName,
+              };
 
               if (state.selectedAction == UploadAction.flashcards) {
                 Navigator.pushReplacementNamed(
                   context,
                   AppRoutesName.flashcards,
-                  arguments: pdfId,
+                  arguments: args,
                 );
               } else if (state.selectedAction == UploadAction.summarize) {
                 Navigator.pushReplacementNamed(
                   context,
                   AppRoutesName.summarize,
-                  arguments: pdfId,
+                  arguments: args,
                 );
+              } else if (state.selectedAction == UploadAction.mcq) {
+                Navigator.pushReplacementNamed(context, AppRoutesName.mcq,
+                    arguments: args);
               }
             } else if (state.status == UploadRequestStatus.error) {
               ScaffoldMessenger.of(context).showSnackBar(

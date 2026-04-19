@@ -15,8 +15,9 @@ import '../widgets/flashcard_view.dart';
 
 class FlashcardScreen extends StatelessWidget {
   final String pdfId;
+  final String fileName;
 
-  const FlashcardScreen({super.key, required this.pdfId});
+  const FlashcardScreen({super.key, required this.pdfId,required this.fileName});
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +45,7 @@ class FlashcardScreen extends StatelessWidget {
             children: [
               const Text("Flashcards",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(fileName,style: TextStyle(fontSize: 15,color: Colors.grey),)
             ],
           ),
         ),

@@ -1,7 +1,7 @@
 enum UploadAction {
   summarize,
   flashcards,
-  mcq
+  mcq,
 }
 extension UploadActionExtension on UploadAction {
   String get stringValue {

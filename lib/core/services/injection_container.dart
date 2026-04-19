@@ -19,6 +19,7 @@ import '../../features/home/data/repositories/home_repository_impl.dart';
 import '../../features/home/domain/repositories/home_repository.dart';
 import '../../features/home/domain/usecase/get_recent_files.dart';
 import '../../features/home/presentation/manager/home_bloc.dart';
+
 // --- Upload Feature Imports ---
 import '../../features/summary/data/datasources/summary_remote_data_source.dart';
 import '../../features/summary/data/repositories/summary_repository_impl.dart';
@@ -31,6 +32,13 @@ import '../../features/upload/domain/repositories/upload_repository.dart';
 import '../../features/upload/domain/usecase/upload_file_usecase.dart';
 import '../../features/upload/presentation/manager/upload_bloc.dart';
 import 'network_service.dart';
+
+// --- MCQ Feature Imports ---
+import '../../features/mcq/data/datasources/mcq_remote_data_source.dart';
+import '../../features/mcq/data/repositories/mcq_repository_impl.dart';
+import '../../features/mcq/domain/repositories/mcq_repository.dart';
+import '../../features/mcq/domain/usecases/generate_quiz_usecase.dart';
+import '../../features/mcq/presentation/manager/mcq_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -150,5 +158,25 @@ Future<void> init() async {
 
   sl.registerLazySingleton<SummaryRemoteDataSource>(
     () => SummaryRemoteDataSourceImpl(networkService: sl()),
+  );
+
+  // ==========================================
+  // Feature: MCQ
+  // ==========================================
+
+  // 1. Bloc
+  sl.registerFactory(() => McqBloc(generateQuizUseCase: sl()));
+
+  // 2. Use Cases
+  sl.registerLazySingleton(() => GenerateQuizUseCase(sl()));
+
+  // 3. Repositories
+  sl.registerLazySingleton<McqRepository>(
+    () => McqRepositoryImpl(sl()),
+  );
+
+  // 4. Data Sources
+  sl.registerLazySingleton<McqRemoteDataSource>(
+    () => McqRemoteDataSourceImpl(networkService: sl()),
   );
 }
