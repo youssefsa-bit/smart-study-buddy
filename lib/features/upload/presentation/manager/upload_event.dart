@@ -28,5 +28,16 @@ class SelectActionEvent extends UploadEvent {
   @override
   List<Object?> get props => [action];
 }
+
 class ProcessFileEvent extends UploadEvent {}
+
 class ResetUploadEvent extends UploadEvent {}
+
+class LoadLibraryEvent extends UploadEvent {}
+
+class SelectLibraryFileEvent extends UploadEvent {
+  final String pdfId;
+  final String fileName;
+
+  const SelectLibraryFileEvent(this.pdfId, this.fileName);
+}

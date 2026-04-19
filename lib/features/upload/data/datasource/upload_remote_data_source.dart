@@ -5,9 +5,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../../../../core/services/network_service.dart';
+import '../../domain/entities/pdf_file_entity.dart';
+import '../models/pdf_file_model.dart';
 
 abstract class UploadRemoteDataSource {
   Future<String> uploadFileToServer(File file);
+  Future<List<PdfFileModel>> getAllPdfs();
 }
 
 class UploadRemoteDataSourceImpl implements UploadRemoteDataSource {
@@ -32,6 +35,16 @@ class UploadRemoteDataSourceImpl implements UploadRemoteDataSource {
       return response.data['data']['id'].toString();
     } catch (e) {
       throw Exception('Failed to upload PDF: $e');
+    }
+  }
+  @override
+  Future<List<PdfFileModel>> getAllPdfs() async {
+    try {
+      final response = await networkService.dio.get('/pdfs');
+      final List data = response.data['data'];
+      return data.map((json) => PdfFileModel.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception("Failed to fetch library: $e");
     }
   }
 }

@@ -29,6 +29,7 @@ import '../../features/summary/presentation/manager/summary_bloc.dart';
 import '../../features/upload/data/datasource/upload_remote_data_source.dart';
 import '../../features/upload/data/repositories/upload_repository_impl.dart';
 import '../../features/upload/domain/repositories/upload_repository.dart';
+import '../../features/upload/domain/usecase/get_all_pdfs_usecase.dart';
 import '../../features/upload/domain/usecase/upload_file_usecase.dart';
 import '../../features/upload/presentation/manager/upload_bloc.dart';
 import 'network_service.dart';
@@ -129,11 +130,13 @@ Future<void> init() async {
   sl.registerFactory(
     () => UploadBloc(
       uploadFileUseCase: sl(),
+      getAllPdfsUseCase: sl(),
     ),
   );
 
   // 2. Use Cases
   sl.registerLazySingleton(() => UploadFileUseCase(sl()));
+  sl.registerLazySingleton(() => GetAllPdfsUseCase(sl()));
 
   // 3. Repositories
   sl.registerLazySingleton<UploadRepository>(

@@ -6,19 +6,30 @@ import 'package:study_buddy/core/utils/app_sizes.dart';
 
 class UploadBox extends StatelessWidget {
   final File? selectedFile;
+  final String? fileNameFromLibrary;
   final VoidCallback onPickFile;
   final VoidCallback onRemoveFile;
 
-  const UploadBox(
-      {super.key,
-      required this.selectedFile,
-      required this.onPickFile,
-      required this.onRemoveFile});
+  const UploadBox({super.key,
+    this.selectedFile,
+    this.fileNameFromLibrary,
+    required this.onPickFile,
+    required this.onRemoveFile});
 
   @override
   Widget build(BuildContext context) {
+    String? displayFileName;
+
     if (selectedFile != null) {
-      String fileName = selectedFile!.path.split('/').last;
+      displayFileName = selectedFile!
+          .path
+          .split('/')
+          .last;
+    } else if (fileNameFromLibrary != null) {
+      displayFileName = fileNameFromLibrary;
+    }
+
+    if (displayFileName != null) {
       return Container(
         padding: const EdgeInsets.all(AppSizes.p16),
         decoration: BoxDecoration(
@@ -34,8 +45,8 @@ class UploadBox extends StatelessWidget {
                 color: const Color(0xFF143021),
                 borderRadius: BorderRadius.circular(AppSizes.radiusSmall),
               ),
-              child:
-                  Icon(Icons.picture_as_pdf_outlined, color: Color(0xFF00C853)),
+              child: const Icon(
+                  Icons.picture_as_pdf_outlined, color: Color(0xFF00C853)),
             ),
             AppSizes.gapH16,
             Expanded(
@@ -43,14 +54,14 @@ class UploadBox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    fileName,
+                    displayFileName, // ✨ عرض الاسم الديناميكي هنا
                     style: const TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   AppSizes.gapV8,
-                  Row(
+                  const Row(
                     children: [
                       Icon(Icons.check_circle_outline,
                           color: Color(0xFF00C853), size: 14),
@@ -73,6 +84,7 @@ class UploadBox extends StatelessWidget {
         ),
       );
     }
+
     return GestureDetector(
       onTap: onPickFile,
       child: DottedBorder(
@@ -100,19 +112,26 @@ class UploadBox extends StatelessWidget {
                     color: Color(0xFF2E8CFF), size: 32),
               ),
               AppSizes.gapV16,
-              const Text("Tap to upload", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+              const Text("Tap to upload",
+                  style: TextStyle(color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
               AppSizes.gapV8,
-              const Text("PDF documents only", style: TextStyle(color: Color(0xFF6B7684), fontSize: 13)),
+              const Text("PDF documents only",
+                  style: TextStyle(color: Color(0xFF6B7684), fontSize: 13)),
               AppSizes.gapV16,
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
                   color: const Color(0xFF1A1F26),
                   borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
                 ),
-                child: const Text('PDF', style: TextStyle(color: Color(0xFF6B7684), fontSize: 12, fontWeight: FontWeight.bold)),
+                child: const Text('PDF',
+                    style: TextStyle(color: Color(0xFF6B7684),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold)),
               ),
-
             ],
           ),
         ),

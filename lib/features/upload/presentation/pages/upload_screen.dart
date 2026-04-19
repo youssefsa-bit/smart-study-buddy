@@ -4,17 +4,17 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
-import 'package:study_buddy/features/upload/presentation/manager/upload_bloc.dart';
-import 'package:study_buddy/features/upload/presentation/manager/upload_state.dart';
-import 'package:study_buddy/features/upload/presentation/widgets/action_card.dart';
-import 'package:study_buddy/features/upload/presentation/widgets/upload_box.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
+import '../../domain/entities/upload_action.dart';
+import '../manager/upload_bloc.dart';
 import '../manager/upload_event.dart';
+import '../manager/upload_state.dart';
+import '../widgets/action_card.dart';
+import '../widgets/upload_box.dart';
 
 class UploadScreen extends StatelessWidget {
   const UploadScreen({super.key});
@@ -22,7 +22,7 @@ class UploadScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<UploadBloc>(),
+      create: (context) => sl<UploadBloc>()..add(LoadLibraryEvent()),
       child: const _UploadScreenContent(),
     );
   }
@@ -49,10 +49,14 @@ class _UploadScreenContent extends StatelessWidget {
       body: SafeArea(
         child: BlocConsumer<UploadBloc, UploadState>(
           listener: (context, state) {
+            // منطق التوجيه بعد نجاح الرفع أو الاختيار
             if (state.status == UploadRequestStatus.success &&
                 state.resultData != null) {
               final String pdfId = state.resultData!;
-              final String fileName = state.selectedFile?.path.split('/').last ?? "Document";
+              final String fileName = state.selectedPdfId != null
+                  ? (state.selectedFileName ?? "Document")
+                  : (state.selectedFile?.path.split('/').last ?? "Document");
+
               final args = {
                 'pdfId': pdfId,
                 'fileName': fileName,
@@ -60,16 +64,11 @@ class _UploadScreenContent extends StatelessWidget {
 
               if (state.selectedAction == UploadAction.flashcards) {
                 Navigator.pushReplacementNamed(
-                  context,
-                  AppRoutesName.flashcards,
-                  arguments: args,
-                );
+                    context, AppRoutesName.flashcards,
+                    arguments: args);
               } else if (state.selectedAction == UploadAction.summarize) {
-                Navigator.pushReplacementNamed(
-                  context,
-                  AppRoutesName.summarize,
-                  arguments: args,
-                );
+                Navigator.pushReplacementNamed(context, AppRoutesName.summarize,
+                    arguments: args);
               } else if (state.selectedAction == UploadAction.mcq) {
                 Navigator.pushReplacementNamed(context, AppRoutesName.mcq,
                     arguments: args);
@@ -81,6 +80,7 @@ class _UploadScreenContent extends StatelessWidget {
             }
           },
           builder: (context, state) {
+            // شاشة التحميل
             if (state.status == UploadRequestStatus.loading) {
               return Center(
                 child: Column(
@@ -88,13 +88,11 @@ class _UploadScreenContent extends StatelessWidget {
                   children: [
                     Lottie.asset('assets/lottie/Uploading.json',
                         width: 150, height: 150),
-                    SizedBox(height: 16),
-                    Text(
-                      "Uploading document...",
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 16,
-                      ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "Processing document...",
+                      style:
+                          TextStyle(color: AppColors.textPrimary, fontSize: 16),
                     ),
                   ],
                 ),
@@ -108,46 +106,129 @@ class _UploadScreenContent extends StatelessWidget {
 
             return Padding(
               padding: const EdgeInsets.all(AppSizes.p20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppSizes.gapV16,
-                  const Text(
-                    "Upload Material",
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
+              // استخدمنا SingleChildScrollView هنا كأمان إضافي عشان لو شاشة الموبايل صغيرة جداً ميعملش Overflow
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ==============================
+                    // 1. الجزء العلوي: صندوق الرفع
+                    // ==============================
+                    AppSizes.gapV16,
+                    const Text(
+                      "Upload Material",
+                      style: TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  const Text(
-                    "Add your study material to get started",
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 15,
+                    const Text(
+                      "Add your study material to get started",
+                      style: TextStyle(
+                          color: AppColors.textSecondary, fontSize: 15),
                     ),
-                  ),
-                  AppSizes.gapV24,
-                  UploadBox(
-                    selectedFile: state.selectedFile,
-                    onPickFile: () => _pickFile(context),
-                    onRemoveFile: () =>
-                        context.read<UploadBloc>().add(RemoveFileEvent()),
-                  ),
-                  AppSizes.gapV24,
-                  AppSizes.gapV16,
-                  const Text(
-                    "CHOOSE AN ACTION",
-                    style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 20,
-                        letterSpacing: 1.2,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  AppSizes.gapV16,
-                  Expanded(
-                      child: ListView(
-                    children: UploadAction.values.map((action) {
+                    AppSizes.gapV24,
+                    UploadBox(
+                      selectedFile: state.selectedFile,
+                      fileNameFromLibrary: state.selectedFileName,
+                      onPickFile: () => _pickFile(context),
+                      onRemoveFile: () =>
+                          context.read<UploadBloc>().add(RemoveFileEvent()),
+                    ),
+
+                    // ==============================
+                    // 2. الجزء الأوسط: المكتبة (سكرول أفقي)
+                    // ==============================
+                    if (state.libraryFiles.isNotEmpty) ...[
+                      AppSizes.gapV24,
+                      const Text(
+                        "OR CHOOSE FROM LIBRARY",
+                        style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 14,
+                            letterSpacing: 1.2,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      AppSizes.gapV16,
+                      SizedBox(
+                        height: 120, // ارتفاع صف الكروت
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.libraryFiles.length,
+                          itemBuilder: (context, index) {
+                            final file = state.libraryFiles[index];
+                            final isSelected = state.selectedPdfId == file.id;
+
+                            return GestureDetector(
+                              onTap: () => context.read<UploadBloc>().add(
+                                  SelectLibraryFileEvent(
+                                      file.id, file.fileName)),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                width: 110,
+                                margin: const EdgeInsets.only(right: 16),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? const Color(0xFF101828)
+                                      : const Color(0xff111216),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? const Color(0xFF2E8CFF)
+                                        : const Color(0xFF23303F),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.picture_as_pdf_rounded,
+                                      color: isSelected
+                                          ? const Color(0xFF2E8CFF)
+                                          : Colors.redAccent.withOpacity(0.8),
+                                      size: 36,
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      file.fileName.replaceAll('.pdf', ''),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: isSelected
+                                            ? const Color(0xFF2E8CFF)
+                                            : Colors.white70,
+                                        fontSize: 12,
+                                        fontWeight: isSelected
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+
+                    // ==============================
+                    // 3. الجزء السفلي: الـ Actions
+                    // ==============================
+                    AppSizes.gapV24,
+                    const Text(
+                      "CHOOSE AN ACTION",
+                      style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    AppSizes.gapV16,
+                    ...UploadAction.values.map((action) {
                       return ActionCard(
                         action: action,
                         isSelected: state.selectedAction == action,
@@ -156,31 +237,36 @@ class _UploadScreenContent extends StatelessWidget {
                             .add(SelectActionEvent(action)),
                       );
                     }).toList(),
-                  )),
-                  if (state.selectedFile != null &&
-                      state.selectedAction != null)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.only(top: 16),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2E8CFF),
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
-                          elevation: 0,
+
+                    // ==============================
+                    // 4. زرار Process Now
+                    // ==============================
+                    if ((state.selectedFile != null ||
+                            state.selectedPdfId != null) &&
+                        state.selectedAction != null)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.only(top: 16, bottom: 24),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2E8CFF),
+                            padding: const EdgeInsets.symmetric(vertical: 18),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16)),
+                            elevation: 0,
+                          ),
+                          onPressed: () {
+                            context.read<UploadBloc>().add(ProcessFileEvent());
+                          },
+                          child: const Text("Process Now",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold)),
                         ),
-                        onPressed: () {
-                          context.read<UploadBloc>().add(ProcessFileEvent());
-                        },
-                        child: const Text("Process Now",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold)),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             );
           },
