@@ -12,4 +12,9 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
   Stream<List<Flashcard>> generateFlashcardsStream(String pdfId) {
     return remoteDataSource.generateFlashcardsStream(pdfId);
   }
+
+  @override
+  Future<List<Flashcard>> getExistingFlashcards(int resultId) async {
+    return remoteDataSource.getExistingFlashcards(resultId);
+  }
 }

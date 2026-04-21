@@ -11,4 +11,9 @@ class SummaryRepositoryImpl implements SummaryRepository {
   Future<SummaryEntity> getSummary(String pdfId) async {
     return await remoteDataSource.getSummary(pdfId);
   }
+
+  @override
+  Future<SummaryEntity> getExistingSummary(int resultId) async {
+    return await remoteDataSource.getExistingSummary(resultId);
+  }
 }

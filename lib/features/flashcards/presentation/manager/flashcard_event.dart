@@ -16,6 +16,11 @@ class LoadFlashcards extends FlashcardEvent {
   List<Object?> get props => [pdfId];
 }
 
+class LoadExistingFlashcards extends FlashcardEvent {
+  final int resultId;
+  const LoadExistingFlashcards(this.resultId);
+}
+
 class FlipCard extends FlashcardEvent {}
 
 class NextCard extends FlashcardEvent {}

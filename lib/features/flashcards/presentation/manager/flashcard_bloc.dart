@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:study_buddy/features/flashcards/domain/usecases/get_existing_flashcards_usecase.dart';
 
 import '../../domain/entities/flashcard.dart';
 import '../../domain/usecases/get_flashcards_usecase.dart';
@@ -9,9 +10,12 @@ import 'flashcard_state.dart';
 
 class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
   final GetFlashcardsUseCase getFlashcardsUseCase;
+  final GetExistingFlashcardsUseCase getExistingFlashcardsUseCase;
   Timer? _progressTimer;
 
-  FlashcardBloc({required this.getFlashcardsUseCase})
+  FlashcardBloc(
+      {required this.getFlashcardsUseCase,
+      required this.getExistingFlashcardsUseCase})
       : super(FlashcardInitial()) {
     on<UpdateLoadingStep>((event, emit) {
       if (state is FlashcardLoading) {
@@ -94,6 +98,16 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
       } catch (e) {
         _progressTimer?.cancel();
         emit(FlashcardError("Failed to fetch: $e"));
+      }
+    });
+    on<LoadExistingFlashcards>((event, emit) async {
+      emit(const FlashcardLoading(stepIndex: 3));
+      try {
+        final flashcards =
+            await getExistingFlashcardsUseCase.call(event.resultId);
+        emit(FlashcardLoaded(cards: flashcards));
+      } catch (e) {
+        emit(FlashcardError("Failed to fetch existing flashcards: $e"));
       }
     });
 

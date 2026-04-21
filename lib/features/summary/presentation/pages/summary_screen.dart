@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:study_buddy/core/routes/app_routes_name.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/processing_status_view.dart';
@@ -11,32 +10,40 @@ import '../manager/summary_event.dart';
 import '../manager/summary_state.dart';
 
 class SummaryScreen extends StatelessWidget {
-  final String pdfId;
+  final String? pdfId;
+  final int? resultId;
   final String fileName;
-  const SummaryScreen({super.key, required this.pdfId,required this.fileName});
+  const SummaryScreen(
+      {super.key, this.pdfId, required this.fileName, this.resultId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SummaryBloc>(
-      create: (context) => sl<SummaryBloc>()..add(LoadSummary(pdfId)),
+      create: (context) {
+        final bloc = sl<SummaryBloc>();
+
+        if (resultId != null) {
+          bloc.add(FetchExistingSummary(resultId!));
+        } else if (pdfId != null) {
+          bloc.add(LoadSummary(pdfId!));
+        }
+
+        return bloc;
+      },
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.background,
           elevation: 0,
-          leading: IconButton(
-            color: AppColors.leading,
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () =>
-                Navigator.of(context).pushReplacementNamed(AppRoutesName.main),
-          ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text("Document Summary",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text(fileName,style: TextStyle(fontSize: 15,color: Colors.grey),)
-
+              Text(
+                fileName,
+                style: TextStyle(fontSize: 15, color: Colors.grey),
+              )
             ],
           ),
         ),
