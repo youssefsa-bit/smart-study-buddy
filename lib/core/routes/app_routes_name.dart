@@ -7,4 +7,5 @@ class AppRoutesName {
   static const String flashcards = '/flashcards';
   static const String summarize = '/summarize';
   static const String mcq = '/mcq';
-}
+  static const String editProfile = '/edit_profile';
+  static const String changePassword = '/change_password';}

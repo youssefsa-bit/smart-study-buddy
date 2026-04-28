@@ -21,6 +21,14 @@ import '../../features/home/domain/usecase/get_recent_files.dart';
 import '../../features/home/presentation/manager/home_bloc.dart';
 
 // --- Upload Feature Imports ---
+import '../../features/profile/data/datasources/profile_remote_data_source.dart';
+import '../../features/profile/data/repositories/profile_repository_impl.dart';
+import '../../features/profile/domain/repositories/profile_repository.dart';
+import '../../features/profile/domain/usecases/change_password_usecase.dart';
+import '../../features/profile/domain/usecases/get_profile_usecase.dart';
+import '../../features/profile/domain/usecases/logout_usecase.dart';
+import '../../features/profile/domain/usecases/update_name_usecase.dart';
+import '../../features/profile/presentation/manager/profile_bloc.dart';
 import '../../features/summary/data/datasources/summary_remote_data_source.dart';
 import '../../features/summary/data/repositories/summary_repository_impl.dart';
 import '../../features/summary/domain/repositories/summary_repository.dart';
@@ -181,5 +189,35 @@ Future<void> init() async {
   // 4. Data Sources
   sl.registerLazySingleton<McqRemoteDataSource>(
     () => McqRemoteDataSourceImpl(networkService: sl()),
+  );
+
+  // ==========================================
+  // Feature: Profile
+  // ==========================================
+
+  // 1. Bloc
+  sl.registerFactory(
+        () => ProfileBloc(
+      getProfileUseCase: sl(),
+      updateNameUseCase: sl(),
+      changePasswordUseCase: sl(),
+      logoutUseCase: sl(),
+    ),
+  );
+
+  // 2. Use Cases
+  sl.registerLazySingleton(() => GetProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateNameUseCase(sl()));
+  sl.registerLazySingleton(() => ChangePasswordUseCase(sl()));
+  sl.registerLazySingleton(() => LogoutUseCase(sl()));
+
+  // 3. Repositories
+  sl.registerLazySingleton<ProfileRepository>(
+        () => ProfileRepositoryImpl(sl()),
+  );
+
+  // 4. Data Sources
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+        () => ProfileRemoteDataSourceImpl(networkService: sl()),
   );
 }

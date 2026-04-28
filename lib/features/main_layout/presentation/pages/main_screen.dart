@@ -3,6 +3,8 @@ import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/features/home/presentation/pages/home_screen.dart';
 import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dart';
 
+import '../../../profile/presentation/pages/profile_screen.dart';
+
 class MainScreen extends StatefulWidget {
   final int initialIndex;
   const MainScreen({super.key, this.initialIndex = 0});
@@ -53,9 +55,7 @@ class _MainScreenState extends State<MainScreen> {
       const Center(
           child: Text('History Screen',
               style: TextStyle(color: Colors.white, fontSize: 20))),
-      const Center(
-          child: Text('Profile Screen',
-              style: TextStyle(color: Colors.white, fontSize: 20))),
+      const ProfileScreen(),
     ];
     return Scaffold(
       backgroundColor: AppColors.background,
