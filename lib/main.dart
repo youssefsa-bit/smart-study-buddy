@@ -8,6 +8,8 @@ import 'core/routes/app_routes.dart';
 import 'core/routes/app_routes_name.dart';
 import 'core/services/injection_container.dart' as di;
 import 'features/auth/presentation/manager/auth_bloc.dart';
+import 'features/history/presentation/manager/history_bloc.dart';
+import 'features/history/presentation/manager/history_event.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +35,9 @@ class StudyFlowApp extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (context) => di.sl<AuthBloc>()..add(CheckAuthStatus())),
+        BlocProvider<HistoryBloc>(
+          create: (context) => di.sl<HistoryBloc>()..add(LoadHistory()),
+        ),
       ],
       child: MaterialApp(
         title: 'StudyFlow',
@@ -51,3 +56,5 @@ class StudyFlowApp extends StatelessWidget {
     );
   }
 }
+//fetch existing flashcards difficulty bug
+//pop back bug

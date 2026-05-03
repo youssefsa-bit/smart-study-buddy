@@ -5,39 +5,38 @@ import 'package:study_buddy/features/mcq/presentation/pages/quiz_view.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/processing_status_view.dart';
-import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../upload/domain/entities/upload_action.dart';
 import '../manager/mcq_event.dart';
 import '../manager/mcq_state.dart';
 
 class McqScreen extends StatelessWidget {
-  final String pdfId;
+  final String? pdfId;
+  final int? resultId;
   final String fileName;
 
-  const McqScreen({super.key, required this.pdfId, required this.fileName});
+  const McqScreen(
+      {super.key, this.pdfId, required this.fileName, this.resultId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<McqBloc>(
-      create: (BuildContext context) =>
-          sl<McqBloc>()..add(GenerateMcqEvent(pdfId)),
+      create: (BuildContext context) {
+        final bloc = sl<McqBloc>();
+
+        if (resultId != null) {
+          bloc.add(GetExistingMCQ(resultId!));
+        } else if (pdfId != null) {
+          bloc.add(GenerateMcqEvent(pdfId!));
+        }
+
+        return bloc;
+      },
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          leading: IconButton(
-            color: AppColors.leading ?? Colors.white,
-            onPressed: () {
-              Navigator.pushReplacementNamed(
-                context,
-                AppRoutesName.main,
-                arguments: 1,
-              );
-            },
-            icon: const Icon(Icons.arrow_back),
-          ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

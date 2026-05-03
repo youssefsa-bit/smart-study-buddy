@@ -6,7 +6,6 @@ import 'package:study_buddy/features/flashcards/presentation/widgets/control_but
 import 'package:study_buddy/features/flashcards/presentation/widgets/progress_bar_header.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
 
-import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../manager/flashcard_bloc.dart';
 import '../manager/flashcard_event.dart';
@@ -14,38 +13,41 @@ import '../manager/flashcard_state.dart';
 import '../widgets/flashcard_view.dart';
 
 class FlashcardScreen extends StatelessWidget {
-  final String pdfId;
+  final String? pdfId;
+  final int? resultId;
   final String fileName;
 
-  const FlashcardScreen({super.key, required this.pdfId,required this.fileName});
+  const FlashcardScreen(
+      {super.key, this.pdfId, required this.fileName, this.resultId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FlashcardBloc>(
-      create: (BuildContext context) =>
-          sl<FlashcardBloc>()..add(LoadFlashcards(pdfId)),
+      create: (BuildContext context) {
+        final bloc = sl<FlashcardBloc>();
+
+        if (resultId != null) {
+          bloc.add(LoadExistingFlashcards(resultId!));
+        } else if (pdfId != null) {
+          bloc.add(LoadFlashcards(pdfId!));
+        }
+
+        return bloc;
+      },
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          leading: IconButton(
-            color: AppColors.leading,
-            onPressed: () {
-              Navigator.pushReplacementNamed(
-                context,
-                AppRoutesName.main,
-                arguments: 1,
-              );
-            },
-            icon: const Icon(Icons.arrow_back),
-          ),
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text("Flashcards",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text(fileName,style: TextStyle(fontSize: 15,color: Colors.grey),)
+              Text(
+                fileName,
+                style: TextStyle(fontSize: 15, color: Colors.grey),
+              )
             ],
           ),
         ),

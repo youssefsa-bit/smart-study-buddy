@@ -6,8 +6,8 @@ import '../../../../core/services/network_service.dart';
 import '../models/flashcard_model.dart';
 
 abstract class FlashcardRemoteDataSource {
-  // We change the return type to a Stream that yields lists of flashcards incrementally
   Stream<List<FlashcardModel>> generateFlashcardsStream(String pdfId);
+  Future<List<FlashcardModel>> getExistingFlashcards(int resultId);
 }
 
 class FlashcardRemoteDataSourceImpl implements FlashcardRemoteDataSource {
@@ -52,6 +52,26 @@ class FlashcardRemoteDataSourceImpl implements FlashcardRemoteDataSource {
       }
     } catch (e) {
       throw Exception('Stream failed: $e');
+    }
+  }
+
+  @override
+  Future<List<FlashcardModel>> getExistingFlashcards(int resultId) async {
+    try {
+      final response = await networkService.dio.get(
+        'http://10.0.2.2:3000/api/pdfs/$resultId/flashcards',
+      );
+
+      final List<dynamic> flashcardsJson =
+          response.data['data']['flashcards'] ?? [];
+
+      final List<FlashcardModel> flashcards = flashcardsJson
+          .map((item) => FlashcardModel.fromJson(item as Map<String, dynamic>))
+          .toList();
+
+      return flashcards;
+    } catch (e) {
+      throw Exception('Failed to fetch existing flashcards: $e');
     }
   }
 }

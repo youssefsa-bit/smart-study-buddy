@@ -12,3 +12,8 @@ class LoadSummary extends SummaryEvent {
   @override
   List<Object?> get props => [pdfId];
 }
+
+class FetchExistingSummary extends SummaryEvent {
+  final int resultId;
+  const FetchExistingSummary(this.resultId);
+}

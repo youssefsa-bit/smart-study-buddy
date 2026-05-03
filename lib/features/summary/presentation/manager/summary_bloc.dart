@@ -2,15 +2,20 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/usecases/get_existing_summary_usecase.dart';
 import '../../domain/usecases/get_summary_usecase.dart';
 import 'summary_event.dart';
 import 'summary_state.dart';
 
 class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
   final GetSummaryUseCase getSummaryUseCase;
+  final GetExistingSummaryUseCase getExistingSummaryUseCase;
   Timer? _progressTimer;
 
-  SummaryBloc({required this.getSummaryUseCase}) : super(SummaryInitial()) {
+  SummaryBloc({
+    required this.getSummaryUseCase,
+    required this.getExistingSummaryUseCase,
+  }) : super(SummaryInitial()) {
     on<LoadSummary>((event, emit) async {
       int currentStep = 0;
       emit(SummaryLoading(stepIndex: currentStep));
@@ -32,6 +37,15 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
       } catch (e) {
         _progressTimer?.cancel();
         emit(SummaryError("Failed to fetch summary: $e"));
+      }
+    });
+    on<FetchExistingSummary>((event, emit) async {
+      emit(const SummaryLoading(stepIndex: 3));
+      try {
+        final summary = await getExistingSummaryUseCase.call(event.resultId);
+        emit(SummaryLoaded(summary));
+      } catch (e) {
+        emit(SummaryError("Failed to fetch existing summary: $e"));
       }
     });
   }

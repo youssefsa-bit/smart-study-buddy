@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
+import 'package:study_buddy/features/history/presentation/pages/history_screen.dart';
 import 'package:study_buddy/features/home/presentation/pages/home_screen.dart';
 import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dart';
-
 import '../../../profile/presentation/pages/profile_screen.dart';
+import '../../../history/presentation/manager/history_bloc.dart';
+import '../../../history/presentation/manager/history_event.dart';
 
 class MainScreen extends StatefulWidget {
   final int initialIndex;
@@ -22,6 +25,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _changeTab(int index) {
+    if (index == 0 || index == 2) {
+      context.read<HistoryBloc>().add(LoadHistory());
+    }
     setState(() {
       _currentIndex = index;
     });
@@ -52,10 +58,9 @@ class _MainScreenState extends State<MainScreen> {
         onNavigateToHistory: () => _changeTab(2),
       ),
       UploadScreen(),
-      const Center(
-          child: Text('History Screen',
-              style: TextStyle(color: Colors.white, fontSize: 20))),
+      HistoryScreen(),
       const ProfileScreen(),
+
     ];
     return Scaffold(
       backgroundColor: AppColors.background,
