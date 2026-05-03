@@ -3,6 +3,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../domain/entities/mcq_entity.dart';
 import '../widgets/options_card.dart';
 import 'quiz_result_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QuizView extends StatefulWidget {
   final QuizEntity quiz;
@@ -20,7 +21,7 @@ class _QuizViewState extends State<QuizView> {
   bool isAnswered = false;
 
   void _onOptionSelected(String optionLabel) {
-    if (isAnswered) return; // منع التعديل بعد الاختيار
+    if (isAnswered) return;
 
     setState(() {
       selectedOption = optionLabel;
@@ -53,6 +54,7 @@ class _QuizViewState extends State<QuizView> {
 
   @override
   Widget build(BuildContext context) {
+    final loc=AppLocalizations.of(context)!;
     final question = widget.quiz.questions[currentIndex];
     final progressValue = (currentIndex + 1) / widget.quiz.questions.length;
 
@@ -61,7 +63,6 @@ class _QuizViewState extends State<QuizView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // العداد والـ Progress Bar
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -87,14 +88,12 @@ class _QuizViewState extends State<QuizView> {
           ),
           const SizedBox(height: 30),
 
-          // السؤال
           Text(
             question.text,
             style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 30),
 
-          // الاختيارات
           Expanded(
             child: ListView.builder(
               itemCount: question.options.length,
@@ -112,7 +111,6 @@ class _QuizViewState extends State<QuizView> {
             ),
           ),
 
-          // زرار Next
           if (isAnswered)
             SizedBox(
               width: double.infinity,
@@ -127,7 +125,7 @@ class _QuizViewState extends State<QuizView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      currentIndex == widget.quiz.questions.length - 1 ? "Show Result" : "Next Question",
+                      currentIndex == widget.quiz.questions.length - 1 ? loc.mcqShowResult : loc.mcqNextQuestion,
                       style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(width: 8),

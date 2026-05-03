@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:study_buddy/features/auth/presentation/manager/auth_event.dart';
-
 import 'core/constants/app_colors.dart';
+import 'core/manager/language_cubit.dart';
 import 'core/routes/app_routes.dart';
 import 'core/routes/app_routes_name.dart';
 import 'core/services/injection_container.dart' as di;
 import 'features/auth/presentation/manager/auth_bloc.dart';
 import 'features/history/presentation/manager/history_bloc.dart';
 import 'features/history/presentation/manager/history_event.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,23 +40,41 @@ class StudyFlowApp extends StatelessWidget {
         BlocProvider<HistoryBloc>(
           create: (context) => di.sl<HistoryBloc>()..add(LoadHistory()),
         ),
-      ],
-      child: MaterialApp(
-        title: 'StudyFlow',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          scaffoldBackgroundColor: AppColors.background,
-          colorScheme: const ColorScheme.dark(
-            primary: AppColors.primaryBlue,
-            surface: AppColors.surface,
-          ),
-          fontFamily: 'Inter',
+        BlocProvider(
+          create: (context) => di.sl<LanguageCubit>(),
         ),
-        initialRoute: initialRoute,
-        onGenerateRoute: AppRoutes.generateRoute,
+      ],
+      child: BlocBuilder<LanguageCubit, Locale>(
+        builder: (context, locale) {
+          return  MaterialApp(
+            title: 'StudyFlow',
+            debugShowCheckedModeBanner: false,
+            locale:locale,
+            supportedLocales: const [
+              Locale('en'),
+              Locale('ar'),
+            ],
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            theme: ThemeData(
+              scaffoldBackgroundColor: AppColors.background,
+              colorScheme: const ColorScheme.dark(
+                primary: AppColors.primaryBlue,
+                surface: AppColors.surface,
+              ),
+              fontFamily: 'Inter',
+            ),
+            initialRoute: initialRoute,
+            onGenerateRoute: AppRoutes.generateRoute,
+          );
+        },
+
       ),
     );
   }
 }
-//fetch existing flashcards difficulty bug
-//pop back bug
+

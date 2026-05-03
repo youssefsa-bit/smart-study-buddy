@@ -7,6 +7,7 @@ import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dar
 import '../../../profile/presentation/pages/profile_screen.dart';
 import '../../../history/presentation/manager/history_bloc.dart';
 import '../../../history/presentation/manager/history_event.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainScreen extends StatefulWidget {
   final int initialIndex;
@@ -52,6 +53,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final List<Widget> screens = [
       HomeScreen(
         onNavigateToUpload: () => _changeTab(1),
@@ -90,10 +92,10 @@ class _MainScreenState extends State<MainScreen> {
             unselectedFontSize: 12,
             elevation: 0,
             items: [
-              _buildNavItem(Icons.home_rounded, 'Home', 0),
-              _buildNavItem(Icons.file_upload_outlined, 'Upload', 1),
-              _buildNavItem(Icons.history_rounded, 'History', 2),
-              _buildNavItem(Icons.person_outline_rounded, 'Profile', 3),
+              _buildNavItem(Icons.home_rounded, loc.navHome, 0),
+              _buildNavItem(Icons.file_upload_outlined, loc.navUpload, 1),
+              _buildNavItem(Icons.history_rounded, loc.navHistory, 2),
+              _buildNavItem(Icons.person_outline_rounded, loc.navProfile, 3),
             ],
           ),
         ),

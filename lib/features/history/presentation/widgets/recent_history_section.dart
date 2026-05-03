@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:study_buddy/features/mcq/presentation/pages/mcq_screen.dart';
-
-import '../../../flashcards/presentation/pages/flashcard_screen.dart';
-import '../../../summary/presentation/pages/summary_screen.dart';
+import '../../../../core/routes/app_routes_name.dart';
 import '../../domain/entities/history_item.dart';
 import '../manager/history_bloc.dart';
 import '../manager/history_state.dart';
 import 'history_item_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecentHistorySection extends StatelessWidget {
   const RecentHistorySection({super.key, required this.onDisplayAll});
@@ -15,53 +13,53 @@ class RecentHistorySection extends StatelessWidget {
   void _navigateToResult(BuildContext context, HistoryItem item) {
     switch (item.type.toUpperCase()) {
       case 'SUMMARY':
-        Navigator.push(
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(
-            builder: (context) => SummaryScreen(
-              resultId: item.pdfId,
-              fileName: item.fileName,
-            ),
-          ),
+          AppRoutesName.summarize,
+          arguments: {
+            'resultId': item.pdfId,
+            'fileName': item.fileName,
+          },
         );
         break;
       case 'FLASHCARD':
-        Navigator.push(
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(
-            builder: (context) => FlashcardScreen(
-              resultId: item.pdfId,
-              fileName: item.fileName,
-            ),
-          ),
+          AppRoutesName.flashcards,
+          arguments: {
+            'resultId': item.pdfId,
+            'fileName': item.fileName,
+          },
         );
         break;
       case 'QUIZ':
-        Navigator.push(
+        Navigator.pushNamed(
           context,
-          MaterialPageRoute(
-            builder: (context) =>
-                McqScreen(resultId: item.pdfId, fileName: item.fileName),
-          ),
+          AppRoutesName.mcq,
+          arguments: {
+            'resultId': item.pdfId,
+            'fileName': item.fileName,
+          },
         );
         break;
       default:
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Unknown file type")),
+           SnackBar(content: Text(AppLocalizations.of(context)!.historyUnknownFileType)),
         );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              "Recent",
+             Text(
+              loc.historyRecent,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 22,
@@ -70,8 +68,8 @@ class RecentHistorySection extends StatelessWidget {
             ),
             TextButton(
               onPressed: onDisplayAll,
-              child: const Text(
-                "See all",
+              child:  Text(
+                loc.historySeeAll,
                 style: TextStyle(color: Color(0xFF2E8CFF), fontSize: 16),
               ),
             ),
@@ -85,15 +83,15 @@ class RecentHistorySection extends StatelessWidget {
             }
 
             if (state is HistoryError) {
-              return const Center(
-                  child: Text("No recent history found.",
+              return  Center(
+                  child: Text(loc.historyNoRecent,
                       style: TextStyle(color: Colors.grey)));
             }
 
             if (state is HistoryLoaded) {
               if (state.historyItems.isEmpty) {
-                return const Center(
-                    child: Text("No history yet.",
+                return  Center(
+                    child: Text(loc.historyNoData,
                         style: TextStyle(color: Colors.grey)));
               }
 

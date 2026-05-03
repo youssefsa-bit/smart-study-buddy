@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UploadMaterialCard extends StatelessWidget {
   final VoidCallback onTap;
@@ -8,6 +9,7 @@ class UploadMaterialCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
@@ -39,8 +41,8 @@ class UploadMaterialCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Upload your material',
+                   Text(
+                    loc.uploadMaterialTitle,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -49,7 +51,7 @@ class UploadMaterialCard extends StatelessWidget {
                   ),
                   AppSizes.gapV8,
                   Text(
-                    'PDF, lecture notes , or any document',
+                    loc.uploadMaterialDesc,
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 13,

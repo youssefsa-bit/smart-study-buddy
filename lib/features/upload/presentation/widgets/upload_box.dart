@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UploadBox extends StatelessWidget {
   final File? selectedFile;
@@ -18,6 +19,7 @@ class UploadBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     String? displayFileName;
 
     if (selectedFile != null) {
@@ -54,19 +56,19 @@ class UploadBox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    displayFileName, // ✨ عرض الاسم الديناميكي هنا
+                    displayFileName,
                     style: const TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   AppSizes.gapV8,
-                  const Row(
+                   Row(
                     children: [
                       Icon(Icons.check_circle_outline,
                           color: Color(0xFF00C853), size: 14),
                       AppSizes.gapH8,
-                      Text("Ready to process",
+                      Text(loc.uploadBoxReady,
                           style: TextStyle(
                               color: Color(0xFF00C853), fontSize: 12)),
                     ],
@@ -112,12 +114,12 @@ class UploadBox extends StatelessWidget {
                     color: Color(0xFF2E8CFF), size: 32),
               ),
               AppSizes.gapV16,
-              const Text("Tap to upload",
+               Text(loc.uploadBoxTapToUpload,
                   style: TextStyle(color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold)),
               AppSizes.gapV8,
-              const Text("PDF documents only",
+               Text(loc.uploadBoxPdfOnly,
                   style: TextStyle(color: Color(0xFF6B7684), fontSize: 13)),
               AppSizes.gapV16,
               Container(

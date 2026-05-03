@@ -5,6 +5,7 @@ import 'package:study_buddy/core/utils/app_sizes.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -30,27 +31,27 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     super.dispose();
   }
 
-  void _showConfirmationDialog(BuildContext context) {
+  void _showConfirmationDialog(BuildContext context,AppLocalizations loc) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
+        title:  Row(
           children: [
             Icon(Icons.warning_amber_rounded, color: Colors.orangeAccent),
-            Text("Update Password",
+            Text(loc.changePassUpdateBtn,
                 style: TextStyle(color: Colors.white, fontSize: 18)),
           ],
         ),
-        content: const Text(
-          "Are you sure you want to change your password? You will need to use the new password next time you log in.",
+        content:  Text(
+            loc.changePassConfirmDesc,
           style: TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            child:  Text(loc.dialogCancel, style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -62,7 +63,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         _newPasswordController.text),
                   );
             },
-            child: const Text("Confirm", style: TextStyle(color: Colors.white)),
+            child:  Text(loc.dialogConfirm, style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -71,36 +72,38 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("Security",
+        title:  Text(loc.changePassSecurity,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
+          final listenerLoc = AppLocalizations.of(context)!;
           if (state.status == ProfileStatus.success &&
               state.action == ProfileAction.changePassword) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text("Password changed successfully!"),
+               SnackBar(
+                  content: Text(listenerLoc.changePassSuccess),
                   backgroundColor: Colors.green),
             );
             Navigator.pop(context);
           } else if (state.status == ProfileStatus.error &&
               state.action == ProfileAction.changePassword) {
             String displayError =
-                "An unexpected error occurred. Please try again.";
+                listenerLoc.changePassUnexpectedError;
             if (state.errorMessage != null) {
               final errorStr = state.errorMessage!.toLowerCase();
               if (errorStr.contains("password") ||
                   errorStr.contains("400") ||
                   errorStr.contains("401") ||
                   errorStr.contains("incorrect")) {
-                displayError = "The current password you entered is incorrect.";
+                displayError = listenerLoc.changePassIncorrect;
 
                 _currentPasswordController.clear();
               } else {
@@ -112,7 +115,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 content: Row(
                   children: [
                     const Icon(Icons.error_outline, color: Colors.white),
-                    const SizedBox(width: 8),
+                    AppSizes.gapH8,
                     Expanded(
                         child: Text(displayError,
                             style: const TextStyle(color: Colors.white))),
@@ -140,8 +143,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 const Icon(Icons.shield_outlined,
                     size: 80, color: AppColors.primaryBlue),
                 AppSizes.gapV16,
-                const Text(
-                  "Change Password",
+                 Text(
+                  loc.menuChangePassword,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
@@ -149,15 +152,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       fontWeight: FontWeight.bold),
                 ),
                AppSizes.gapV8,
-                const Text(
-                  "Your password must be at least 8 characters and include 1 uppercase letter and 1 number.",
+                 Text(
+                  loc.changePassDesc,
                   textAlign: TextAlign.center,
                   style:
                       TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 ),
                AppSizes.gapV24,
                AppSizes.gapV16,
-                const Text("Current Password",
+                 Text(loc.changePassCurrentLabel,
                     style: TextStyle(
                         color: AppColors.textSecondary, fontSize: 14)),
               AppSizes.gapV8,
@@ -166,7 +169,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   obscureText: _obscureCurrent,
                   style: const TextStyle(color: Colors.white),
                   validator: (value) => (value == null || value.isEmpty)
-                      ? "Please enter your current password"
+                      ? loc.changePassCurrentEmpty
                       : null,
                   decoration: _buildInputDecoration(
                     icon: Icons.lock_outline,
@@ -176,7 +179,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                 ),
                 AppSizes.gapV24,
-                const Text("New Password",
+                 Text(loc.changePassNewLabel,
                     style: TextStyle(
                         color: AppColors.textSecondary, fontSize: 14)),
                AppSizes.gapV8,
@@ -186,13 +189,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty)
-                      return "Please enter a new password";
+                      return loc.changePassNewEmpty;
                     if (value.length < 8)
-                      return "Must be at least 8 characters";
+                      return loc.errorPasswordShort;
                     if (!value.contains(RegExp(r'[A-Z]')))
-                      return "Must contain at least 1 uppercase letter";
+                      return loc.errorPasswordUppercase;
                     if (!value.contains(RegExp(r'[0-9]')))
-                      return "Must contain at least 1 number";
+                      return loc.errorPasswordNumber;
                     return null;
                   },
                   decoration: _buildInputDecoration(
@@ -203,7 +206,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                 ),
                 AppSizes.gapV24,
-                const Text("Confirm New Password",
+                 Text(loc.changePassConfirmLabel,
                     style: TextStyle(
                         color: AppColors.textSecondary, fontSize: 14)),
                 AppSizes.gapV8,
@@ -213,9 +216,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty)
-                      return "Please confirm your new password";
+                      return loc.changePassConfirmEmpty;
                     if (value != _newPasswordController.text)
-                      return "Passwords do not match";
+                      return loc.changePassNotMatch;
                     return null;
                   },
                   decoration: _buildInputDecoration(
@@ -240,7 +243,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         ? null
                         : () {
                             if (_formKey.currentState!.validate()) {
-                              _showConfirmationDialog(context);
+                              _showConfirmationDialog(context,loc);
                             }
                           },
                     child: isLoading
@@ -249,7 +252,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             height: 24,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2))
-                        : const Text("Update Password",
+                        :  Text(loc.changePassUpdateBtn,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,

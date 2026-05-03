@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routes/app_routes_name.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QuizResultView extends StatelessWidget {
   final int score;
@@ -10,6 +11,7 @@ class QuizResultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc=AppLocalizations.of(context)!;
     double percentage = total == 0 ? 0 : (score / total);
     int percentageInt = (percentage * 100).toInt();
     Color resultColor =
@@ -49,8 +51,8 @@ class QuizResultView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 30),
-              const Text(
-                "Keep Studying!",
+               Text(
+                loc.mcqResultKeepStudying,
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -58,7 +60,7 @@ class QuizResultView extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                "You scored $score out of $total questions correctly",
+                loc.mcqResultScoreLabel(score, total),
                 style: const TextStyle(color: Colors.grey, fontSize: 16),
               ),
               const Spacer(),
@@ -76,7 +78,7 @@ class QuizResultView extends StatelessWidget {
                     Navigator.pushReplacementNamed(context, AppRoutesName.main,
                         arguments: 1);
                   },
-                  child: const Text("Done",
+                  child:  Text(loc.mcqResultDoneBtn,
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,

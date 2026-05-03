@@ -6,12 +6,16 @@ import 'package:study_buddy/core/constants/app_colors.dart';
 class FlashcardView extends StatelessWidget {
   final String text;
   final String type;
+  final String hintText;
+  final bool isQuestion;
   final VoidCallback onTap;
 
   const FlashcardView({
     super.key,
     required this.text,
     required this.type,
+    required this.hintText,
+    required this.isQuestion,
     required this.onTap,
   });
 
@@ -27,7 +31,7 @@ class FlashcardView extends StatelessWidget {
             animation: rotate,
             child: child,
             builder: (context, child) {
-              final isUnder = (ValueKey(type) != child!.key);
+              final isUnder = (ValueKey(isQuestion) != child!.key);
               var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
               tilt *= isUnder ? -1.0 : 1.0;
 
@@ -41,7 +45,7 @@ class FlashcardView extends StatelessWidget {
             },
           );
         },
-        child: _buildCardContent(key: ValueKey(type)),
+        child: _buildCardContent(key: ValueKey(isQuestion)),
       ),
     );
   }
@@ -51,49 +55,54 @@ class FlashcardView extends StatelessWidget {
       key: key,
       width: double.infinity,
       height: 400,
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       decoration: BoxDecoration(
-        color: type == "QUESTION" ? AppColors.darkBlue : AppColors.flashcardImg,
+        color: isQuestion ? AppColors.darkBlue : AppColors.flashcardImg,
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
-            color: type == "QUESTION"
-                ? AppColors.primaryBlue
-                : AppColors.flashcardGreen,
+            color:
+                isQuestion ? AppColors.primaryBlue : AppColors.flashcardGreen,
             width: 1),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             blurRadius: 10,
-            offset: const Offset(0, 5),
+            offset: Offset(0, 5),
           ),
         ],
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             type,
             style: TextStyle(
-              color: type == "QUESTION"
-                  ? AppColors.primaryBlue
-                  : AppColors.flashcardGreen,
+              color:
+                  isQuestion ? AppColors.primaryBlue : AppColors.flashcardGreen,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.5,
               fontSize: 14,
             ),
           ),
-          const SizedBox(height: 40),
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
+          const SizedBox(height: 16),
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    height: 1.4,
+                  ),
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 16),
           Text(
-            type == "QUESTION" ? "Tap to reveal answer" : "Tap to see question",
+            hintText,
             style:
                 const TextStyle(color: AppColors.textSecondary, fontSize: 14),
           ),

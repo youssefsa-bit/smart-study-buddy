@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
-
 import '../../features/upload/domain/entities/upload_action.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProcessingStatusView extends StatelessWidget {
   final UploadAction action;
@@ -17,38 +17,39 @@ class ProcessingStatusView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     String title = "";
     IconData headerIcon = Icons.article;
     List<String> steps = [];
     switch (action) {
       case UploadAction.flashcards:
-        title = "Creating Flashcards";
+        title = loc.processFlashcardsTitle;
         headerIcon = Icons.style_outlined;
         steps = [
-          "Parsing document...",
-          "Identifying concepts...",
-          "Forming Q&A pairs...",
-          "Generating cards..."
+          loc.stepParseDoc,
+          loc.stepIdentifyConcepts,
+          loc.stepFormQnA,
+          loc.stepGenCards
         ];
         break;
       case UploadAction.summarize:
-        title = "Generating Summary";
+        title = loc.processSummaryTitle;
         headerIcon = Icons.description_outlined;
         steps = [
-          "Parsing document...",
-          "Analyzing content...",
-          "Extracting key points...",
-          "Finalizing summary..."
+          loc.stepParseDoc,
+          loc.stepAnalyzeContent,
+          loc.stepExtractKeys,
+          loc.stepFinalizeSummary
         ];
         break;
       case UploadAction.mcq:
-        title = "Creating MCQ Quiz";
+        title = loc.processMcqTitle;
         headerIcon = Icons.help_outline_rounded;
         steps = [
-          "Parsing document...",
-          "Finding testable facts...",
-          "Creating distractors...",
-          "Formatting quiz..."
+          loc.stepParseDoc,
+          loc.stepFindFacts,
+          loc.stepCreateDistractors,
+          loc.stepFormatQuiz
         ];
         break;
     }

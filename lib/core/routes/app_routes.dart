@@ -29,18 +29,18 @@ class AppRoutes {
 
         return MaterialPageRoute(
           builder: (_) =>
-              FlashcardScreen(pdfId: args['pdfId'], fileName: args['fileName']),
+              FlashcardScreen(pdfId: args['pdfId'],resultId: args['resultId'], fileName: args['fileName']),
         );
       case AppRoutesName.summarize:
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
             builder: (_) => SummaryScreen(
-                pdfId: args['pdfId'], fileName: args['fileName']));
+                pdfId: args['pdfId'],resultId: args['resultId'],fileName: args['fileName']));
       case AppRoutesName.mcq:
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
           builder: (_) =>
-              McqScreen(pdfId: args['pdfId'], fileName: args['fileName']),
+              McqScreen(pdfId: args['pdfId'],resultId: args['resultId'], fileName: args['fileName']),
         );
       case AppRoutesName.editProfile:
         final profileBloc = settings.arguments as ProfileBloc;

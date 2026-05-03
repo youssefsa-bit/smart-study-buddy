@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -30,28 +31,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  void _showConfirmationDialog(BuildContext context) {
+  void _showConfirmationDialog(BuildContext context,AppLocalizations loc) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
+        title:  Row(
           children: [
             Icon(Icons.info_outline, color: AppColors.primaryBlue),
             SizedBox(width: 8),
-            Text("Confirm Update",
+            Text(loc.editProfileConfirmTitle,
                 style: TextStyle(color: Colors.white, fontSize: 18)),
           ],
         ),
-        content: const Text(
-          "Are you sure you want to save these changes to your profile?",
+        content:  Text(
+          loc.editProfileConfirmDesc,
           style: TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            child:  Text(loc.dialogCancel, style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -62,7 +63,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   .read<ProfileBloc>()
                   .add(UpdateNameEvent(_nameController.text.trim()));
             },
-            child: const Text("Confirm", style: TextStyle(color: Colors.white)),
+            child:  Text(loc.dialogConfirm, style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -71,22 +72,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("Edit Profile",
+        title:  Text(loc.menuEditProfile,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
+          final listenerLoc = AppLocalizations.of(context)!;
           if (state.status == ProfileStatus.success &&
               state.action == ProfileAction.updateName) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text("Name updated successfully!"),
+               SnackBar(
+                  content: Text(listenerLoc.editProfileSuccess),
                   backgroundColor: Colors.green),
             );
             Navigator.pop(context);
@@ -94,7 +97,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               state.action == ProfileAction.updateName) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: Text(state.errorMessage ?? "Error updating name"),
+                  content: Text(state.errorMessage ?? listenerLoc.editProfileError),
                   backgroundColor: Colors.redAccent),
             );
           }
@@ -111,8 +114,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const Icon(Icons.person_pin_rounded,
                     size: 80, color: AppColors.primaryBlue),
                 AppSizes.gapV16,
-                const Text(
-                  "Update Your Details",
+                 Text(
+                  loc.editProfileSubtitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
@@ -120,15 +123,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       fontWeight: FontWeight.bold),
                 ),
                 AppSizes.gapV8,
-                const Text(
-                  "Make sure your name matches your academic records.",
+                 Text(
+                  loc.editProfileDesc,
                   textAlign: TextAlign.center,
                   style:
                       TextStyle(color: AppColors.textSecondary, fontSize: 14),
                 ),
                 AppSizes.gapV24,
                 AppSizes.gapV24,
-                const Text("Full Name",
+                 Text(loc.fullName,
                     style: TextStyle(
                         color: AppColors.textSecondary, fontSize: 14)),
                 AppSizes.gapV8,
@@ -137,10 +140,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return "Name cannot be empty";
+                      return loc.editProfileNameEmpty;
                     }
                     if (value.trim().length < 3) {
-                      return "Name must be at least 3 characters";
+                      return loc.errorNameShort;
                     }
                     return null;
                   },
@@ -164,7 +167,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         borderSide: const BorderSide(color: Colors.redAccent)),
                   ),
                 ),
-                const SizedBox(height: 40),
+                AppSizes.gapV24,
+                AppSizes.gapV16,
                 SizedBox(
                   height: 55,
                   child: ElevatedButton(
@@ -177,16 +181,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ? null
                         : () {
                             if (_formKey.currentState!.validate()) {
-                              _showConfirmationDialog(context);
+                              _showConfirmationDialog(context,loc);
                             }
                           },
                     child: isLoading
-                        ? const SizedBox(
+                        ?  SizedBox(
                             width: 24,
                             height: 24,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2))
-                        : const Text("Save Changes",
+                        :  Text(loc.editProfileSaveBtn,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,

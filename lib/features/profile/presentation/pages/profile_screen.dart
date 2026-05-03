@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/manager/language_cubit.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
@@ -9,10 +10,11 @@ import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_menu_item.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
-  void _showLogoutConfirmationDialog(BuildContext context) {
+  void _showLogoutConfirmationDialog(BuildContext context,AppLocalizations loc) {
     final bloc = context.read<ProfileBloc>();
 
     showDialog(
@@ -20,21 +22,21 @@ class ProfileScreen extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
+        title:  Row(
           children: [
             Icon(Icons.logout_rounded, color: Colors.redAccent),
-            SizedBox(width: 8),
-            Text("Log Out", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+            AppSizes.gapH8,
+            Text(loc.logoutDialogTitle, style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
           ],
         ),
-        content: const Text(
-          "Are you sure you want to log out? You will need to enter your credentials to access your account again.",
+        content:  Text(
+          loc.logoutDialogContent,
           style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+            child: Text(loc.dialogCancel, style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -45,15 +47,57 @@ class ProfileScreen extends StatelessWidget {
               Navigator.pop(ctx);
               bloc.add(LogoutRequestedEvent());
             },
-            child: const Text("Log Out", style: TextStyle(color: Colors.white)),
+            child:  Text(loc.menuLogout, style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
     );
   }
-
+  void _showLanguageBottomSheet(BuildContext context, AppLocalizations loc) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(loc.menuLanguage,
+                    style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                AppSizes.gapV24,
+                ListTile(
+                  leading: const Text("🇬🇧", style: TextStyle(fontSize: 24)),
+                  title: const Text("English", style: TextStyle(color: Colors.white, fontSize: 16)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  onTap: () {
+                    context.read<LanguageCubit>().changeLanguage('en');
+                    Navigator.pop(ctx);
+                  },
+                ),
+                ListTile(
+                  leading: const Text("🇪🇬", style: TextStyle(fontSize: 24)),
+                  title: const Text("العربية", style: TextStyle(color: Colors.white, fontSize: 16)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  onTap: () {
+                    context.read<LanguageCubit>().changeLanguage('ar');
+                    Navigator.pop(ctx);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
+
     return BlocProvider(
       create: (context) => sl<ProfileBloc>()..add(LoadProfileEvent()),
       child: Scaffold(
@@ -68,6 +112,7 @@ class ProfileScreen extends StatelessWidget {
               }
             },
             builder: (context, state) {
+              final loc = AppLocalizations.of(context)!;
               if (state.status == ProfileStatus.loading &&
                   state.action == ProfileAction.getProfile) {
                 return const Center(
@@ -84,10 +129,11 @@ class ProfileScreen extends StatelessWidget {
                     AppSizes.gapV24,
                     ProfileHeader(
                         name: user?.name ?? "...", email: user?.email ?? "..."),
-                    const SizedBox(height: 32),
+                    AppSizes.gapV24,
+                    AppSizes.gapV8,
                     ProfileMenuItem(
                         icon: Icons.person_outline,
-                        title: "Edit Profile",
+                        title: loc.menuEditProfile,
                         onTap: () {
                           Navigator.pushNamed(
                               context,
@@ -97,7 +143,7 @@ class ProfileScreen extends StatelessWidget {
                         }),
                     ProfileMenuItem(
                         icon: Icons.lock_outline,
-                        title: "Change Password",
+                        title: loc.menuChangePassword,
                         onTap: () {
                           Navigator.pushNamed(
                               context,
@@ -107,21 +153,21 @@ class ProfileScreen extends StatelessWidget {
                         }),
                     ProfileMenuItem(
                         icon: Icons.language_rounded,
-                        title: "Language",
-                        trailing: const Text("🇬🇧 English",
+                        title: loc.menuLanguage,
+                        trailing:  Text(loc.langCurrent,
                             style: TextStyle(
                                 color: AppColors.textSecondary, fontSize: 16)),
-                        onTap: () {}),
+                        onTap: () =>_showLanguageBottomSheet(context, loc),),
                     ProfileMenuItem(
                         icon: Icons.dark_mode_rounded,
-                        title: "Theme Mode",
+                        title: loc.menuThemeMode,
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Icon(Icons.dark_mode_rounded,
                                 color: AppColors.primaryBlue, size: 18),
                             AppSizes.gapH8,
-                            const Text("Dark",
+                             Text(loc.themeDark,
                                 style: TextStyle(
                                     color: AppColors.textSecondary,
                                     fontSize: 16)),
@@ -130,14 +176,14 @@ class ProfileScreen extends StatelessWidget {
                         onTap: () {}),
                     ProfileMenuItem(
                         icon: Icons.settings_outlined,
-                        title: "Settings",
+                        title: loc.menuSettings,
                         onTap: () {}),
                     AppSizes.gapV24,
                     ProfileMenuItem(
                       icon: Icons.logout_rounded,
-                      title: "Log Out",
+                      title: loc.menuLogout,
                       textColor: Colors.redAccent,
-                        onTap: () => _showLogoutConfirmationDialog(context),
+                        onTap: () => _showLogoutConfirmationDialog(context,loc),
                     ),
                   ],
                 ),

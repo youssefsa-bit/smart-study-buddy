@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/core_widgets/processing_status_view.dart';
+import 'package:study_buddy/core/utils/app_sizes.dart';
 import 'package:study_buddy/features/flashcards/presentation/widgets/control_buttons.dart';
 import 'package:study_buddy/features/flashcards/presentation/widgets/progress_bar_header.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
-
 import '../../../../core/services/injection_container.dart';
 import '../manager/flashcard_bloc.dart';
 import '../manager/flashcard_event.dart';
 import '../manager/flashcard_state.dart';
 import '../widgets/flashcard_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FlashcardScreen extends StatelessWidget {
   final String? pdfId;
@@ -22,6 +23,7 @@ class FlashcardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc=AppLocalizations.of(context)!;
     return BlocProvider<FlashcardBloc>(
       create: (BuildContext context) {
         final bloc = sl<FlashcardBloc>();
@@ -42,7 +44,7 @@ class FlashcardScreen extends StatelessWidget {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Flashcards",
+               Text(loc.flashcardAppbarTitle,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Text(
                 fileName,
@@ -56,7 +58,7 @@ class FlashcardScreen extends StatelessWidget {
             if (state is FlashcardLoading) {
               return ProcessingStatusView(
                 action: UploadAction.flashcards,
-                fileName: "Processing your document...",
+                fileName: loc.flashcardProcessing,
                 currentStepIndex: state.stepIndex,
               );
             }
@@ -90,7 +92,11 @@ class FlashcardScreen extends StatelessWidget {
                       text: state.isFlipped
                           ? currentCard.answer
                           : currentCard.question,
-                      type: state.isFlipped ? "ANSWER" : "QUESTION",
+                      type: state.isFlipped ? loc.flashcardAnswerLabel : loc.flashcardQuestionLabel,
+                      isQuestion: !state.isFlipped,
+                      hintText: state.isFlipped
+                          ? loc.flashcardTapQuestion
+                          : loc.flashcardTapReveal,
                       onTap: () {
                         context.read<FlashcardBloc>().add(FlipCard());
                       },
@@ -109,7 +115,8 @@ class FlashcardScreen extends StatelessWidget {
                       isFirst: state.currentIndex == 0,
                       isLast: state.currentIndex == state.cards.length - 1,
                     ),
-                    const SizedBox(height: 40),
+                    AppSizes.gapV24,
+                    AppSizes.gapV16,
                   ],
                 ),
               );

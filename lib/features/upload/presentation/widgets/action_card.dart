@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 import '../../domain/entities/upload_action.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ActionCard extends StatelessWidget {
   final UploadAction action;
@@ -16,23 +17,24 @@ class ActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     String title = '';
     String subtitle = '';
     IconData iconData = Icons.article_outlined;
     switch (action) {
       case UploadAction.summarize:
-        title = 'Summarize';
-        subtitle = 'AI-powered summary';
+        title = loc.actionSummarize;
+        subtitle = loc.actionSummarizeDesc;
         iconData = Icons.text_snippet_outlined;
         break;
       case UploadAction.flashcards:
-        title = 'Flashcards';
-        subtitle = 'Auto-generated cards';
+        title = loc.actionFlashcards;
+        subtitle = loc.actionFlashcardsDesc;
         iconData = Icons.style_outlined;
         break;
       case UploadAction.mcq:
-        title = 'MCQ Quiz';
-        subtitle = 'Practice questions';
+        title = loc.actionMcq;
+        subtitle = loc.actionMcqDesc;
         iconData = Icons.help_outline_rounded;
         break;
     }
@@ -69,7 +71,7 @@ class ActionCard extends StatelessWidget {
                 size: 24,
               ),
             ),
-            const SizedBox(width: 16),
+           AppSizes.gapH16,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +84,7 @@ class ActionCard extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 5),
                   Text(
                     subtitle,
                     style: const TextStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import '../../domain/entities/history_item.dart';
 
 class HistoryItemCard extends StatelessWidget {
@@ -31,33 +32,21 @@ class HistoryItemCard extends StatelessWidget {
     return Icon(iconData, color: color, size: 28);
   }
 
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-    return '${months[date.month - 1]} ${date.day}';
+  String _formatDate(DateTime date, BuildContext context) {
+    final langCode = Localizations.localeOf(context).languageCode;
+    return DateFormat.MMMd(langCode).format(date);
   }
 
-  String _formatType(String type) {
-    if (type == 'QUIZ') return 'Quiz';
-    if (type == 'FLASHCARD') return 'Flashcards';
-    if (type == 'SUMMARY') return 'Summary';
-    return 'Document';
+  String _formatType(String type,AppLocalizations loc) {
+    if (type == 'QUIZ') return loc.historyTypeQuiz;
+    if (type == 'FLASHCARD') return loc.historyTypeFlashcards;
+    if (type == 'SUMMARY') return loc.historyTypeSummary;
+    return loc.historyTypeDocument;
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final cleanFileName = item.fileName.replaceAll('.pdf', '');
 
     return GestureDetector(
@@ -89,7 +78,7 @@ class HistoryItemCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    "${_formatType(item.type)} • ${_formatDate(item.createdAt)}",
+                    "${_formatType(item.type, loc)} • ${_formatDate(item.createdAt, context)}",
                     style: TextStyle(
                       color: Colors.grey.shade400,
                       fontSize: 13,

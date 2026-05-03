@@ -4,7 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 // ==========================================
 // Core
 // ==========================================
+import '../manager/language_cubit.dart';
 import 'network_service.dart';
+
 
 // ==========================================
 // Auth Feature Imports
@@ -98,7 +100,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => sharedPreferences);
   sl.registerLazySingleton<NetworkService>(
       () => NetworkService(sharedPreferences: sl()));
-
+  sl.registerFactory(() => LanguageCubit(prefs: sl()));
   // ==========================================
   // Feature: Auth
   // ==========================================

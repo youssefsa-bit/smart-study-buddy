@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/routes/app_routes_name.dart';
+import 'package:study_buddy/core/utils/app_sizes.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/services/injection_container.dart';
 import '../manager/auth_bloc.dart';
@@ -8,6 +9,7 @@ import '../manager/auth_event.dart';
 import '../manager/auth_state.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/auth_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,6 +19,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -31,6 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return BlocProvider(
       create: (context) => sl<AuthBloc>(),
       child: Scaffold(
@@ -38,104 +42,142 @@ class _RegisterPageState extends State<RegisterPage> {
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 50),
-                const Text("Create Account",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                const Text("Fill your details ",
-                    style: TextStyle(color: AppColors.textGrey)),
-                const SizedBox(height: 40),
-                CustomTextField(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppSizes.gapV24,
+                  AppSizes.gapV24,
+                  Text(loc.createAccount,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold)),
+                  AppSizes.gapV8,
+                  Text(loc.fillYourDetails,
+                      style: const TextStyle(color: AppColors.textGrey)),
+                  AppSizes.gapV24,
+                  AppSizes.gapV16,
+                  CustomTextField(
                     controller: _nameController,
-                    labelText: "Full Name",
-                    prefixIcon: Icons.person_outline),
-                const SizedBox(height: 16),
-                CustomTextField(
+                    labelText: loc.fullName,
+                    prefixIcon: Icons.person_outline,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return loc.errorEmptyName;
+                      }
+                      if (value.trim().length < 3) {
+                        return loc.errorNameShort;
+                      }
+                      return null;
+                    },
+                  ),
+                  AppSizes.gapV16,
+                  CustomTextField(
                     controller: _emailController,
-                    labelText: "Email Address",
-                    prefixIcon: Icons.email_outlined),
-                const SizedBox(height: 16),
-                CustomTextField(
+                    labelText: loc.emailAddress,
+                    prefixIcon: Icons.email_outlined,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return loc.errorEmptyEmail;
+                      }
+                      final bool emailValid = RegExp(
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                          .hasMatch(value.trim());
+                      if (!emailValid) {
+                        return loc.errorInvalidEmail;
+                      }
+                      return null;
+                    },
+                  ),
+                  AppSizes.gapV16,
+                  CustomTextField(
                     controller: _passwordController,
-                    labelText: "Password",
+                    labelText: loc.password,
                     prefixIcon: Icons.lock_outline,
-                    isPassword: true),
-                const SizedBox(height: 32),
-                BlocConsumer<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthSuccess) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(state.message),
-                            backgroundColor: AppColors.primaryBlue),
-                      );
-                      Navigator.pushReplacementNamed(
-                          context, AppRoutesName.login);
-                    } else if (state is AuthFailure) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(state.error),
-                            backgroundColor: Colors.redAccent),
-                      );
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is AuthLoading) {
-                      return const Center(
-                          child: CircularProgressIndicator(
-                              color: AppColors.primaryBlue));
-                    }
+                    isPassword: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return loc.errorEmptyPassword;
+                      }
+                      if (value.length < 8) {
+                        return loc.errorPasswordShort;
+                      }
+                      if (!value.contains(RegExp(r'[A-Z]'))) {
+                        return loc.errorPasswordUppercase;
+                      }
+                      if (!value.contains(RegExp(r'[0-9]'))) {
+                        return loc.errorPasswordNumber;
+                      }
+                      return null;
+                    },
+                  ),
+                  AppSizes.gapV24,
+                  AppSizes.gapV8,
+                  BlocConsumer<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(state.message),
+                              backgroundColor: AppColors.primaryBlue),
+                        );
+                        Navigator.pushReplacementNamed(
+                            context, AppRoutesName.login);
+                      } else if (state is AuthFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(state.error),
+                              backgroundColor: Colors.redAccent),
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is AuthLoading) {
+                        return const Center(
+                            child: CircularProgressIndicator(
+                                color: AppColors.primaryBlue));
+                      }
 
-                    return AuthButton(
-                      text: "Sign Up",
-                      onPressed: () {
-                        if (_emailController.text.isNotEmpty &&
-                            _passwordController.text.isNotEmpty &&
-                            _nameController.text.isNotEmpty) {
-                          context.read<AuthBloc>().add(
-                                RegisterRequested(
-                                  _nameController.text.trim(),
-                                  _emailController.text.trim(),
-                                  _passwordController.text.trim(),
-                                ),
-                              );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Please fill all fields")),
-                          );
-                        }
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(height: 24),
-                Center(
-                  child: GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: RichText(
-                      text: const TextSpan(
-                        text: "Already have an account? ",
-                        style: TextStyle(color: AppColors.textGrey),
-                        children: [
-                          TextSpan(
-                              text: "Login",
-                              style: TextStyle(
-                                  color: AppColors.primaryBlue,
-                                  fontWeight: FontWeight.bold)),
-                        ],
+                      return AuthButton(
+                        text: loc.signUp,
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            context.read<AuthBloc>().add(
+                                  RegisterRequested(
+                                    _nameController.text.trim(),
+                                    _emailController.text.trim(),
+                                    _passwordController.text.trim(),
+                                  ),
+                                );
+                          }
+                        },
+                      );
+                    },
+                  ),
+                  AppSizes.gapV24,
+                  Center(
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: RichText(
+                        text: TextSpan(
+                          text: loc.alreadyHaveAnAccount,
+                          style: const TextStyle(color: AppColors.textGrey),
+                          children: [
+                            TextSpan(
+                                text: loc.login,
+                                style: const TextStyle(
+                                    color: AppColors.primaryBlue,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                  AppSizes.gapV24,
+                ],
+              ),
             ),
           ),
         ),
