@@ -57,7 +57,7 @@ class ProfileMenuItem extends StatelessWidget {
                 if (trailing != null) trailing!,
                 AppSizes.gapH8,
                 Icon(Icons.arrow_forward_ios,
-                    color: AppColors.textSecondary.withOpacity(0.5), size: 14),
+                    color: AppColors.textSecondary.withValues(alpha: 0.5), size: 14),
               ],
             ),
           ),

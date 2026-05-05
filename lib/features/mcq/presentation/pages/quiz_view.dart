@@ -69,7 +69,7 @@ class _QuizViewState extends State<QuizView> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryBlue.withOpacity(0.2),
+                  color: AppColors.primaryBlue.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -82,7 +82,7 @@ class _QuizViewState extends State<QuizView> {
           const SizedBox(height: 10),
           LinearProgressIndicator(
             value: progressValue,
-            backgroundColor: AppColors.surfaceHighlight ?? Colors.grey[800],
+            backgroundColor: AppColors.surfaceHighlight,
             valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
             borderRadius: BorderRadius.circular(10),
           ),

@@ -35,6 +35,7 @@ class _UploadScreenContent extends StatelessWidget {
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
+    if (!context.mounted) return;
 
     if (result != null) {
       File file = File(result.files.single.path!);
@@ -63,15 +64,27 @@ class _UploadScreenContent extends StatelessWidget {
               };
 
               if (state.selectedAction == UploadAction.flashcards) {
-                Navigator.pushReplacementNamed(
+                Navigator.pushNamed(
                     context, AppRoutesName.flashcards,
-                    arguments: args);
+                    arguments: args).then((_) {
+                  if (!context.mounted) return;
+                  context.read<UploadBloc>().add(RemoveFileEvent());
+                  context.read<UploadBloc>().add(LoadLibraryEvent());
+                });
               } else if (state.selectedAction == UploadAction.summarize) {
-                Navigator.pushReplacementNamed(context, AppRoutesName.summarize,
-                    arguments: args);
+                Navigator.pushNamed(context, AppRoutesName.summarize,
+                    arguments: args).then((_) {
+                  if (!context.mounted) return;
+                  context.read<UploadBloc>().add(RemoveFileEvent());
+                  context.read<UploadBloc>().add(LoadLibraryEvent());
+                });
               } else if (state.selectedAction == UploadAction.mcq) {
-                Navigator.pushReplacementNamed(context, AppRoutesName.mcq,
-                    arguments: args);
+                Navigator.pushNamed(context, AppRoutesName.mcq,
+                    arguments: args).then((_) {
+                  if (!context.mounted) return;
+                  context.read<UploadBloc>().add(RemoveFileEvent());
+                  context.read<UploadBloc>().add(LoadLibraryEvent());
+                });
               }
             } else if (state.status == UploadRequestStatus.error) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -96,11 +109,6 @@ class _UploadScreenContent extends StatelessWidget {
                   ],
                 ),
               );
-            }
-
-            if (state.status == UploadRequestStatus.success) {
-              return const Center(
-                  child: CircularProgressIndicator(color: Color(0xFF2E8CFF)));
             }
 
             return Column(
@@ -156,7 +164,7 @@ class _UploadScreenContent extends StatelessWidget {
                           AppSizes.gapV16,
                           SizedBox(
                             height: 120,
-                            child: ListView.builder(
+                              child: ListView.builder(
                               physics: const BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               itemCount: state.libraryFiles.length,
@@ -192,7 +200,7 @@ class _UploadScreenContent extends StatelessWidget {
                                           Icons.picture_as_pdf_rounded,
                                           color: isSelected
                                               ? const Color(0xFF2E8CFF)
-                                              : Colors.redAccent.withOpacity(0.8),
+                                              : Colors.redAccent.withValues(alpha: 0.8),
                                           size: 36,
                                         ),
                                         const SizedBox(height: 12),
@@ -237,7 +245,7 @@ class _UploadScreenContent extends StatelessWidget {
                                 .read<UploadBloc>()
                                 .add(SelectActionEvent(action)),
                           );
-                        }).toList(),
+                        }),
                         if ((state.selectedFile != null ||
                             state.selectedPdfId != null) &&
                             state.selectedAction != null)

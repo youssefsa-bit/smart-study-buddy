@@ -57,7 +57,7 @@ class ControlButtons extends StatelessWidget {
         width: 60,
         height: 60,
         decoration: BoxDecoration(
-          color: onPressed == null ? color.withOpacity(0.3) : color,
+          color: onPressed == null ? color.withValues(alpha: 0.3) : color,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Icon(icon, color: Colors.white, size: 28),

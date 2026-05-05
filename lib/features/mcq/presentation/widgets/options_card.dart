@@ -26,11 +26,11 @@ class OptionCard extends StatelessWidget {
 
     if (isCorrect) {
       borderColor = Colors.greenAccent;
-      bgColor = Colors.green.withOpacity(0.15);
+      bgColor = Colors.green.withValues(alpha: 0.15);
       labelColor = Colors.greenAccent;
     } else if (isWrong) {
       borderColor = Colors.redAccent;
-      bgColor = Colors.red.withOpacity(0.15);
+      bgColor = Colors.red.withValues(alpha: 0.15);
       labelColor = Colors.redAccent;
     }
 
@@ -50,7 +50,7 @@ class OptionCard extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: isCorrect ? Colors.greenAccent.withOpacity(0.2) : (isWrong ? Colors.redAccent.withOpacity(0.2) : Colors.grey[800]),
+                color: isCorrect ? Colors.greenAccent.withValues(alpha: 0.2) : (isWrong ? Colors.redAccent.withValues(alpha: 0.2) : Colors.grey[800]),
                 shape: BoxShape.circle,
               ),
               child: Center(

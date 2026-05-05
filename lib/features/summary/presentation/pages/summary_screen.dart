@@ -129,11 +129,11 @@ class SummaryScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: isHighlight
-            ? AppColors.primaryBlue.withOpacity(0.1)
+            ? AppColors.primaryBlue.withValues(alpha: 0.1)
             : AppColors.surface,
         borderRadius: BorderRadius.circular(16),
         border: isHighlight
-            ? Border.all(color: AppColors.primaryBlue.withOpacity(0.3))
+            ? Border.all(color: AppColors.primaryBlue.withValues(alpha: 0.3))
             : null,
       ),
       child: Column(
