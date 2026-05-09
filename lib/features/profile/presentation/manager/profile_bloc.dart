@@ -53,9 +53,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(status: ProfileStatus.loading, action: ProfileAction.logout));
       try {
         await logoutUseCase.call();
+
         emit(state.copyWith(status: ProfileStatus.success, action: ProfileAction.logout));
       } catch (e) {
-        emit(state.copyWith(status: ProfileStatus.error, action: ProfileAction.logout, errorMessage: e.toString()));
+        emit(state.copyWith(status: ProfileStatus.success, action: ProfileAction.logout));
       }
     });
   }

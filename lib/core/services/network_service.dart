@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../main.dart';
+import '../routes/app_routes_name.dart';
+
 class NetworkService {
   final SharedPreferences sharedPreferences;
   late Dio dio;
@@ -23,16 +26,19 @@ class NetworkService {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           String? token = sharedPreferences.getString('ACCESS_TOKEN');
-          // String? token =
-          //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc3MjIyODY3NSwiZXhwIjoxNzcyMjM5NDc1fQ.Pzasv2A3uQIhNZHLA-w59-bTnF3EpiiRj8_gN0ts0bo";
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
           return handler.next(options);
         },
-        onError: (DioException e, handler) {
+        onError: (DioException e, handler) async {
           if (e.response?.statusCode == 401) {
             print("Token expired or invalid!");
+            await sharedPreferences.remove('ACCESS_TOKEN');
+            navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              AppRoutesName.sessionExpired,
+                  (route) => false,
+            );
           }
           return handler.next(e);
         },

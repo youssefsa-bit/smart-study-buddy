@@ -46,8 +46,12 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
   @override
   Future<void> logout() async {
-    await networkService.dio.post('/auth/logout');
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('ACCESS_TOKEN');
+    try {
+      await networkService.dio.post('/auth/logout');
+    } catch (e) {}
+    finally {
+      await prefs.remove('ACCESS_TOKEN');
+    }
   }
 }

@@ -129,5 +129,7 @@
   "historyTypeQuiz": "Quiz",
   "historyTypeFlashcards": "Flashcards",
   "historyTypeSummary": "Summary",
-  "historyTypeDocument": "Document"
+  "historyTypeDocument": "Document",
+  "sessionExpiredTitle": "Session Expired",
+  "sessionExpiredDesc": "Your session has expired for security reasons. Please log in again to continue."
 }

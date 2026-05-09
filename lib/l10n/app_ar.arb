@@ -123,5 +123,7 @@
   "historyTypeQuiz": "اختبار",
   "historyTypeFlashcards": "بطاقات",
   "historyTypeSummary": "ملخص",
-  "historyTypeDocument": "مستند"
+  "historyTypeDocument": "مستند",
+  "sessionExpiredTitle": "انتهت جلسة الدخول",
+  "sessionExpiredDesc": "عفواً، انتهت صلاحية الجلسة الخاصة بك لدواعي أمنية. يرجى تسجيل الدخول مرة أخرى للاستمرار."
 }

@@ -4,6 +4,7 @@ import 'package:study_buddy/features/summary/presentation/pages/summary_screen.d
 
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/auth/presentation/pages/session_expired_screen.dart';
 import '../../features/flashcards/presentation/pages/flashcard_screen.dart';
 import '../../features/main_layout/presentation/pages/main_screen.dart';
 import '../../features/mcq/presentation/pages/mcq_screen.dart';
@@ -28,19 +29,25 @@ class AppRoutes {
         final args = settings.arguments as Map<String, dynamic>;
 
         return MaterialPageRoute(
-          builder: (_) =>
-              FlashcardScreen(pdfId: args['pdfId'],resultId: args['resultId'], fileName: args['fileName']),
+          builder: (_) => FlashcardScreen(
+              pdfId: args['pdfId'],
+              resultId: args['resultId'],
+              fileName: args['fileName']),
         );
       case AppRoutesName.summarize:
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
             builder: (_) => SummaryScreen(
-                pdfId: args['pdfId'],resultId: args['resultId'],fileName: args['fileName']));
+                pdfId: args['pdfId'],
+                resultId: args['resultId'],
+                fileName: args['fileName']));
       case AppRoutesName.mcq:
         final args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-          builder: (_) =>
-              McqScreen(pdfId: args['pdfId'],resultId: args['resultId'], fileName: args['fileName']),
+          builder: (_) => McqScreen(
+              pdfId: args['pdfId'],
+              resultId: args['resultId'],
+              fileName: args['fileName']),
         );
       case AppRoutesName.editProfile:
         final profileBloc = settings.arguments as ProfileBloc;
@@ -58,6 +65,9 @@ class AppRoutes {
             child: const ChangePasswordScreen(),
           ),
         );
+
+      case AppRoutesName.sessionExpired:
+        return MaterialPageRoute(builder: (_) => const SessionExpiredScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
