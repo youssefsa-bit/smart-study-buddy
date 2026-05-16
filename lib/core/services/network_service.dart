@@ -16,6 +16,8 @@ class NetworkService {
     dio = Dio(
       BaseOptions(
         baseUrl: "http://10.0.2.2:3000/api",
+        connectTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
         followRedirects: false,
         validateStatus: (status) {
           return status != null && status >= 200 && status < 300;
@@ -32,12 +34,15 @@ class NetworkService {
           return handler.next(options);
         },
         onError: (DioException e, handler) async {
-          if (e.response?.statusCode == 401) {
+          final String path = e.requestOptions.path;
+          if (e.response?.statusCode == 401 &&
+              !path.contains('/auth/login') &&
+              !path.contains('/auth/register')) {
             print("Token expired or invalid!");
             await sharedPreferences.remove('ACCESS_TOKEN');
             navigatorKey.currentState?.pushNamedAndRemoveUntil(
               AppRoutesName.sessionExpired,
-                  (route) => false,
+              (route) => false,
             );
           }
           return handler.next(e);

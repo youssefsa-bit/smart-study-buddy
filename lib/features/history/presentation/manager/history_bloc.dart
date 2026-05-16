@@ -14,7 +14,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         final items = await getHistoryUseCase.call();
         emit(HistoryLoaded(items));
       } catch (e) {
-        emit(HistoryError("Failed to load history"));
+        emit(HistoryError(e.toString()));
       }
     });
   }

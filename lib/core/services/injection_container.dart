@@ -259,6 +259,7 @@ Future<void> init() async {
       updateNameUseCase: sl(),
       changePasswordUseCase: sl(),
       logoutUseCase: sl(),
+      checkAuthStatusUseCase: sl(),
     ),
   );
 

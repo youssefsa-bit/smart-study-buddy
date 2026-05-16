@@ -11,11 +11,14 @@ import '../../features/mcq/presentation/pages/mcq_screen.dart';
 import '../../features/profile/presentation/manager/profile_bloc.dart';
 import '../../features/profile/presentation/pages/change_password_screen.dart';
 import '../../features/profile/presentation/pages/edit_profile_screen.dart';
+import '../core_widgets/splash_screen.dart';
 import 'app_routes_name.dart';
 
 class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case AppRoutesName.splash:
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case AppRoutesName.login:
         return MaterialPageRoute(builder: (_) => const LoginPage());
       case AppRoutesName.register:

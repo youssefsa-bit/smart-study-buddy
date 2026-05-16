@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:study_buddy/features/auth/presentation/manager/auth_event.dart';
 import 'core/constants/app_colors.dart';
 import 'core/manager/language_cubit.dart';
@@ -17,34 +16,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await di.init();
-  final prefs = di.sl<SharedPreferences>();
-  final String? token = prefs.getString('ACCESS_TOKEN');
-  String startRoute = AppRoutesName.login;
-  if (token != null && token.isNotEmpty) {
-    try {
-      if (JwtDecoder.isExpired(token)) {
-        await prefs.remove('ACCESS_TOKEN');
-        startRoute = AppRoutesName.sessionExpired;
-      } else {
-        startRoute = AppRoutesName.main;
-      }
-    } catch (e) {
-      await prefs.remove('ACCESS_TOKEN');
-      startRoute = AppRoutesName.login;
-    }
-  }
-
-  runApp(StudyFlowApp(
-    initialRoute: startRoute,
-  ));
+  runApp(const StudyFlowApp());
 }
 
 class StudyFlowApp extends StatelessWidget {
-  final String initialRoute;
-
-  const StudyFlowApp({super.key, required this.initialRoute});
+  const StudyFlowApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +40,11 @@ class StudyFlowApp extends StatelessWidget {
       ],
       child: BlocBuilder<LanguageCubit, Locale>(
         builder: (context, locale) {
-          return  MaterialApp(
+          return MaterialApp(
             navigatorKey: navigatorKey,
             title: 'StudyFlow',
             debugShowCheckedModeBanner: false,
-            locale:locale,
+            locale: locale,
             supportedLocales: const [
               Locale('en'),
               Locale('ar'),
@@ -84,13 +63,11 @@ class StudyFlowApp extends StatelessWidget {
               ),
               fontFamily: 'Inter',
             ),
-            initialRoute: initialRoute,
+            initialRoute: AppRoutesName.splash,
             onGenerateRoute: AppRoutes.generateRoute,
           );
         },
-
       ),
     );
   }
 }
-

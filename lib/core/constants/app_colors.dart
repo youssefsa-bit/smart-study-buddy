@@ -15,7 +15,9 @@ class AppColors {
       Color(0xff061e28); // Color for pressed states or highlights
   // --- Primary & Accents ---
   static const Color primaryBlue =
-      Color(0xFF246BFD); // Primary blue (upload button, spark icon)
+      Color(0xFF246BFD);// Primary blue (upload button, spark icon)
+  static const Color primaryGreen =
+  Color(0xFF1E9B9E);
   static const Color mcqOrange =
       Color(0xFFFF7A00); // Bright orange (MCQ Quiz card)
   static const Color mcqImg =

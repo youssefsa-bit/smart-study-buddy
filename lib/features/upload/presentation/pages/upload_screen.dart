@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
@@ -87,8 +88,22 @@ class _UploadScreenContent extends StatelessWidget {
                 });
               }
             } else if (state.status == UploadRequestStatus.error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.errorMessage ?? loc.uploadScreenFailed)),
+              String displayError = state.errorMessage ?? loc.uploadScreenFailed;
+              if (state.errorMessage != null) {
+                final errorStr = state.errorMessage!.toLowerCase();
+                if (errorStr.contains('connection') ||
+                    errorStr.contains('timeout') ||
+                    errorStr.contains('network') ||
+                    errorStr.contains('socket') ||
+                    errorStr.contains('failed host lookup')) {
+                  displayError = loc.errorNoConnection;
+                }
+              }
+              CustomSnackBar.show(
+                context: context,
+                message: displayError,
+                isError: true,
+                customIcon: displayError == loc.errorNoConnection ? Icons.wifi_off_rounded : null,
               );
             }
           },
@@ -139,7 +154,7 @@ class _UploadScreenContent extends StatelessWidget {
 
                 Expanded(
                   child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
+                    //physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

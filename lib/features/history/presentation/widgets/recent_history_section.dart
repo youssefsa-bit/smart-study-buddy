@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../domain/entities/history_item.dart';
 import '../manager/history_bloc.dart';
+import '../manager/history_event.dart';
 import '../manager/history_state.dart';
 import 'history_item_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -43,8 +45,10 @@ class RecentHistorySection extends StatelessWidget {
         );
         break;
       default:
-        ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text(AppLocalizations.of(context)!.historyUnknownFileType)),
+        CustomSnackBar.show(
+          context: context,
+          message: AppLocalizations.of(context)!.historyUnknownFileType,
+          isError: true,
         );
     }
   }
@@ -79,15 +83,53 @@ class RecentHistorySection extends StatelessWidget {
         BlocBuilder<HistoryBloc, HistoryState>(
           builder: (context, state) {
             if (state is HistoryLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: CircularProgressIndicator(color: Color(0xFF2E8CFF)),
+                  ));
             }
-
             if (state is HistoryError) {
-              return  Center(
-                  child: Text(loc.historyNoRecent,
-                      style: TextStyle(color: Colors.grey)));
-            }
+              String displayError = state.message;
+              final errorStr = state.message.toLowerCase();
 
+              if (errorStr.contains('connection') ||
+                  errorStr.contains('timeout') ||
+                  errorStr.contains('network') ||
+                  errorStr.contains('socket') ||
+                  errorStr.contains('failed')) {
+                displayError = loc.errorNoConnection;
+              }
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.wifi_off_rounded,
+                          color: Colors.grey, size: 32),
+                      const SizedBox(height: 8),
+                      Text(
+                        displayError,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: Colors.grey, fontSize: 13),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          context.read<HistoryBloc>().add(LoadHistory());
+                        },
+                        icon: const Icon(Icons.refresh,
+                            color: Color(0xFF2E8CFF), size: 20),
+                        label: Text(
+                          loc.retry,
+                          style: const TextStyle(color: Color(0xFF2E8CFF)),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }
             if (state is HistoryLoaded) {
               if (state.historyItems.isEmpty) {
                 return  Center(

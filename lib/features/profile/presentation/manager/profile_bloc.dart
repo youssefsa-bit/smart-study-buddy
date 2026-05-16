@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../auth/domain/usecases/check_auth_status_usecase.dart';
 import '../../domain/usecases/get_profile_usecase.dart';
 import '../../domain/usecases/update_name_usecase.dart';
 import '../../domain/usecases/change_password_usecase.dart';
@@ -11,22 +12,28 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final UpdateNameUseCase updateNameUseCase;
   final ChangePasswordUseCase changePasswordUseCase;
   final LogoutUseCase logoutUseCase;
+  final CheckAuthStatusUseCase checkAuthStatusUseCase;
 
   ProfileBloc({
     required this.getProfileUseCase,
     required this.updateNameUseCase,
     required this.changePasswordUseCase,
     required this.logoutUseCase,
+    required this.checkAuthStatusUseCase,
   }) : super(const ProfileState()) {
 
     on<LoadProfileEvent>((event, emit) async {
-      emit(state.copyWith(status: ProfileStatus.loading, action: ProfileAction.getProfile));
+      final cachedName = await checkAuthStatusUseCase.call();
+      emit(state.copyWith(
+        status: ProfileStatus.loading,
+        action: ProfileAction.getProfile,
+        cachedName: cachedName,
+      ));
       try {
         final user = await getProfileUseCase.call();
         emit(state.copyWith(status: ProfileStatus.success, action: ProfileAction.getProfile, user: user));
       } catch (e) {
-        emit(state.copyWith(status: ProfileStatus.error, action: ProfileAction.getProfile, errorMessage: e.toString()));
-      }
+        emit(state.copyWith(status: ProfileStatus.error, action: ProfileAction.getProfile, errorMessage: e.toString()));      }
     });
 
     on<UpdateNameEvent>((event, emit) async {

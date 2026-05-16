@@ -10,6 +10,7 @@ class ProfileState extends Equatable {
   final UserProfileEntity? user;
   final String? errorMessage;
   final String? successMessage;
+  final String? cachedName;
 
   const ProfileState({
     this.status = ProfileStatus.initial,
@@ -17,6 +18,7 @@ class ProfileState extends Equatable {
     this.user,
     this.errorMessage,
     this.successMessage,
+    this.cachedName,
   });
 
   ProfileState copyWith({
@@ -25,6 +27,7 @@ class ProfileState extends Equatable {
     UserProfileEntity? user,
     String? errorMessage,
     String? successMessage,
+    String? cachedName,
   }) {
     return ProfileState(
       status: status ?? this.status,
@@ -32,9 +35,10 @@ class ProfileState extends Equatable {
       user: user ?? this.user,
       errorMessage: errorMessage,
       successMessage: successMessage,
+      cachedName: cachedName ?? this.cachedName,
     );
   }
 
   @override
-  List<Object?> get props => [status, action, user, errorMessage, successMessage];
+  List<Object?> get props => [status, action, user, errorMessage, successMessage,cachedName];
 }

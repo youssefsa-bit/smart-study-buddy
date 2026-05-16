@@ -39,7 +39,7 @@ class HomeScreen extends StatelessWidget {
 
             Expanded(
               child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
+                //physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.only(
                   left: AppSizes.p20,
                   right: AppSizes.p20,

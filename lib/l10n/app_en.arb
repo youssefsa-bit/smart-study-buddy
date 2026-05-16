@@ -131,5 +131,7 @@
   "historyTypeSummary": "Summary",
   "historyTypeDocument": "Document",
   "sessionExpiredTitle": "Session Expired",
-  "sessionExpiredDesc": "Your session has expired for security reasons. Please log in again to continue."
+  "sessionExpiredDesc": "Your session has expired for security reasons. Please log in again to continue.",
+  "errorNoConnection": "Cannot connect to the server right now. Please try again later.",
+  "retry": "retry"
 }

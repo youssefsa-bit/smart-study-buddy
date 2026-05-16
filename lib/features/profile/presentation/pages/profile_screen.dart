@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/manager/language_cubit.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
@@ -113,13 +114,8 @@ class ProfileScreen extends StatelessWidget {
             },
             builder: (context, state) {
               final loc = AppLocalizations.of(context)!;
-              if (state.status == ProfileStatus.loading &&
-                  state.action == ProfileAction.getProfile) {
-                return const Center(
-                    child: CircularProgressIndicator(
-                        color: AppColors.primaryBlue));
-              }
               final user = state.user;
+              final String displayName = user?.name ?? state.cachedName ?? "...";
 
               return SingleChildScrollView(
                 padding:
@@ -128,13 +124,33 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     AppSizes.gapV24,
                     ProfileHeader(
-                        name: user?.name ?? "...", email: user?.email ?? "..."),
+                        name: displayName, email: user?.email ?? "..."),
                     AppSizes.gapV24,
                     AppSizes.gapV8,
                     ProfileMenuItem(
                         icon: Icons.person_outline,
                         title: loc.menuEditProfile,
                         onTap: () {
+                          final currentState = context.read<ProfileBloc>().state;
+                          bool isOffline = false;
+                          if (currentState.status == ProfileStatus.error && currentState.errorMessage != null) {
+                            final errorStr = currentState.errorMessage!.toLowerCase();
+                            if (errorStr.contains('connection') ||
+                                errorStr.contains('timeout') ||
+                                errorStr.contains('network') ||
+                                errorStr.contains('socket')) {
+                              isOffline = true;
+                            }
+                          }
+                          if (isOffline) {
+                            CustomSnackBar.show(
+                              context: context,
+                              message: loc.errorNoConnection,
+                              isError: true,
+                              customIcon: Icons.wifi_off_rounded,
+                            );
+                            return;
+                          }
                           Navigator.pushNamed(
                               context,
                               AppRoutesName.editProfile,
@@ -145,6 +161,26 @@ class ProfileScreen extends StatelessWidget {
                         icon: Icons.lock_outline,
                         title: loc.menuChangePassword,
                         onTap: () {
+                          final currentState = context.read<ProfileBloc>().state;
+                          bool isOffline = false;
+                          if (currentState.status == ProfileStatus.error && currentState.errorMessage != null) {
+                            final errorStr = currentState.errorMessage!.toLowerCase();
+                            if (errorStr.contains('connection') ||
+                                errorStr.contains('timeout') ||
+                                errorStr.contains('network') ||
+                                errorStr.contains('socket')) {
+                              isOffline = true;
+                            }
+                          }
+                          if (isOffline) {
+                            CustomSnackBar.show(
+                              context: context,
+                              message: loc.errorNoConnection,
+                              isError: true,
+                              customIcon: Icons.wifi_off_rounded,
+                            );
+                            return;
+                          }
                           Navigator.pushNamed(
                               context,
                               AppRoutesName.changePassword,

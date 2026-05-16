@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
+import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
@@ -87,10 +88,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           final listenerLoc = AppLocalizations.of(context)!;
           if (state.status == ProfileStatus.success &&
               state.action == ProfileAction.changePassword) {
-            ScaffoldMessenger.of(context).showSnackBar(
-               SnackBar(
-                  content: Text(listenerLoc.changePassSuccess),
-                  backgroundColor: Colors.green),
+            CustomSnackBar.show(
+              context: context,
+              message: listenerLoc.changePassSuccess,
+              isError: false,
             );
             Navigator.pop(context);
           } else if (state.status == ProfileStatus.error &&
@@ -99,35 +100,27 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 listenerLoc.changePassUnexpectedError;
             if (state.errorMessage != null) {
               final errorStr = state.errorMessage!.toLowerCase();
-              if (errorStr.contains("password") ||
+              if (errorStr.contains('connection') ||
+                  errorStr.contains('timeout') ||
+                  errorStr.contains('network') ||
+                  errorStr.contains('socket')) {
+                displayError =  listenerLoc.errorNoConnection;
+              }
+              else if (errorStr.contains("password") ||
                   errorStr.contains("400") ||
                   errorStr.contains("401") ||
                   errorStr.contains("incorrect")) {
                 displayError = listenerLoc.changePassIncorrect;
-
                 _currentPasswordController.clear();
               } else {
                 displayError = state.errorMessage!;
               }
             }
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    const Icon(Icons.error_outline, color: Colors.white),
-                    AppSizes.gapH8,
-                    Expanded(
-                        child: Text(displayError,
-                            style: const TextStyle(color: Colors.white))),
-                  ],
-                ),
-                backgroundColor: Colors.redAccent,
-                behavior: SnackBarBehavior.floating,
-                margin: const EdgeInsets.all(20),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                duration: const Duration(seconds: 4),
-              ),
+            CustomSnackBar.show(
+              context: context,
+              message: displayError,
+              isError: true,
+              customIcon: displayError == listenerLoc.errorNoConnection ? Icons.wifi_off_rounded : Icons.error_outline,
             );
           }
         },

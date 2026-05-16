@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
@@ -21,8 +22,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final currentUser = context.read<ProfileBloc>().state.user;
-    _nameController = TextEditingController(text: currentUser?.name ?? '');
+    final profileState = context.read<ProfileBloc>().state;
+    final initialName = profileState.user?.name ?? profileState.cachedName ?? '';
+    _nameController = TextEditingController(text: initialName);
   }
 
   @override
@@ -87,18 +89,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           final listenerLoc = AppLocalizations.of(context)!;
           if (state.status == ProfileStatus.success &&
               state.action == ProfileAction.updateName) {
-            ScaffoldMessenger.of(context).showSnackBar(
-               SnackBar(
-                  content: Text(listenerLoc.editProfileSuccess),
-                  backgroundColor: Colors.green),
+            CustomSnackBar.show(
+              context: context,
+              message: listenerLoc.editProfileSuccess,
+              isError: false,
             );
             Navigator.pop(context);
           } else if (state.status == ProfileStatus.error &&
               state.action == ProfileAction.updateName) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text(state.errorMessage ?? listenerLoc.editProfileError),
-                  backgroundColor: Colors.redAccent),
+            String displayError = state.errorMessage ?? listenerLoc.editProfileError;
+            if (state.errorMessage != null) {
+              final errorStr = state.errorMessage!.toLowerCase();
+              if (errorStr.contains('connection') ||
+                  errorStr.contains('timeout') ||
+                  errorStr.contains('network') ||
+                  errorStr.contains('socket')) {
+                displayError = listenerLoc.errorNoConnection;
+              }
+            }
+            CustomSnackBar.show(
+              context: context,
+              message: displayError,
+              isError: true,
+              customIcon: displayError == listenerLoc.errorNoConnection ? Icons.wifi_off_rounded : Icons.error_outline,
             );
           }
         },

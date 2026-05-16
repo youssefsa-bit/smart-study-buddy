@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:study_buddy/core/constants/app_assets.dart';
 import 'package:study_buddy/core/routes/app_routes_name.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/services/injection_container.dart';
 import '../manager/auth_bloc.dart';
 import '../manager/auth_event.dart';
@@ -47,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppSizes.gapV24,
+                  Image.asset(AppAssets.logoDarkBlue,width: double.infinity,height: 250,),
                   AppSizes.gapV24,
                   Text(loc.createAccount,
                       style: const TextStyle(
@@ -58,7 +60,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   Text(loc.fillYourDetails,
                       style: const TextStyle(color: AppColors.textGrey)),
                   AppSizes.gapV24,
-                  AppSizes.gapV16,
                   CustomTextField(
                     controller: _nameController,
                     labelText: loc.fullName,
@@ -118,18 +119,18 @@ class _RegisterPageState extends State<RegisterPage> {
                   BlocConsumer<AuthBloc, AuthState>(
                     listener: (context, state) {
                       if (state is AuthSuccess) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text(state.message),
-                              backgroundColor: AppColors.primaryBlue),
+                        CustomSnackBar.show(
+                          context: context,
+                          message: state.message,
+                          isError: false,
                         );
                         Navigator.pushReplacementNamed(
                             context, AppRoutesName.login);
                       } else if (state is AuthFailure) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text(state.error),
-                              backgroundColor: Colors.redAccent),
+                        CustomSnackBar.show(
+                          context: context,
+                          message: state.error,
+                          isError: true,
                         );
                       }
                     },
@@ -159,7 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   AppSizes.gapV24,
                   Center(
                     child: GestureDetector(
-                      onTap: () => Navigator.pop(context),
+                      onTap: () => Navigator.pushReplacementNamed(context,AppRoutesName.login),
                       child: RichText(
                         text: TextSpan(
                           text: loc.alreadyHaveAnAccount,
