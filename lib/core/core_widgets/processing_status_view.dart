@@ -3,8 +3,7 @@ import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
 import '../../features/upload/domain/entities/upload_action.dart';
-import '../../l10n/app_localizations.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ProcessingStatusView extends StatelessWidget {
   final UploadAction action;
   final String fileName;
@@ -104,7 +103,22 @@ class ProcessingStatusView extends StatelessWidget {
                   return _buildStepItem(index, steps[index], currentStepIndex);
                 },
               ),
-            )
+            ),
+            if (currentStepIndex >= steps.length - 2) ...[
+              AppSizes.gapV24,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  loc.uploadScreenProcessingLong,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 13,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+            ]
           ],
         ),
       ),
@@ -125,9 +139,14 @@ Widget _buildStepItem(int index, String text, int currentIndex) {
   } else if (isActive) {
     circleColor = Colors.blue;
     textColor = Colors.white;
-    insideCircle = Text('${index + 1}',
-        style: const TextStyle(
-            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12));
+    insideCircle = const SizedBox(
+      width: 14,
+      height: 14,
+      child: CircularProgressIndicator(
+        color: Colors.white,
+        strokeWidth: 2,
+      ),
+    );
   } else {
     circleColor = const Color(0xFF1A1F26);
     textColor = const Color(0xFF3A4655);

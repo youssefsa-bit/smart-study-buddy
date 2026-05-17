@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/core_widgets/custom_dialog.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
@@ -36,42 +37,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _showConfirmationDialog(BuildContext context, AppLocalizations loc) {
-    showDialog(
+    CustomDialog.showConfirmation(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.info_outline, color: AppColors.primaryBlue),
-            SizedBox(width: 8),
-            Text(loc.editProfileConfirmTitle,
-                style: TextStyle(color: Colors.white, fontSize: 18)),
-          ],
-        ),
-        content: Text(
-          loc.editProfileConfirmDesc,
-          style: TextStyle(color: AppColors.textSecondary),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(loc.dialogCancel, style: TextStyle(color: Colors.grey)),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryBlue),
-            onPressed: () {
-              Navigator.pop(ctx);
-              context
-                  .read<ProfileBloc>()
-                  .add(UpdateNameEvent(_nameController.text.trim()));
-            },
-            child:
-                Text(loc.dialogConfirm, style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
+      title: loc.editProfileConfirmTitle,
+      content: loc.editProfileConfirmDesc,
+      icon: Icons.info_outline,
+      iconColor: AppColors.primaryBlue,
+      confirmText: loc.dialogConfirm,
+      onConfirm: () {
+        context.read<ProfileBloc>().add(UpdateNameEvent(_nameController.text.trim()));
+      },
     );
   }
 

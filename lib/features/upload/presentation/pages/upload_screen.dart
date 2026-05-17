@@ -10,7 +10,7 @@ import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../domain/entities/upload_action.dart';
 import '../manager/upload_bloc.dart';
 import '../manager/upload_event.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-
-import '../../../../l10n/app_localizations.dart';
+import 'package:intl/intl.dart' hide TextDirection;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../core/core_widgets/custom_dialog.dart';
 import '../../domain/entities/history_item.dart';
 import '../manager/history_bloc.dart';
 import '../manager/history_event.dart';
@@ -49,17 +49,23 @@ class HistoryItemCard extends StatelessWidget {
     return loc.historyTypeDocument;
   }
 
-  void _showMenu(BuildContext context) {
+  void _showMenu(BuildContext context, AppLocalizations loc) {
     final RenderBox button = context.findRenderObject() as RenderBox;
     final RenderBox overlay =
-        Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+    Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+
+    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+
+
+    final double startX = isRtl ? 0 : button.size.width - 40;
+    final double endX = isRtl ? 40 : button.size.width;
 
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
         button.localToGlobal(
-            Offset(button.size.width - 40, button.size.height - 8),
+            Offset(startX, button.size.height - 8),
             ancestor: overlay),
-        button.localToGlobal(Offset(button.size.width, button.size.height),
+        button.localToGlobal(Offset(endX, button.size.height),
             ancestor: overlay),
       ),
       Offset.zero & overlay.size,
@@ -79,8 +85,7 @@ class HistoryItemCard extends StatelessWidget {
                   color: Colors.redAccent, size: 20),
               const SizedBox(width: 10),
               Text(
-                // Use your localization key if you add one; hardcoded for now.
-                'Delete',
+                loc.deleteHistoryBtn,
                 style: const TextStyle(color: Colors.redAccent),
               ),
             ],
@@ -89,13 +94,23 @@ class HistoryItemCard extends StatelessWidget {
       ],
     ).then((value) {
       if (value == 'delete' && context.mounted) {
-        context.read<HistoryBloc>().add(
+        CustomDialog.showConfirmation(
+          context: context,
+          title: loc.deleteHistoryTitle,
+          content: loc.deleteHistoryDesc,
+          icon: Icons.delete_outline_rounded,
+          iconColor: Colors.redAccent,
+          confirmText: loc.deleteHistoryBtn,
+          confirmButtonColor: Colors.redAccent,
+          onConfirm: () {
+            context.read<HistoryBloc>().add(
               DeleteHistory(resultId: item.resultId, type: item.type),
             );
+          },
+        );
       }
     });
   }
-
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -166,8 +181,7 @@ class HistoryItemCard extends StatelessWidget {
                   else
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
-                      onTap: () => _showMenu(context),
-                      child: Padding(
+                      onTap: () => _showMenu(context, loc),                      child: Padding(
                         padding: const EdgeInsets.all(4.0),
                         child:
                             Icon(Icons.more_vert, color: Colors.grey.shade500),

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/core_widgets/custom_dialog.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/manager/language_cubit.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
@@ -19,47 +20,17 @@ class ProfileScreen extends StatelessWidget {
   void _showLogoutConfirmationDialog(
       BuildContext context, AppLocalizations loc) {
     final bloc = context.read<ProfileBloc>();
-
-    showDialog(
+    CustomDialog.showConfirmation(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Icon(Icons.logout_rounded, color: Colors.redAccent),
-            AppSizes.gapH8,
-            Text(loc.logoutDialogTitle,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold)),
-          ],
-        ),
-        content: Text(
-          loc.logoutDialogContent,
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(loc.dialogCancel, style: TextStyle(color: Colors.grey)),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-            ),
-            onPressed: () {
-              Navigator.pop(ctx);
-              bloc.add(LogoutRequestedEvent());
-            },
-            child: Text(loc.menuLogout, style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
-    );
+      title: loc.logoutDialogTitle,
+      content: loc.logoutDialogContent,
+      icon: Icons.logout_rounded,
+      iconColor: Colors.redAccent,
+      confirmText: loc.menuLogout,
+      confirmButtonColor: Colors.redAccent,
+      onConfirm: () => bloc.add(LogoutRequestedEvent()),
+   );
+
   }
 
   void _showLanguageBottomSheet(BuildContext context, AppLocalizations loc) {

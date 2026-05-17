@@ -136,5 +136,10 @@
   "sessionExpiredTitle": "Session Expired",
   "sessionExpiredDesc": "Your session has expired for security reasons. Please log in again to continue.",
   "errorNoConnection": "Cannot connect to the server right now. Please try again later.",
-  "retry": "retry"
+  "retry": "retry",
+  "uploadScreenProcessingLong": "AI is analyzing your document and generating content... This may take a few minutes depending on the file size.",
+  "deleteHistoryTitle": "Delete Record",
+  "deleteHistoryDesc": "Are you sure you want to permanently delete this file?",
+  "deleteHistoryBtn": "Delete",
+  "historyDeletedSuccess": "Deleted successfully"
 }
