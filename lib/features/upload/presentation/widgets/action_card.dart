@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
+
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/upload_action.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ActionCard extends StatelessWidget {
   final UploadAction action;
@@ -71,7 +72,7 @@ class ActionCard extends StatelessWidget {
                 size: 24,
               ),
             ),
-           AppSizes.gapH16,
+            AppSizes.gapH16,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:study_buddy/features/auth/presentation/manager/auth_event.dart';
+
 import 'core/constants/app_colors.dart';
 import 'core/manager/language_cubit.dart';
 import 'core/routes/app_routes.dart';
@@ -10,8 +12,7 @@ import 'core/services/injection_container.dart' as di;
 import 'features/auth/presentation/manager/auth_bloc.dart';
 import 'features/history/presentation/manager/history_bloc.dart';
 import 'features/history/presentation/manager/history_event.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

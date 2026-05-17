@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/history_item.dart';
 import '../manager/history_bloc.dart';
 import '../manager/history_event.dart';
 import '../manager/history_state.dart';
 import 'history_item_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecentHistorySection extends StatelessWidget {
   const RecentHistorySection({super.key, required this.onDisplayAll});
@@ -62,7 +63,7 @@ class RecentHistorySection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-             Text(
+            Text(
               loc.historyRecent,
               style: TextStyle(
                 color: Colors.white,
@@ -72,7 +73,7 @@ class RecentHistorySection extends StatelessWidget {
             ),
             TextButton(
               onPressed: onDisplayAll,
-              child:  Text(
+              child: Text(
                 loc.historySeeAll,
                 style: TextStyle(color: Color(0xFF2E8CFF), fontSize: 16),
               ),
@@ -85,9 +86,9 @@ class RecentHistorySection extends StatelessWidget {
             if (state is HistoryLoading) {
               return const Center(
                   child: Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: CircularProgressIndicator(color: Color(0xFF2E8CFF)),
-                  ));
+                padding: EdgeInsets.all(20.0),
+                child: CircularProgressIndicator(color: Color(0xFF2E8CFF)),
+              ));
             }
             if (state is HistoryError) {
               String displayError = state.message;
@@ -112,7 +113,8 @@ class RecentHistorySection extends StatelessWidget {
                       Text(
                         displayError,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.grey, fontSize: 13),
+                        style:
+                            const TextStyle(color: Colors.grey, fontSize: 13),
                       ),
                       TextButton.icon(
                         onPressed: () {
@@ -132,7 +134,7 @@ class RecentHistorySection extends StatelessWidget {
             }
             if (state is HistoryLoaded) {
               if (state.historyItems.isEmpty) {
-                return  Center(
+                return Center(
                     child: Text(loc.historyNoData,
                         style: TextStyle(color: Colors.grey)));
               }

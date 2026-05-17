@@ -1,12 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-// ==========================================
-// Core
-// ==========================================
-import '../manager/language_cubit.dart';
-import 'network_service.dart';
-
+import 'package:study_buddy/features/history/domain/usecases/delete_history_usecase.dart';
 
 // ==========================================
 // Auth Feature Imports
@@ -19,16 +13,6 @@ import '../../features/auth/domain/usecases/check_auth_status_usecase.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/register_usecase.dart';
 import '../../features/auth/presentation/manager/auth_bloc.dart';
-
-// ==========================================
-// Home Feature Imports
-// ==========================================
-import '../../features/home/data/datasource/home_remote_data_source.dart';
-import '../../features/home/data/repositories/home_repository_impl.dart';
-import '../../features/home/domain/repositories/home_repository.dart';
-import '../../features/home/domain/usecase/get_recent_files.dart';
-import '../../features/home/presentation/manager/home_bloc.dart';
-
 // ==========================================
 // Flashcards Feature Imports
 // ==========================================
@@ -38,27 +22,23 @@ import '../../features/flashcards/domain/repositories/flashcard_repository.dart'
 import '../../features/flashcards/domain/usecases/get_existing_flashcards_usecase.dart';
 import '../../features/flashcards/domain/usecases/get_flashcards_usecase.dart';
 import '../../features/flashcards/presentation/manager/flashcard_bloc.dart';
-
 // ==========================================
-// Upload Feature Imports
+// History Feature Imports
 // ==========================================
-import '../../features/upload/data/datasource/upload_remote_data_source.dart';
-import '../../features/upload/data/repositories/upload_repository_impl.dart';
-import '../../features/upload/domain/repositories/upload_repository.dart';
-import '../../features/upload/domain/usecase/get_all_pdfs_usecase.dart';
-import '../../features/upload/domain/usecase/upload_file_usecase.dart';
-import '../../features/upload/presentation/manager/upload_bloc.dart';
-
+import '../../features/history/data/datasources/history_local_data_source.dart';
+import '../../features/history/data/datasources/history_remote_data_source.dart';
+import '../../features/history/data/repositories/history_repository_impl.dart';
+import '../../features/history/domain/repositories/history_repository.dart';
+import '../../features/history/domain/usecases/get_history_usecase.dart';
+import '../../features/history/presentation/manager/history_bloc.dart';
 // ==========================================
-// Summary Feature Imports
+// Home Feature Imports
 // ==========================================
-import '../../features/summary/data/datasources/summary_remote_data_source.dart';
-import '../../features/summary/data/repositories/summary_repository_impl.dart';
-import '../../features/summary/domain/repositories/summary_repository.dart';
-import '../../features/summary/domain/usecases/get_existing_summary_usecase.dart';
-import '../../features/summary/domain/usecases/get_summary_usecase.dart';
-import '../../features/summary/presentation/manager/summary_bloc.dart';
-
+import '../../features/home/data/datasource/home_remote_data_source.dart';
+import '../../features/home/data/repositories/home_repository_impl.dart';
+import '../../features/home/domain/repositories/home_repository.dart';
+import '../../features/home/domain/usecase/get_recent_files.dart';
+import '../../features/home/presentation/manager/home_bloc.dart';
 // ==========================================
 // MCQ Feature Imports
 // ==========================================
@@ -68,7 +48,6 @@ import '../../features/mcq/domain/repositories/mcq_repository.dart';
 import '../../features/mcq/domain/usecases/generate_quiz_usecase.dart';
 import '../../features/mcq/domain/usecases/get_existing_quiz_usecase.dart';
 import '../../features/mcq/presentation/manager/mcq_bloc.dart';
-
 // ==========================================
 // Profile Feature Imports
 // ==========================================
@@ -80,15 +59,29 @@ import '../../features/profile/domain/usecases/get_profile_usecase.dart';
 import '../../features/profile/domain/usecases/logout_usecase.dart';
 import '../../features/profile/domain/usecases/update_name_usecase.dart';
 import '../../features/profile/presentation/manager/profile_bloc.dart';
-
 // ==========================================
-// History Feature Imports
+// Summary Feature Imports
 // ==========================================
-import '../../features/history/data/datasources/history_remote_data_source.dart';
-import '../../features/history/data/repositories/history_repository_impl.dart';
-import '../../features/history/domain/repositories/history_repository.dart';
-import '../../features/history/domain/usecases/get_history_usecase.dart';
-import '../../features/history/presentation/manager/history_bloc.dart';
+import '../../features/summary/data/datasources/summary_remote_data_source.dart';
+import '../../features/summary/data/repositories/summary_repository_impl.dart';
+import '../../features/summary/domain/repositories/summary_repository.dart';
+import '../../features/summary/domain/usecases/get_existing_summary_usecase.dart';
+import '../../features/summary/domain/usecases/get_summary_usecase.dart';
+import '../../features/summary/presentation/manager/summary_bloc.dart';
+// ==========================================
+// Upload Feature Imports
+// ==========================================
+import '../../features/upload/data/datasource/upload_remote_data_source.dart';
+import '../../features/upload/data/repositories/upload_repository_impl.dart';
+import '../../features/upload/domain/repositories/upload_repository.dart';
+import '../../features/upload/domain/usecase/get_all_pdfs_usecase.dart';
+import '../../features/upload/domain/usecase/upload_file_usecase.dart';
+import '../../features/upload/presentation/manager/upload_bloc.dart';
+// ==========================================
+// Core
+// ==========================================
+import '../manager/language_cubit.dart';
+import 'network_service.dart';
 
 final sl = GetIt.instance;
 
@@ -283,18 +276,27 @@ Future<void> init() async {
   // Feature: History
   // ==========================================
   // 1. BLoC
-  sl.registerFactory(() => HistoryBloc(getHistoryUseCase: sl()));
+  sl.registerFactory(
+      () => HistoryBloc(getHistoryUseCase: sl(), deleteHistoryUseCase: sl()));
 
   // 2. Use Cases
   sl.registerLazySingleton(() => GetHistoryUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteHistoryUseCase(sl()));
 
   // 3. Repository
   sl.registerLazySingleton<HistoryRepository>(
-    () => HistoryRepositoryImpl(sl()),
+    () => HistoryRepositoryImpl(
+      remoteDataSource: sl(),
+      localDataSource: sl(),
+    ),
   );
 
   // 4. Data Sources
   sl.registerLazySingleton<HistoryRemoteDataSource>(
     () => HistoryRemoteDataSourceImpl(networkService: sl()),
+  );
+
+  sl.registerLazySingleton<HistoryLocalDataSource>(
+    () => HistoryLocalDataSourceImpl(sharedPreferences: sl()),
   );
 }

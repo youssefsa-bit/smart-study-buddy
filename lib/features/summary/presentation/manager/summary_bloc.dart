@@ -40,7 +40,6 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
       }
     });
     on<FetchExistingSummary>((event, emit) async {
-      emit(const SummaryLoading(stepIndex: 3));
       try {
         final summary = await getExistingSummaryUseCase.call(event.resultId);
         emit(SummaryLoaded(summary));

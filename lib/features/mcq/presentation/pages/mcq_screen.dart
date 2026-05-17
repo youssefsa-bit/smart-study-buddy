@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/features/mcq/presentation/manager/mcq_bloc.dart';
 import 'package:study_buddy/features/mcq/presentation/pages/quiz_view.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/processing_status_view.dart';
 import '../../../../core/services/injection_container.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../upload/domain/entities/upload_action.dart';
 import '../manager/mcq_event.dart';
 import '../manager/mcq_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class McqScreen extends StatelessWidget {
   final String? pdfId;
@@ -20,7 +21,7 @@ class McqScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loc=AppLocalizations.of(context)!;
+    final loc = AppLocalizations.of(context)!;
     return BlocProvider<McqBloc>(
       create: (BuildContext context) {
         final bloc = sl<McqBloc>();

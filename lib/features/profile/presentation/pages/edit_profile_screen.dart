@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -23,7 +24,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void initState() {
     super.initState();
     final profileState = context.read<ProfileBloc>().state;
-    final initialName = profileState.user?.name ?? profileState.cachedName ?? '';
+    final initialName =
+        profileState.user?.name ?? profileState.cachedName ?? '';
     _nameController = TextEditingController(text: initialName);
   }
 
@@ -33,13 +35,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  void _showConfirmationDialog(BuildContext context,AppLocalizations loc) {
+  void _showConfirmationDialog(BuildContext context, AppLocalizations loc) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title:  Row(
+        title: Row(
           children: [
             Icon(Icons.info_outline, color: AppColors.primaryBlue),
             SizedBox(width: 8),
@@ -47,14 +49,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 style: TextStyle(color: Colors.white, fontSize: 18)),
           ],
         ),
-        content:  Text(
+        content: Text(
           loc.editProfileConfirmDesc,
           style: TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child:  Text(loc.dialogCancel, style: TextStyle(color: Colors.grey)),
+            child: Text(loc.dialogCancel, style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -65,7 +67,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   .read<ProfileBloc>()
                   .add(UpdateNameEvent(_nameController.text.trim()));
             },
-            child:  Text(loc.dialogConfirm, style: TextStyle(color: Colors.white)),
+            child:
+                Text(loc.dialogConfirm, style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -81,7 +84,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title:  Text(loc.menuEditProfile,
+        title: Text(loc.menuEditProfile,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: BlocConsumer<ProfileBloc, ProfileState>(
@@ -97,7 +100,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Navigator.pop(context);
           } else if (state.status == ProfileStatus.error &&
               state.action == ProfileAction.updateName) {
-            String displayError = state.errorMessage ?? listenerLoc.editProfileError;
+            String displayError =
+                state.errorMessage ?? listenerLoc.editProfileError;
             if (state.errorMessage != null) {
               final errorStr = state.errorMessage!.toLowerCase();
               if (errorStr.contains('connection') ||
@@ -111,7 +115,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               context: context,
               message: displayError,
               isError: true,
-              customIcon: displayError == listenerLoc.errorNoConnection ? Icons.wifi_off_rounded : Icons.error_outline,
+              customIcon: displayError == listenerLoc.errorNoConnection
+                  ? Icons.wifi_off_rounded
+                  : Icons.error_outline,
             );
           }
         },
@@ -127,7 +133,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const Icon(Icons.person_pin_rounded,
                     size: 80, color: AppColors.primaryBlue),
                 AppSizes.gapV16,
-                 Text(
+                Text(
                   loc.editProfileSubtitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -136,7 +142,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       fontWeight: FontWeight.bold),
                 ),
                 AppSizes.gapV8,
-                 Text(
+                Text(
                   loc.editProfileDesc,
                   textAlign: TextAlign.center,
                   style:
@@ -144,7 +150,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 AppSizes.gapV24,
                 AppSizes.gapV24,
-                 Text(loc.fullName,
+                Text(loc.fullName,
                     style: TextStyle(
                         color: AppColors.textSecondary, fontSize: 14)),
                 AppSizes.gapV8,
@@ -194,16 +200,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ? null
                         : () {
                             if (_formKey.currentState!.validate()) {
-                              _showConfirmationDialog(context,loc);
+                              _showConfirmationDialog(context, loc);
                             }
                           },
                     child: isLoading
-                        ?  SizedBox(
+                        ? SizedBox(
                             width: 24,
                             height: 24,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2))
-                        :  Text(loc.editProfileSaveBtn,
+                        : Text(loc.editProfileSaveBtn,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,

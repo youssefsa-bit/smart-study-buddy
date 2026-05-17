@@ -6,12 +6,13 @@ import 'package:study_buddy/core/utils/app_sizes.dart';
 import 'package:study_buddy/features/flashcards/presentation/widgets/control_buttons.dart';
 import 'package:study_buddy/features/flashcards/presentation/widgets/progress_bar_header.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
+
 import '../../../../core/services/injection_container.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../manager/flashcard_bloc.dart';
 import '../manager/flashcard_event.dart';
 import '../manager/flashcard_state.dart';
 import '../widgets/flashcard_view.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FlashcardScreen extends StatelessWidget {
   final String? pdfId;
@@ -23,7 +24,7 @@ class FlashcardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loc=AppLocalizations.of(context)!;
+    final loc = AppLocalizations.of(context)!;
     return BlocProvider<FlashcardBloc>(
       create: (BuildContext context) {
         final bloc = sl<FlashcardBloc>();
@@ -44,7 +45,7 @@ class FlashcardScreen extends StatelessWidget {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Text(loc.flashcardAppbarTitle,
+              Text(loc.flashcardAppbarTitle,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Text(
                 fileName,
@@ -92,7 +93,9 @@ class FlashcardScreen extends StatelessWidget {
                       text: state.isFlipped
                           ? currentCard.answer
                           : currentCard.question,
-                      type: state.isFlipped ? loc.flashcardAnswerLabel : loc.flashcardQuestionLabel,
+                      type: state.isFlipped
+                          ? loc.flashcardAnswerLabel
+                          : loc.flashcardQuestionLabel,
                       isQuestion: !state.isFlipped,
                       hintText: state.isFlipped
                           ? loc.flashcardTapQuestion

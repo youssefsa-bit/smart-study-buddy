@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../../../l10n/app_localizations.dart';
 
 class UploadMaterialCard extends StatelessWidget {
   final VoidCallback onTap;
-   const UploadMaterialCard({super.key,required this.onTap});
+  const UploadMaterialCard({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -13,22 +14,19 @@ class UploadMaterialCard extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
-
       child: Container(
         padding: EdgeInsets.all(AppSizes.p20),
         decoration: BoxDecoration(
-            color:AppColors.darkGreen,
-            borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
-
-      ),
+          color: AppColors.darkGreen,
+          borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
+        ),
         child: Row(
           children: [
             Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
                 color: AppColors.darkBlue,
-                
               ),
               child: const Icon(
                 Icons.picture_as_pdf_rounded,
@@ -41,7 +39,7 @@ class UploadMaterialCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   Text(
+                  Text(
                     loc.uploadMaterialTitle,
                     style: TextStyle(
                       color: Colors.white,

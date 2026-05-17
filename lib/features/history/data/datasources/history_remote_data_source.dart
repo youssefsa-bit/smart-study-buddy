@@ -3,6 +3,7 @@ import '../models/history_model.dart';
 
 abstract class HistoryRemoteDataSource {
   Future<List<HistoryModel>> getHistory();
+  Future<void> deleteHistory(int resultId, String type);
 }
 
 class HistoryRemoteDataSourceImpl implements HistoryRemoteDataSource {
@@ -21,6 +22,18 @@ class HistoryRemoteDataSourceImpl implements HistoryRemoteDataSource {
       return data.map((json) => HistoryModel.fromJson(json)).toList();
     } catch (e) {
       throw Exception('Failed to load history: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteHistory(int resultId, String type) async {
+    try {
+      await networkService.dio.delete(
+        'http://10.0.2.2:3000/api/history/$resultId',
+        queryParameters: {'type': type},
+      );
+    } catch (e) {
+      throw Exception('Failed to delete history item: $e');
     }
   }
 }

@@ -4,11 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/features/history/presentation/pages/history_screen.dart';
 import 'package:study_buddy/features/home/presentation/pages/home_screen.dart';
+import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
 import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dart';
-import '../../../profile/presentation/pages/profile_screen.dart';
+
+import '../../../../l10n/app_localizations.dart';
 import '../../../history/presentation/manager/history_bloc.dart';
 import '../../../history/presentation/manager/history_event.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../profile/presentation/pages/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   final int initialIndex;
@@ -20,18 +22,22 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   late int _currentIndex;
+  UploadAction? _action;
   @override
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
   }
 
-  void _changeTab(int index) {
+  void _changeTab(int index, {UploadAction? uploadAction}) {
     if (index == 0 || index == 2) {
       context.read<HistoryBloc>().add(LoadHistory());
     }
     setState(() {
       _currentIndex = index;
+    });
+    setState(() {
+      _action = uploadAction;
     });
   }
 
@@ -57,18 +63,19 @@ class _MainScreenState extends State<MainScreen> {
     final loc = AppLocalizations.of(context)!;
     final List<Widget> screens = [
       HomeScreen(
-        onNavigateToUpload: () => _changeTab(1),
+        onNavigateToUpload: (({action}) => _changeTab(1, uploadAction: action)),
         onNavigateToHistory: () => _changeTab(2),
       ),
-      UploadScreen(),
+      UploadScreen(
+        action: _action,
+      ),
       HistoryScreen(),
       const ProfileScreen(),
-
     ];
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (bool didPop, dynamic result){
-        if(didPop)return;
+      onPopInvokedWithResult: (bool didPop, dynamic result) {
+        if (didPop) return;
         SystemNavigator.pop();
       },
       child: Scaffold(

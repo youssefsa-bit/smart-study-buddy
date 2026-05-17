@@ -41,7 +41,6 @@ class McqBloc extends Bloc<McqEvent, McqState> {
       }
     });
     on<GetExistingMCQ>((event, emit) async {
-      emit(const McqLoading(stepIndex: 3));
       try {
         final quiz = await getExistingQuizUseCase.call(event.resultId);
         emit(McqLoaded(quiz));

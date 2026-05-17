@@ -4,11 +4,13 @@ import 'package:study_buddy/core/utils/app_sizes.dart';
 import 'package:study_buddy/features/history/presentation/widgets/recent_history_section.dart';
 import 'package:study_buddy/features/home/presentation/pages/upper_home.dart';
 import 'package:study_buddy/features/home/presentation/widgets/study_tool_card.dart';
+import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
+
+import '../../../../l10n/app_localizations.dart';
 import '../widgets/upload_material_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
-  final VoidCallback onNavigateToUpload;
+  final Function({UploadAction? action}) onNavigateToUpload;
   final VoidCallback onNavigateToHistory;
 
   const HomeScreen({
@@ -26,7 +28,6 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             const Padding(
               padding: EdgeInsets.only(
                 top: AppSizes.p20,
@@ -36,10 +37,8 @@ class HomeScreen extends StatelessWidget {
               ),
               child: UpperHome(),
             ),
-
             Expanded(
               child: SingleChildScrollView(
-                //physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.only(
                   left: AppSizes.p20,
                   right: AppSizes.p20,
@@ -69,7 +68,8 @@ class HomeScreen extends StatelessWidget {
                             icon: Icons.article_rounded,
                             imageColor: AppColors.darkBlue,
                             iconColor: AppColors.primaryBlue,
-                            onTap: () {},
+                            onTap: () => onNavigateToUpload(
+                                action: UploadAction.summarize),
                           ),
                         ),
                         AppSizes.gapH16,
@@ -80,7 +80,8 @@ class HomeScreen extends StatelessWidget {
                             icon: Icons.style_rounded,
                             imageColor: AppColors.flashcardImg,
                             iconColor: AppColors.flashcardGreen,
-                            onTap: () {},
+                            onTap: () => onNavigateToUpload(
+                                action: UploadAction.flashcards),
                           ),
                         )
                       ],
@@ -95,7 +96,8 @@ class HomeScreen extends StatelessWidget {
                             icon: Icons.help_outline_rounded,
                             imageColor: AppColors.mcqImg,
                             iconColor: AppColors.mcqOrange,
-                            onTap: () {},
+                            onTap: () =>
+                                onNavigateToUpload(action: UploadAction.mcq),
                           ),
                         ),
                         const Expanded(child: SizedBox()),

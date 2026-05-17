@@ -101,7 +101,6 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
       }
     });
     on<LoadExistingFlashcards>((event, emit) async {
-      emit(const FlashcardLoading(stepIndex: 3));
       try {
         final flashcards =
             await getExistingFlashcardsUseCase.call(event.resultId);

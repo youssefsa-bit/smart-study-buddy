@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
+
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -32,27 +33,27 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     super.dispose();
   }
 
-  void _showConfirmationDialog(BuildContext context,AppLocalizations loc) {
+  void _showConfirmationDialog(BuildContext context, AppLocalizations loc) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title:  Row(
+        title: Row(
           children: [
             Icon(Icons.warning_amber_rounded, color: Colors.orangeAccent),
             Text(loc.changePassUpdateBtn,
                 style: TextStyle(color: Colors.white, fontSize: 18)),
           ],
         ),
-        content:  Text(
-            loc.changePassConfirmDesc,
+        content: Text(
+          loc.changePassConfirmDesc,
           style: TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child:  Text(loc.dialogCancel, style: TextStyle(color: Colors.grey)),
+            child: Text(loc.dialogCancel, style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -64,7 +65,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         _newPasswordController.text),
                   );
             },
-            child:  Text(loc.dialogConfirm, style: TextStyle(color: Colors.white)),
+            child:
+                Text(loc.dialogConfirm, style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -80,7 +82,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title:  Text(loc.changePassSecurity,
+        title: Text(loc.changePassSecurity,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: BlocConsumer<ProfileBloc, ProfileState>(
@@ -96,17 +98,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             Navigator.pop(context);
           } else if (state.status == ProfileStatus.error &&
               state.action == ProfileAction.changePassword) {
-            String displayError =
-                listenerLoc.changePassUnexpectedError;
+            String displayError = listenerLoc.changePassUnexpectedError;
             if (state.errorMessage != null) {
               final errorStr = state.errorMessage!.toLowerCase();
               if (errorStr.contains('connection') ||
                   errorStr.contains('timeout') ||
                   errorStr.contains('network') ||
                   errorStr.contains('socket')) {
-                displayError =  listenerLoc.errorNoConnection;
-              }
-              else if (errorStr.contains("password") ||
+                displayError = listenerLoc.errorNoConnection;
+              } else if (errorStr.contains("password") ||
                   errorStr.contains("400") ||
                   errorStr.contains("401") ||
                   errorStr.contains("incorrect")) {
@@ -120,7 +120,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               context: context,
               message: displayError,
               isError: true,
-              customIcon: displayError == listenerLoc.errorNoConnection ? Icons.wifi_off_rounded : Icons.error_outline,
+              customIcon: displayError == listenerLoc.errorNoConnection
+                  ? Icons.wifi_off_rounded
+                  : Icons.error_outline,
             );
           }
         },
@@ -136,7 +138,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 const Icon(Icons.shield_outlined,
                     size: 80, color: AppColors.primaryBlue),
                 AppSizes.gapV16,
-                 Text(
+                Text(
                   loc.menuChangePassword,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -144,19 +146,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       fontSize: 22,
                       fontWeight: FontWeight.bold),
                 ),
-               AppSizes.gapV8,
-                 Text(
+                AppSizes.gapV8,
+                Text(
                   loc.changePassDesc,
                   textAlign: TextAlign.center,
                   style:
                       TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 ),
-               AppSizes.gapV24,
-               AppSizes.gapV16,
-                 Text(loc.changePassCurrentLabel,
+                AppSizes.gapV24,
+                AppSizes.gapV16,
+                Text(loc.changePassCurrentLabel,
                     style: TextStyle(
                         color: AppColors.textSecondary, fontSize: 14)),
-              AppSizes.gapV8,
+                AppSizes.gapV8,
                 TextFormField(
                   controller: _currentPasswordController,
                   obscureText: _obscureCurrent,
@@ -172,10 +174,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                 ),
                 AppSizes.gapV24,
-                 Text(loc.changePassNewLabel,
+                Text(loc.changePassNewLabel,
                     style: TextStyle(
                         color: AppColors.textSecondary, fontSize: 14)),
-               AppSizes.gapV8,
+                AppSizes.gapV8,
                 TextFormField(
                   controller: _newPasswordController,
                   obscureText: _obscureNew,
@@ -183,8 +185,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   validator: (value) {
                     if (value == null || value.isEmpty)
                       return loc.changePassNewEmpty;
-                    if (value.length < 8)
-                      return loc.errorPasswordShort;
+                    if (value.length < 8) return loc.errorPasswordShort;
                     if (!value.contains(RegExp(r'[A-Z]')))
                       return loc.errorPasswordUppercase;
                     if (!value.contains(RegExp(r'[0-9]')))
@@ -199,7 +200,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                 ),
                 AppSizes.gapV24,
-                 Text(loc.changePassConfirmLabel,
+                Text(loc.changePassConfirmLabel,
                     style: TextStyle(
                         color: AppColors.textSecondary, fontSize: 14)),
                 AppSizes.gapV8,
@@ -223,7 +224,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
                 AppSizes.gapV24,
                 AppSizes.gapV16,
-
                 SizedBox(
                   height: 55,
                   child: ElevatedButton(
@@ -236,7 +236,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         ? null
                         : () {
                             if (_formKey.currentState!.validate()) {
-                              _showConfirmationDialog(context,loc);
+                              _showConfirmationDialog(context, loc);
                             }
                           },
                     child: isLoading
@@ -245,7 +245,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             height: 24,
                             child: CircularProgressIndicator(
                                 color: Colors.white, strokeWidth: 2))
-                        :  Text(loc.changePassUpdateBtn,
+                        : Text(loc.changePassUpdateBtn,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,

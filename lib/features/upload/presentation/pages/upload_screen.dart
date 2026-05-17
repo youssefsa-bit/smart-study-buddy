@@ -1,35 +1,39 @@
 import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/upload_action.dart';
 import '../manager/upload_bloc.dart';
 import '../manager/upload_event.dart';
 import '../manager/upload_state.dart';
 import '../widgets/action_card.dart';
 import '../widgets/upload_box.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UploadScreen extends StatelessWidget {
-  const UploadScreen({super.key});
+  UploadAction? action;
+  UploadScreen({super.key, this.action});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => sl<UploadBloc>()..add(LoadLibraryEvent()),
-      child: const _UploadScreenContent(),
+      child: _UploadScreenContent(action),
     );
   }
 }
 
 class _UploadScreenContent extends StatelessWidget {
-  const _UploadScreenContent();
+  UploadAction? action;
+  _UploadScreenContent(this.action);
 
   Future<void> _pickFile(BuildContext context) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -46,6 +50,9 @@ class _UploadScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (action != null) {
+      context.read<UploadBloc>().add(SelectActionEvent(action!));
+    }
     final loc = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -65,30 +72,32 @@ class _UploadScreenContent extends StatelessWidget {
               };
 
               if (state.selectedAction == UploadAction.flashcards) {
-                Navigator.pushNamed(
-                    context, AppRoutesName.flashcards,
-                    arguments: args).then((_) {
+                Navigator.pushNamed(context, AppRoutesName.flashcards,
+                        arguments: args)
+                    .then((_) {
                   if (!context.mounted) return;
                   context.read<UploadBloc>().add(RemoveFileEvent());
                   context.read<UploadBloc>().add(LoadLibraryEvent());
                 });
               } else if (state.selectedAction == UploadAction.summarize) {
                 Navigator.pushNamed(context, AppRoutesName.summarize,
-                    arguments: args).then((_) {
+                        arguments: args)
+                    .then((_) {
                   if (!context.mounted) return;
                   context.read<UploadBloc>().add(RemoveFileEvent());
                   context.read<UploadBloc>().add(LoadLibraryEvent());
                 });
               } else if (state.selectedAction == UploadAction.mcq) {
-                Navigator.pushNamed(context, AppRoutesName.mcq,
-                    arguments: args).then((_) {
+                Navigator.pushNamed(context, AppRoutesName.mcq, arguments: args)
+                    .then((_) {
                   if (!context.mounted) return;
                   context.read<UploadBloc>().add(RemoveFileEvent());
                   context.read<UploadBloc>().add(LoadLibraryEvent());
                 });
               }
             } else if (state.status == UploadRequestStatus.error) {
-              String displayError = state.errorMessage ?? loc.uploadScreenFailed;
+              String displayError =
+                  state.errorMessage ?? loc.uploadScreenFailed;
               if (state.errorMessage != null) {
                 final errorStr = state.errorMessage!.toLowerCase();
                 if (errorStr.contains('connection') ||
@@ -103,7 +112,9 @@ class _UploadScreenContent extends StatelessWidget {
                 context: context,
                 message: displayError,
                 isError: true,
-                customIcon: displayError == loc.errorNoConnection ? Icons.wifi_off_rounded : null,
+                customIcon: displayError == loc.errorNoConnection
+                    ? Icons.wifi_off_rounded
+                    : null,
               );
             }
           },
@@ -151,11 +162,11 @@ class _UploadScreenContent extends StatelessWidget {
                     ],
                   ),
                 ),
-
                 Expanded(
                   child: SingleChildScrollView(
                     //physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0, vertical: 16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -179,13 +190,14 @@ class _UploadScreenContent extends StatelessWidget {
                           AppSizes.gapV16,
                           SizedBox(
                             height: 120,
-                              child: ListView.builder(
+                            child: ListView.builder(
                               physics: const BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               itemCount: state.libraryFiles.length,
                               itemBuilder: (context, index) {
                                 final file = state.libraryFiles[index];
-                                final isSelected = state.selectedPdfId == file.id;
+                                final isSelected =
+                                    state.selectedPdfId == file.id;
 
                                 return GestureDetector(
                                   onTap: () => context.read<UploadBloc>().add(
@@ -209,13 +221,15 @@ class _UploadScreenContent extends StatelessWidget {
                                       ),
                                     ),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(
                                           Icons.picture_as_pdf_rounded,
                                           color: isSelected
                                               ? const Color(0xFF2E8CFF)
-                                              : Colors.redAccent.withValues(alpha: 0.8),
+                                              : Colors.redAccent
+                                                  .withValues(alpha: 0.8),
                                           size: 36,
                                         ),
                                         const SizedBox(height: 12),
@@ -262,7 +276,7 @@ class _UploadScreenContent extends StatelessWidget {
                           );
                         }),
                         if ((state.selectedFile != null ||
-                            state.selectedPdfId != null) &&
+                                state.selectedPdfId != null) &&
                             state.selectedAction != null)
                           Container(
                             width: double.infinity,
@@ -270,13 +284,16 @@ class _UploadScreenContent extends StatelessWidget {
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF2E8CFF),
-                                padding: const EdgeInsets.symmetric(vertical: 18),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 18),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16)),
                                 elevation: 0,
                               ),
                               onPressed: () {
-                                context.read<UploadBloc>().add(ProcessFileEvent());
+                                context
+                                    .read<UploadBloc>()
+                                    .add(ProcessFileEvent());
                               },
                               child: Text(loc.uploadScreenProcessNow,
                                   style: const TextStyle(

@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../../../l10n/app_localizations.dart';
 
 class UploadBox extends StatelessWidget {
   final File? selectedFile;
@@ -11,11 +12,12 @@ class UploadBox extends StatelessWidget {
   final VoidCallback onPickFile;
   final VoidCallback onRemoveFile;
 
-  const UploadBox({super.key,
-    this.selectedFile,
-    this.fileNameFromLibrary,
-    required this.onPickFile,
-    required this.onRemoveFile});
+  const UploadBox(
+      {super.key,
+      this.selectedFile,
+      this.fileNameFromLibrary,
+      required this.onPickFile,
+      required this.onRemoveFile});
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +25,7 @@ class UploadBox extends StatelessWidget {
     String? displayFileName;
 
     if (selectedFile != null) {
-      displayFileName = selectedFile!
-          .path
-          .split('/')
-          .last;
+      displayFileName = selectedFile!.path.split('/').last;
     } else if (fileNameFromLibrary != null) {
       displayFileName = fileNameFromLibrary;
     }
@@ -47,8 +46,8 @@ class UploadBox extends StatelessWidget {
                 color: const Color(0xFF143021),
                 borderRadius: BorderRadius.circular(AppSizes.radiusSmall),
               ),
-              child: const Icon(
-                  Icons.picture_as_pdf_outlined, color: Color(0xFF00C853)),
+              child: const Icon(Icons.picture_as_pdf_outlined,
+                  color: Color(0xFF00C853)),
             ),
             AppSizes.gapH16,
             Expanded(
@@ -63,7 +62,7 @@ class UploadBox extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   AppSizes.gapV8,
-                   Row(
+                  Row(
                     children: [
                       Icon(Icons.check_circle_outline,
                           color: Color(0xFF00C853), size: 14),
@@ -114,23 +113,25 @@ class UploadBox extends StatelessWidget {
                     color: Color(0xFF2E8CFF), size: 32),
               ),
               AppSizes.gapV16,
-               Text(loc.uploadBoxTapToUpload,
-                  style: TextStyle(color: Colors.white,
+              Text(loc.uploadBoxTapToUpload,
+                  style: TextStyle(
+                      color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold)),
               AppSizes.gapV8,
-               Text(loc.uploadBoxPdfOnly,
+              Text(loc.uploadBoxPdfOnly,
                   style: TextStyle(color: Color(0xFF6B7684), fontSize: 13)),
               AppSizes.gapV16,
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
                   color: const Color(0xFF1A1F26),
                   borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
                 ),
                 child: const Text('PDF',
-                    style: TextStyle(color: Color(0xFF6B7684),
+                    style: TextStyle(
+                        color: Color(0xFF6B7684),
                         fontSize: 12,
                         fontWeight: FontWeight.bold)),
               ),

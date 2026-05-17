@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/app_sizes.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/manager/auth_bloc.dart';
 import '../../../auth/presentation/manager/auth_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UpperHome extends StatelessWidget {
   const UpperHome({super.key});

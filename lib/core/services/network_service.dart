@@ -17,7 +17,6 @@ class NetworkService {
       BaseOptions(
         baseUrl: "http://10.0.2.2:3000/api",
         connectTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 5),
         followRedirects: false,
         validateStatus: (status) {
           return status != null && status >= 200 && status < 300;
