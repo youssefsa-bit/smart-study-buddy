@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../l10n/app_localizations.dart';
 
 class CustomDialog {
   static void showConfirmation({
@@ -44,18 +45,21 @@ class CustomDialog {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text(loc.dialogCancel, style: const TextStyle(color: Colors.grey)),
+            child: Text(loc.dialogCancel,
+                style: const TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: confirmButtonColor ?? AppColors.primaryBlue,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
             ),
             onPressed: () {
               Navigator.pop(ctx);
               onConfirm();
             },
-            child: Text(confirmText, style: const TextStyle(color: Colors.white)),
+            child:
+                Text(confirmText, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),

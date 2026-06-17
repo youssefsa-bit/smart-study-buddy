@@ -71,6 +71,11 @@ import '../../features/summary/presentation/manager/summary_bloc.dart';
 // ==========================================
 // Upload Feature Imports
 // ==========================================
+import '../../features/translation/data/datasources/translation_remote_datasource.dart';
+import '../../features/translation/data/repositories/translation_repository_impl.dart';
+import '../../features/translation/domain/repositories/translation_repository.dart';
+import '../../features/translation/domain/usecases/translate_text_usecase.dart';
+import '../../features/translation/presentation/manager/translation_bloc.dart';
 import '../../features/upload/data/datasource/upload_remote_data_source.dart';
 import '../../features/upload/data/repositories/upload_repository_impl.dart';
 import '../../features/upload/domain/repositories/upload_repository.dart';
@@ -299,4 +304,23 @@ Future<void> init() async {
   sl.registerLazySingleton<HistoryLocalDataSource>(
     () => HistoryLocalDataSourceImpl(sharedPreferences: sl()),
   );
+
+  // ==========================================
+  // Feature: History
+  // ==========================================
+  // Data source — reuses the shared NetworkService (Dio) singleton
+  sl.registerLazySingleton<TranslationRemoteDataSource>(
+    () => TranslationRemoteDataSourceImpl(networkService: sl()),
+  );
+
+  // Repository
+  sl.registerLazySingleton<TranslationRepository>(
+    () => TranslationRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // Use case
+  sl.registerLazySingleton(() => TranslateTextUseCase(sl()));
+
+  // Bloc — factory so each screen gets a fresh instance
+  sl.registerFactory(() => TranslationBloc(translateTextUseCase: sl()));
 }

@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/processing_status_view.dart';
 import '../../../../core/services/injection_container.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../translation/presentation/manager/translation_bloc.dart';
+import '../../../translation/presentation/widgets/translatable_text_wrapper.dart';
 import '../../../upload/domain/entities/upload_action.dart';
 import '../manager/summary_bloc.dart';
 import '../manager/summary_event.dart';
@@ -14,23 +16,38 @@ class SummaryScreen extends StatelessWidget {
   final String? pdfId;
   final int? resultId;
   final String fileName;
-  const SummaryScreen(
-      {super.key, this.pdfId, required this.fileName, this.resultId});
+
+  /// The language code to translate selected text into.
+  /// Defaults to 'ar'; wire this to your locale/settings as needed.
+  final String translationTargetLang;
+
+  const SummaryScreen({
+    super.key,
+    this.pdfId,
+    required this.fileName,
+    this.resultId,
+    this.translationTargetLang = 'ar',
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SummaryBloc>(
-      create: (context) {
-        final bloc = sl<SummaryBloc>();
-
-        if (resultId != null) {
-          bloc.add(FetchExistingSummary(resultId!));
-        } else if (pdfId != null) {
-          bloc.add(LoadSummary(pdfId!));
-        }
-
-        return bloc;
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SummaryBloc>(
+          create: (context) {
+            final bloc = sl<SummaryBloc>();
+            if (resultId != null) {
+              bloc.add(FetchExistingSummary(resultId!));
+            } else if (pdfId != null) {
+              bloc.add(LoadSummary(pdfId!));
+            }
+            return bloc;
+          },
+        ),
+        BlocProvider<TranslationBloc>(
+          create: (_) => sl<TranslationBloc>(),
+        ),
+      ],
       child: Builder(builder: (context) {
         final loc = AppLocalizations.of(context)!;
 
@@ -48,7 +65,7 @@ class SummaryScreen extends StatelessWidget {
                 Text(
                   fileName,
                   style: const TextStyle(fontSize: 15, color: Colors.grey),
-                )
+                ),
               ],
             ),
           ),
@@ -71,42 +88,48 @@ class SummaryScreen extends StatelessWidget {
 
               if (state is SummaryLoaded) {
                 final summary = state.summary;
-                return CustomScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  slivers: [
-                    SliverPadding(
-                      padding: const EdgeInsets.all(20.0),
-                      sliver: SliverList(
-                        delegate: SliverChildListDelegate([
-                          _buildSectionCard(
-                            title: loc.summaryMainTopic,
-                            icon: Icons.lightbulb_outline,
-                            content: summary.mainTopic,
-                            isHighlight: true,
-                          ),
-                          const SizedBox(height: 20),
-                          _buildListCard(
-                            title: loc.summaryKeyConcepts,
-                            icon: Icons.key_rounded,
-                            items: summary.keyConcepts,
-                          ),
-                          const SizedBox(height: 20),
-                          _buildListCard(
-                            title: loc.summaryImportantDetails,
-                            icon: Icons.format_list_bulleted_rounded,
-                            items: summary.importantDetails,
-                          ),
-                          const SizedBox(height: 20),
-                          _buildSectionCard(
-                            title: loc.summaryConclusion,
-                            icon: Icons.flag_rounded,
-                            content: summary.conclusion,
-                          ),
-                          const SizedBox(height: 40),
-                        ]),
+                // Wrap the scrollable content with TranslatableTextWrapper so
+                // any text the user selects triggers an instant translation.
+                return TranslatableTextWrapper(
+                  targetLang: translationTargetLang,
+                  child: CustomScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    slivers: [
+                      SliverPadding(
+                        padding: const EdgeInsets.all(20.0),
+                        sliver: SliverList(
+                          delegate: SliverChildListDelegate([
+                            _buildSectionCard(
+                              title: loc.summaryMainTopic,
+                              icon: Icons.lightbulb_outline,
+                              content: summary.mainTopic,
+                              isHighlight: true,
+                            ),
+                            const SizedBox(height: 20),
+                            _buildListCard(
+                              title: loc.summaryKeyConcepts,
+                              icon: Icons.key_rounded,
+                              items: summary.keyConcepts,
+                            ),
+                            const SizedBox(height: 20),
+                            _buildListCard(
+                              title: loc.summaryImportantDetails,
+                              icon: Icons.format_list_bulleted_rounded,
+                              items: summary.importantDetails,
+                            ),
+                            const SizedBox(height: 20),
+                            _buildSectionCard(
+                              title: loc.summaryConclusion,
+                              icon: Icons.flag_rounded,
+                              content: summary.conclusion,
+                            ),
+                            // Extra bottom padding so the popup never covers text
+                            const SizedBox(height: 120),
+                          ]),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               }
 

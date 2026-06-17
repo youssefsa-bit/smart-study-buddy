@@ -135,5 +135,6 @@
   "deleteHistoryTitle": "حذف السجل",
   "deleteHistoryDesc": "هل أنت متأكد أنك تريد حذف هذا الملف نهائياً؟",
   "deleteHistoryBtn": "حذف",
-  "historyDeletedSuccess": "تم الحذف بنجاح"
+  "historyDeletedSuccess": "تم الحذف بنجاح",
+  "translationTitle" : "الترجمة"
 }

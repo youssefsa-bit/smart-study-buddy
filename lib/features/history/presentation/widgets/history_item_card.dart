@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../../../core/core_widgets/custom_dialog.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/history_item.dart';
 import '../manager/history_bloc.dart';
 import '../manager/history_event.dart';
@@ -52,18 +53,16 @@ class HistoryItemCard extends StatelessWidget {
   void _showMenu(BuildContext context, AppLocalizations loc) {
     final RenderBox button = context.findRenderObject() as RenderBox;
     final RenderBox overlay =
-    Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
+        Navigator.of(context).overlay!.context.findRenderObject() as RenderBox;
 
     final bool isRtl = Directionality.of(context) == TextDirection.rtl;
-
 
     final double startX = isRtl ? 0 : button.size.width - 40;
     final double endX = isRtl ? 40 : button.size.width;
 
     final RelativeRect position = RelativeRect.fromRect(
       Rect.fromPoints(
-        button.localToGlobal(
-            Offset(startX, button.size.height - 8),
+        button.localToGlobal(Offset(startX, button.size.height - 8),
             ancestor: overlay),
         button.localToGlobal(Offset(endX, button.size.height),
             ancestor: overlay),
@@ -104,13 +103,14 @@ class HistoryItemCard extends StatelessWidget {
           confirmButtonColor: Colors.redAccent,
           onConfirm: () {
             context.read<HistoryBloc>().add(
-              DeleteHistory(resultId: item.resultId, type: item.type),
-            );
+                  DeleteHistory(resultId: item.resultId, type: item.type),
+                );
           },
         );
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -181,7 +181,8 @@ class HistoryItemCard extends StatelessWidget {
                   else
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
-                      onTap: () => _showMenu(context, loc),                      child: Padding(
+                      onTap: () => _showMenu(context, loc),
+                      child: Padding(
                         padding: const EdgeInsets.all(4.0),
                         child:
                             Icon(Icons.more_vert, color: Colors.grey.shade500),

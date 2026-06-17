@@ -8,7 +8,7 @@ import 'package:study_buddy/features/flashcards/presentation/widgets/progress_ba
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
 
 import '../../../../core/services/injection_container.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../manager/flashcard_bloc.dart';
 import '../manager/flashcard_event.dart';
 import '../manager/flashcard_state.dart';

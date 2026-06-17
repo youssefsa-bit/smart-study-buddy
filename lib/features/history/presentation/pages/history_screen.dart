@@ -4,7 +4,7 @@ import 'package:study_buddy/core/constants/app_colors.dart';
 
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/history_item.dart';
 import '../manager/history_bloc.dart';
 import '../manager/history_event.dart';
@@ -183,7 +183,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   if (previous is HistoryLoaded && current is HistoryLoaded) {
                     return previous.deletingResultId != null &&
                         current.deletingResultId == null &&
-                        current.historyItems.length < previous.historyItems.length;
+                        current.historyItems.length <
+                            previous.historyItems.length;
                   }
                   return false;
                 },
@@ -247,7 +248,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       return Center(
                         child: Text(
                           state.searchQuery.isNotEmpty ||
-                              state.activeFilter != null
+                                  state.activeFilter != null
                               ? loc.historyNoResults
                               : loc.historyNoData,
                           style: const TextStyle(

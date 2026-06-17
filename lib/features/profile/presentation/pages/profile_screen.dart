@@ -8,7 +8,7 @@ import '../../../../core/manager/language_cubit.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
@@ -29,8 +29,7 @@ class ProfileScreen extends StatelessWidget {
       confirmText: loc.menuLogout,
       confirmButtonColor: Colors.redAccent,
       onConfirm: () => bloc.add(LogoutRequestedEvent()),
-   );
-
+    );
   }
 
   void _showLanguageBottomSheet(BuildContext context, AppLocalizations loc) {
