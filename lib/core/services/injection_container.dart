@@ -22,6 +22,7 @@ import '../../features/flashcards/domain/repositories/flashcard_repository.dart'
 import '../../features/flashcards/domain/usecases/get_existing_flashcards_usecase.dart';
 import '../../features/flashcards/domain/usecases/get_flashcards_usecase.dart';
 import '../../features/flashcards/presentation/manager/flashcard_bloc.dart';
+import '../../features/flashcards/data/datasources/flashcards_local_data_source.dart';
 // ==========================================
 // History Feature Imports
 // ==========================================
@@ -48,6 +49,7 @@ import '../../features/mcq/domain/repositories/mcq_repository.dart';
 import '../../features/mcq/domain/usecases/generate_quiz_usecase.dart';
 import '../../features/mcq/domain/usecases/get_existing_quiz_usecase.dart';
 import '../../features/mcq/presentation/manager/mcq_bloc.dart';
+import '../../features/mcq/data/datasources/mcq_local_data_source.dart';
 // ==========================================
 // Profile Feature Imports
 // ==========================================
@@ -65,9 +67,11 @@ import '../../features/profile/presentation/manager/profile_bloc.dart';
 import '../../features/summary/data/datasources/summary_remote_data_source.dart';
 import '../../features/summary/data/repositories/summary_repository_impl.dart';
 import '../../features/summary/domain/repositories/summary_repository.dart';
+import '../../features/summary/domain/usecases/export_summary_pdf_usecase.dart';
 import '../../features/summary/domain/usecases/get_existing_summary_usecase.dart';
 import '../../features/summary/domain/usecases/get_summary_usecase.dart';
 import '../../features/summary/presentation/manager/summary_bloc.dart';
+import '../../features/summary/data/datasources/summary_local_data_source.dart';
 // ==========================================
 // Upload Feature Imports
 // ==========================================
@@ -86,7 +90,9 @@ import '../../features/upload/presentation/manager/upload_bloc.dart';
 // Core
 // ==========================================
 import '../manager/language_cubit.dart';
+import '../manager/theme_cubit.dart';
 import 'network_service.dart';
+import 'pdf_service.dart';
 
 final sl = GetIt.instance;
 
@@ -99,6 +105,8 @@ Future<void> init() async {
   sl.registerLazySingleton<NetworkService>(
       () => NetworkService(sharedPreferences: sl()));
   sl.registerFactory(() => LanguageCubit(prefs: sl()));
+  sl.registerFactory(() => ThemeCubit(prefs: sl()));
+  sl.registerLazySingleton(() => PdfService());
   // ==========================================
   // Feature: Auth
   // ==========================================
@@ -167,12 +175,16 @@ Future<void> init() async {
 
   // 3. Repository
   sl.registerLazySingleton<FlashcardRepository>(
-    () => FlashcardRepositoryImpl(sl()),
+    () => FlashcardRepositoryImpl(sl(), sl()),
   );
 
   // 4. Data Sources
   sl.registerLazySingleton<FlashcardRemoteDataSource>(
     () => FlashcardRemoteDataSourceImpl(networkService: sl()),
+  );
+
+  sl.registerLazySingleton<FlashcardsLocalDataSource>(
+    () => FlashcardsLocalDataSourceImpl(sharedPreferences: sl()),
   );
 
   // ==========================================
@@ -208,20 +220,26 @@ Future<void> init() async {
   sl.registerFactory(() => SummaryBloc(
         getSummaryUseCase: sl(),
         getExistingSummaryUseCase: sl(),
+        exportSummaryPdfUseCase: sl(),
       ));
 
   // 2. Use Cases
   sl.registerLazySingleton(() => GetSummaryUseCase(sl()));
   sl.registerLazySingleton(() => GetExistingSummaryUseCase(sl()));
+  sl.registerLazySingleton(() => ExportSummaryPdfUseCase(sl()));
 
   // 3. Repository
   sl.registerLazySingleton<SummaryRepository>(
-    () => SummaryRepositoryImpl(sl()),
+    () => SummaryRepositoryImpl(sl(), sl()),
   );
 
   // 4. Data Sources
   sl.registerLazySingleton<SummaryRemoteDataSource>(
     () => SummaryRemoteDataSourceImpl(networkService: sl()),
+  );
+
+  sl.registerLazySingleton<SummaryLocalDataSource>(
+    () => SummaryLocalDataSourceImpl(sharedPreferences: sl()),
   );
 
   // ==========================================
@@ -238,12 +256,16 @@ Future<void> init() async {
 
   // 3. Repository
   sl.registerLazySingleton<McqRepository>(
-    () => McqRepositoryImpl(sl()),
+    () => McqRepositoryImpl(sl(), sl()),
   );
 
   // 4. Data Sources
   sl.registerLazySingleton<McqRemoteDataSource>(
     () => McqRemoteDataSourceImpl(networkService: sl()),
+  );
+
+  sl.registerLazySingleton<McqLocalDataSource>(
+    () => McqLocalDataSourceImpl(sharedPreferences: sl()),
   );
 
   // ==========================================

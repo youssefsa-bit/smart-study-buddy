@@ -23,13 +23,13 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       obscureText: isPassword,
       validator: validator,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle: const TextStyle(color: AppColors.textGrey, fontSize: 14),
+        labelStyle: TextStyle(color: AppColors.textGrey, fontSize: 14),
 
         floatingLabelBehavior: FloatingLabelBehavior.auto,
-        floatingLabelStyle: const TextStyle(color: AppColors.primaryBlue, fontWeight: FontWeight.bold),
+        floatingLabelStyle: TextStyle(color: AppColors.primaryBlue, fontWeight: FontWeight.bold),
 
         prefixIcon: Icon(prefixIcon, color: AppColors.primaryBlue, size: 20),
         filled: true,
@@ -38,12 +38,12 @@ class CustomTextField extends StatelessWidget {
 
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+          borderSide: BorderSide(color: AppColors.border),
         ),
 
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.primaryBlue, width: 2),
+          borderSide: BorderSide(color: AppColors.primaryBlue, width: 2),
         ),
 
         errorBorder: OutlineInputBorder(

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/features/flashcards/domain/usecases/get_existing_flashcards_usecase.dart';
 
@@ -12,6 +13,7 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
   final GetFlashcardsUseCase getFlashcardsUseCase;
   final GetExistingFlashcardsUseCase getExistingFlashcardsUseCase;
   Timer? _progressTimer;
+  CancelToken? _cancelToken;
 
   FlashcardBloc(
       {required this.getFlashcardsUseCase,
@@ -37,12 +39,16 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
         }
       });
 
+      _cancelToken = CancelToken();
+
       try {
         List<Flashcard> accumulatedCards = [];
         List<Flashcard> reviewDeck = [];
 
+        bool hasError = false;
+
         await emit.forEach<List<Flashcard>>(
-          getFlashcardsUseCase.call(event.pdfId),
+          getFlashcardsUseCase.call(event.pdfId, cancelToken: _cancelToken),
           onData: (newCardsChunk) {
             if (newCardsChunk.isEmpty) return state;
 
@@ -72,10 +78,13 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
             );
           },
           onError: (error, stackTrace) {
+            hasError = true;
             _progressTimer?.cancel();
             return FlashcardError("Error: $error");
           },
         );
+
+        if (hasError) return;
 
         if (reviewDeck.isNotEmpty) {
           reviewDeck.shuffle();
@@ -95,6 +104,13 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
         if (accumulatedCards.isEmpty) {
           emit(const FlashcardError("No flashcards generated."));
         }
+      } on DioException catch (e) {
+        _progressTimer?.cancel();
+        if (CancelToken.isCancel(e)) {
+          emit(const FlashcardError("Request cancelled by user."));
+        } else {
+          emit(FlashcardError("Failed to fetch: $e"));
+        }
       } catch (e) {
         _progressTimer?.cancel();
         emit(FlashcardError("Failed to fetch: $e"));
@@ -104,9 +120,17 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
       try {
         final flashcards =
             await getExistingFlashcardsUseCase.call(event.resultId);
-        emit(FlashcardLoaded(cards: flashcards));
+        if (flashcards.isEmpty) {
+          add(LoadFlashcards(event.resultId.toString()));
+        } else {
+          emit(FlashcardLoaded(cards: flashcards));
+        }
       } catch (e) {
-        emit(FlashcardError("Failed to fetch existing flashcards: $e"));
+        if (e.toString().contains('404') || e.toString().contains('No flashcards found')) {
+          add(LoadFlashcards(event.resultId.toString()));
+        } else {
+          emit(FlashcardError("Failed to fetch existing flashcards: $e"));
+        }
       }
     });
 
@@ -152,6 +176,7 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
   @override
   Future<void> close() {
     _progressTimer?.cancel();
+    _cancelToken?.cancel("Bloc closed");
     return super.close();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_filex/open_filex.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/processing_status_view.dart';
@@ -51,94 +52,269 @@ class SummaryScreen extends StatelessWidget {
       child: Builder(builder: (context) {
         final loc = AppLocalizations.of(context)!;
 
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            backgroundColor: AppColors.background,
-            elevation: 0,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(loc.summaryAppbarTitle,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold)),
-                Text(
-                  fileName,
-                  style: const TextStyle(fontSize: 15, color: Colors.grey),
-                ),
-              ],
-            ),
-          ),
-          body: BlocBuilder<SummaryBloc, SummaryState>(
-            builder: (context, state) {
-              if (state is SummaryLoading) {
-                return ProcessingStatusView(
-                  action: UploadAction.summarize,
-                  fileName: loc.summaryGenerating,
-                  currentStepIndex: state.stepIndex,
-                );
-              }
+        return BlocListener<SummaryBloc, SummaryState>(
+          listener: (context, state) {
+            if (state is SummaryPdfDownloaded) {
+              final parts = state.savedPath.split(RegExp(r'[/\\]'));
+              final name = parts.isNotEmpty ? parts.last : state.savedPath;
 
-              if (state is SummaryError) {
-                return Center(
-                  child: Text(state.message,
-                      style: const TextStyle(color: Colors.redAccent)),
-                );
-              }
+              // Capture messenger before the async gap to avoid BuildContext warnings
+              final messenger = ScaffoldMessenger.of(context);
 
-              if (state is SummaryLoaded) {
-                final summary = state.summary;
-                // Wrap the scrollable content with TranslatableTextWrapper so
-                // any text the user selects triggers an instant translation.
-                return TranslatableTextWrapper(
-                  targetLang: translationTargetLang,
-                  child: CustomScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    slivers: [
-                      SliverPadding(
-                        padding: const EdgeInsets.all(20.0),
-                        sliver: SliverList(
-                          delegate: SliverChildListDelegate([
-                            _buildSectionCard(
-                              title: loc.summaryMainTopic,
-                              icon: Icons.lightbulb_outline,
-                              content: summary.mainTopic,
-                              isHighlight: true,
+              OpenFilex.open(state.savedPath, type: 'application/pdf').then(
+                (result) {
+                  String message;
+                  Color color;
+                  IconData icon;
+
+                  switch (result.type) {
+                    case ResultType.done:
+                      message = 'PDF saved — opening…';
+                      color = AppColors.primaryGreen;
+                      icon = Icons.picture_as_pdf_rounded;
+                      break;
+                    case ResultType.noAppToOpen:
+                      message =
+                          'PDF saved but no PDF viewer is installed.\nFile: $name';
+                      color = Colors.orange;
+                      icon = Icons.warning_amber_rounded;
+                      break;
+                    case ResultType.permissionDenied:
+                      message = 'Permission denied: ${result.message}';
+                      color = Colors.redAccent;
+                      icon = Icons.lock_outline_rounded;
+                      break;
+                    case ResultType.fileNotFound:
+                      message = 'File not found: $name';
+                      color = Colors.redAccent;
+                      icon = Icons.error_outline_rounded;
+                      break;
+                    case ResultType.error:
+                      message = 'Saved but could not open: ${result.message}';
+                      color = Colors.orange;
+                      icon = Icons.warning_amber_rounded;
+                  }
+
+                  messenger.showSnackBar(
+                    SnackBar(
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: color,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      content: Row(
+                        children: [
+                          Icon(icon, color: Colors.white, size: 20),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              message,
+                              style: const TextStyle(color: Colors.white),
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 20),
-                            _buildListCard(
-                              title: loc.summaryKeyConcepts,
-                              icon: Icons.key_rounded,
-                              items: summary.keyConcepts,
-                            ),
-                            const SizedBox(height: 20),
-                            _buildListCard(
-                              title: loc.summaryImportantDetails,
-                              icon: Icons.format_list_bulleted_rounded,
-                              items: summary.importantDetails,
-                            ),
-                            const SizedBox(height: 20),
-                            _buildSectionCard(
-                              title: loc.summaryConclusion,
-                              icon: Icons.flag_rounded,
-                              content: summary.conclusion,
-                            ),
-                            // Extra bottom padding so the popup never covers text
-                            const SizedBox(height: 120),
-                          ]),
+                          ),
+                        ],
+                      ),
+                      duration: const Duration(seconds: 4),
+                    ),
+                  );
+                },
+              );
+            } else if (state is SummaryPdfDownloadError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.redAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  content: Row(
+                    children: [
+                      const Icon(Icons.error_rounded,
+                          color: Colors.white, size: 20),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          state.message,
+                          style: const TextStyle(color: Colors.white),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
-                );
-              }
+                  duration: const Duration(seconds: 4),
+                ),
+              );
+            }
+          },
+          child: Scaffold(
+            backgroundColor: AppColors.background,
+            appBar: AppBar(
+              backgroundColor: AppColors.background,
+              elevation: 0,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.summaryAppbarTitle,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    fileName,
+                    style: const TextStyle(fontSize: 15, color: Colors.grey),
+                  ),
+                ],
+              ),
+              actions: [
+                BlocBuilder<SummaryBloc, SummaryState>(
+                  builder: (context, state) {
+                    if (state is SummaryLoading) return const SizedBox.shrink();
+                    return IconButton(
+                      icon: Icon(Icons.refresh_rounded,
+                          color: AppColors.primaryBlue),
+                      tooltip: loc.retry ?? 'Regenerate',
+                      onPressed: () {
+                        final idToUse = pdfId ?? resultId?.toString();
+                        if (idToUse != null) {
+                          context.read<SummaryBloc>().add(LoadSummary(idToUse));
+                        }
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+            body: BlocBuilder<SummaryBloc, SummaryState>(
+              builder: (context, state) {
+                if (state is SummaryLoading) {
+                  return ProcessingStatusView(
+                    action: UploadAction.summarize,
+                    fileName: loc.summaryGenerating,
+                    currentStepIndex: state.stepIndex,
+                  );
+                }
 
-              return const SizedBox.shrink();
-            },
+                if (state is SummaryError) {
+                  return Center(
+                    child: Text(state.message,
+                        style: const TextStyle(color: Colors.redAccent)),
+                  );
+                }
+
+                // Resolve the summary from any state that carries it
+                final summary = _summaryFromState(state);
+
+                if (summary != null) {
+                  return TranslatableTextWrapper(
+                    targetLang: translationTargetLang,
+                    child: CustomScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      slivers: [
+                        SliverPadding(
+                          padding: const EdgeInsets.all(20.0),
+                          sliver: SliverList(
+                            delegate: SliverChildListDelegate([
+                              _buildSectionCard(
+                                title: loc.summaryMainTopic,
+                                icon: Icons.lightbulb_outline,
+                                content: summary.mainTopic,
+                                isHighlight: true,
+                              ),
+                              const SizedBox(height: 20),
+                              _buildListCard(
+                                title: loc.summaryKeyConcepts,
+                                icon: Icons.key_rounded,
+                                items: summary.keyConcepts,
+                              ),
+                              const SizedBox(height: 20),
+                              _buildListCard(
+                                title: loc.summaryImportantDetails,
+                                icon: Icons.format_list_bulleted_rounded,
+                                items: summary.importantDetails,
+                              ),
+                              const SizedBox(height: 20),
+                              _buildSectionCard(
+                                title: loc.summaryConclusion,
+                                icon: Icons.flag_rounded,
+                                content: summary.conclusion,
+                              ),
+                              // Extra bottom padding so the FAB never covers text
+                              const SizedBox(height: 120),
+                            ]),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
+            // ── Download FAB ────────────────────────────────────────────
+            floatingActionButton: BlocBuilder<SummaryBloc, SummaryState>(
+              builder: (context, state) {
+                final summary = _summaryFromState(state);
+                if (summary == null) return const SizedBox.shrink();
+
+                final isDownloading = state is SummaryPdfDownloading;
+
+                return FloatingActionButton.extended(
+                  onPressed: isDownloading
+                      ? null
+                      : () {
+                          context.read<SummaryBloc>().add(
+                                DownloadSummaryPdf(
+                                    pdfId: pdfId ?? resultId!.toString(),
+                                    summary: summary,
+                                    fileName: fileName,
+                                    loc: loc),
+                              );
+                        },
+                  backgroundColor: isDownloading
+                      ? (AppColors.isLightMode
+                          ? Colors.grey.shade400
+                          : AppColors.surface)
+                      : AppColors.primaryBlue,
+                  elevation: 6,
+                  icon: isDownloading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white70),
+                          ),
+                        )
+                      : const Icon(Icons.download_rounded, color: Colors.white),
+                  label: Text(
+                    isDownloading ? 'Generating PDF…' : 'Download PDF',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         );
       }),
     );
+  }
+
+  // ── Helpers ─────────────────────────────────────────────────────────────
+
+  /// Extracts the SummaryEntity from any state that carries one,
+  /// so the content stays visible during download.
+  dynamic _summaryFromState(SummaryState state) {
+    if (state is SummaryLoaded) return state.summary;
+    if (state is SummaryPdfDownloading) return state.summary;
+    if (state is SummaryPdfDownloaded) return state.summary;
+    if (state is SummaryPdfDownloadError) return state.summary;
+    return null;
   }
 
   Widget _buildSectionCard({
@@ -167,8 +343,8 @@ class SummaryScreen extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 title,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -178,8 +354,8 @@ class SummaryScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             content,
-            style: const TextStyle(
-                color: Colors.white70, fontSize: 15, height: 1.6),
+            style: TextStyle(
+                color: AppColors.textSecondary, fontSize: 15, height: 1.6),
           ),
         ],
       ),
@@ -206,8 +382,8 @@ class SummaryScreen extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 title,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -220,8 +396,8 @@ class SummaryScreen extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 6.0),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6.0),
                       child: Icon(Icons.circle,
                           color: AppColors.primaryBlue, size: 8),
                     ),
@@ -229,8 +405,10 @@ class SummaryScreen extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.replaceAll('**', ''),
-                        style: const TextStyle(
-                            color: Colors.white70, fontSize: 15, height: 1.5),
+                        style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 15,
+                            height: 1.5),
                       ),
                     ),
                   ],

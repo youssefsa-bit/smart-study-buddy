@@ -28,7 +28,7 @@ class UploadMaterialCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
                 color: AppColors.darkBlue,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.picture_as_pdf_rounded,
                 color: AppColors.primaryBlue,
                 size: 30,
@@ -42,7 +42,7 @@ class UploadMaterialCard extends StatelessWidget {
                   Text(
                     loc.uploadMaterialTitle,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -58,9 +58,9 @@ class UploadMaterialCard extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios_rounded,
-              color: Colors.white,
+              color: AppColors.textPrimary,
               size: 20,
             ),
           ],

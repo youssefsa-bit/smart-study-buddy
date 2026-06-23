@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
@@ -34,20 +35,20 @@ class UploadBox extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(AppSizes.p16),
         decoration: BoxDecoration(
-          color: const Color(0xFF0D1F16),
+          color: AppColors.flashcardImg,
           borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
-          border: Border.all(color: const Color(0xFF00C853), width: 1.5),
+          border: Border.all(color: AppColors.flashcardGreen, width: 1.5),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(AppSizes.p12),
               decoration: BoxDecoration(
-                color: const Color(0xFF143021),
+                color: AppColors.background,
                 borderRadius: BorderRadius.circular(AppSizes.radiusSmall),
               ),
-              child: const Icon(Icons.picture_as_pdf_outlined,
-                  color: Color(0xFF00C853)),
+              child: Icon(Icons.picture_as_pdf_outlined,
+                  color: AppColors.flashcardGreen),
             ),
             AppSizes.gapH16,
             Expanded(
@@ -56,8 +57,8 @@ class UploadBox extends StatelessWidget {
                 children: [
                   Text(
                     displayFileName,
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: AppColors.textPrimary, fontWeight: FontWeight.bold),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -65,11 +66,11 @@ class UploadBox extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.check_circle_outline,
-                          color: Color(0xFF00C853), size: 14),
+                          color: AppColors.flashcardGreen, size: 14),
                       AppSizes.gapH8,
                       Text(loc.uploadBoxReady,
                           style: TextStyle(
-                              color: Color(0xFF00C853), fontSize: 12)),
+                              color: AppColors.flashcardGreen, fontSize: 12)),
                     ],
                   )
                 ],
@@ -77,9 +78,9 @@ class UploadBox extends StatelessWidget {
             ),
             IconButton(
               onPressed: onRemoveFile,
-              icon: const Icon(Icons.close_rounded, color: Color(0xFF6B7684)),
+              icon: Icon(Icons.close_rounded, color: AppColors.textSecondary),
               style: IconButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A1F26)),
+                  backgroundColor: AppColors.surfaceHighlight),
             ),
           ],
         ),
@@ -89,7 +90,7 @@ class UploadBox extends StatelessWidget {
     return GestureDetector(
       onTap: onPickFile,
       child: DottedBorder(
-        color: const Color(0xFF3A4655),
+        color: AppColors.border,
         strokeWidth: 2,
         dashPattern: const [8, 4],
         borderType: BorderType.RRect,
@@ -98,7 +99,7 @@ class UploadBox extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 32),
           decoration: BoxDecoration(
-            color: const Color(0xFF0F141A),
+            color: AppColors.background,
             borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
           ),
           child: Column(
@@ -106,32 +107,32 @@ class UploadBox extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSizes.p16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1A283A),
+                  color: AppColors.surfaceHighlight,
                   borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
                 ),
-                child: const Icon(Icons.upload_file_rounded,
-                    color: Color(0xFF2E8CFF), size: 32),
+                child: Icon(Icons.upload_file_rounded,
+                    color: AppColors.primaryBlue, size: 32),
               ),
               AppSizes.gapV16,
               Text(loc.uploadBoxTapToUpload,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.bold)),
               AppSizes.gapV8,
               Text(loc.uploadBoxPdfOnly,
-                  style: TextStyle(color: Color(0xFF6B7684), fontSize: 13)),
+                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
               AppSizes.gapV16,
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1A1F26),
+                  color: AppColors.surfaceHighlight,
                   borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
                 ),
-                child: const Text('PDF',
+                child: Text('PDF',
                     style: TextStyle(
-                        color: Color(0xFF6B7684),
+                        color: AppColors.textSecondary,
                         fontSize: 12,
                         fontWeight: FontWeight.bold)),
               ),

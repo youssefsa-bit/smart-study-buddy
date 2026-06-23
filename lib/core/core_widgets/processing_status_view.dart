@@ -56,7 +56,7 @@ class ProcessingStatusView extends StatelessWidget {
     }
     return Center(
       child: Padding(
-        padding: EdgeInsets.all(AppSizes.p24),
+        padding: const EdgeInsets.all(AppSizes.p24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -67,19 +67,19 @@ class ProcessingStatusView extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(AppSizes.p20),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0F1828),
+                    color: AppColors.surfaceHighlight,
                     borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
                   ),
                   child: Icon(headerIcon,
-                      color: const Color(0xFF2E8CFF), size: 40),
+                      color: AppColors.primaryBlue, size: 40),
                 ),
                 Positioned(
                   top: -6,
                   right: -6,
                   child: Container(
                     padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                        color: Color(0xFF00C853), shape: BoxShape.circle),
+                    decoration: BoxDecoration(
+                        color: AppColors.flashcardGreen, shape: BoxShape.circle),
                     child: const Icon(Icons.auto_awesome,
                         color: Colors.white, size: 14),
                   ),
@@ -112,8 +112,8 @@ class ProcessingStatusView extends StatelessWidget {
                 child: Text(
                   loc.uploadScreenProcessingLong,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.grey,
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
                     fontSize: 13,
                     height: 1.5,
                   ),
@@ -135,11 +135,11 @@ Widget _buildStepItem(int index, String text, int currentIndex) {
   Widget insideCircle;
   if (isCompleted) {
     circleColor = Colors.green;
-    textColor = Colors.white;
+    textColor = AppColors.textPrimary;
     insideCircle = const Icon(Icons.check, color: Colors.white, size: 16);
   } else if (isActive) {
     circleColor = Colors.blue;
-    textColor = Colors.white;
+    textColor = AppColors.textPrimary;
     insideCircle = const SizedBox(
       width: 14,
       height: 14,
@@ -149,11 +149,11 @@ Widget _buildStepItem(int index, String text, int currentIndex) {
       ),
     );
   } else {
-    circleColor = const Color(0xFF1A1F26);
-    textColor = const Color(0xFF3A4655);
+    circleColor = AppColors.surfaceHighlight;
+    textColor = AppColors.textSecondary;
     insideCircle = Text('${index + 1}',
-        style: const TextStyle(
-            color: Color(0xFF3A4655),
+        style: TextStyle(
+            color: AppColors.textSecondary,
             fontWeight: FontWeight.bold,
             fontSize: 12));
   }

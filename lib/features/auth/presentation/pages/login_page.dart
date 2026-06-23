@@ -57,8 +57,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     AppSizes.gapV24,
                     Text(loc.welcomeBack,
-                        style: const TextStyle(
-                            color: Colors.white,
+                        style: TextStyle(
+                            color: AppColors.textPrimary,
                             fontSize: 28,
                             fontWeight: FontWeight.bold)),
                     AppSizes.gapV24,
@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       builder: (context, state) {
                         if (state is AuthLoading) {
-                          return const Center(
+                          return Center(
                               child: CircularProgressIndicator(
                                   color: AppColors.primaryBlue));
                         }
@@ -137,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                             context, AppRoutesName.register),
                         child: Text(loc.newHereCreateAccount,
                             style:
-                                const TextStyle(color: AppColors.primaryBlue)),
+                                TextStyle(color: AppColors.primaryBlue)),
                       ),
                     ),
                   ],

@@ -46,13 +46,31 @@ class McqScreen extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white)),
+                      color: AppColors.textPrimary)),
               Text(
                 fileName,
                 style: TextStyle(fontSize: 15, color: Colors.grey),
               )
             ],
           ),
+          actions: [
+            BlocBuilder<McqBloc, McqState>(
+              builder: (context, state) {
+                if (state is McqLoading) return const SizedBox.shrink();
+                return IconButton(
+                  icon:
+                      Icon(Icons.refresh_rounded, color: AppColors.primaryBlue),
+                  tooltip: loc.retry ?? 'Regenerate',
+                  onPressed: () {
+                    final idToUse = pdfId ?? resultId?.toString();
+                    if (idToUse != null) {
+                      context.read<McqBloc>().add(GenerateMcqEvent(idToUse));
+                    }
+                  },
+                );
+              },
+            ),
+          ],
         ),
         body: BlocBuilder<McqBloc, McqState>(
           builder: (context, state) {

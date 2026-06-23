@@ -6,7 +6,7 @@ import '../../../../core/services/network_service.dart';
 import '../models/flashcard_model.dart';
 
 abstract class FlashcardRemoteDataSource {
-  Stream<List<FlashcardModel>> generateFlashcardsStream(String pdfId);
+  Stream<List<FlashcardModel>> generateFlashcardsStream(String pdfId, {CancelToken? cancelToken});
   Future<List<FlashcardModel>> getExistingFlashcards(int resultId);
 }
 
@@ -16,10 +16,11 @@ class FlashcardRemoteDataSourceImpl implements FlashcardRemoteDataSource {
   FlashcardRemoteDataSourceImpl({required this.networkService});
 
   @override
-  Stream<List<FlashcardModel>> generateFlashcardsStream(String pdfId) async* {
+  Stream<List<FlashcardModel>> generateFlashcardsStream(String pdfId, {CancelToken? cancelToken}) async* {
     try {
       final response = await networkService.dio.post<ResponseBody>(
-        'http://10.0.2.2:3000/api/pdfs/$pdfId/flashcards/stream',
+        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$pdfId/flashcards/stream',
+        cancelToken: cancelToken,
         options: Options(
           responseType: ResponseType.stream,
           headers: {'Accept': 'text/event-stream'},
@@ -47,6 +48,9 @@ class FlashcardRemoteDataSourceImpl implements FlashcardRemoteDataSource {
             final List<dynamic> cardsList = jsonData['flashcards'];
 
             yield cardsList.map((c) => FlashcardModel.fromJson(c)).toList();
+          } else if (currentEvent == 'error') {
+            final Map<String, dynamic> jsonData = jsonDecode(dataString);
+            throw Exception(jsonData['message'] ?? 'Unknown error occurred');
           }
         }
       }
@@ -59,7 +63,7 @@ class FlashcardRemoteDataSourceImpl implements FlashcardRemoteDataSource {
   Future<List<FlashcardModel>> getExistingFlashcards(int resultId) async {
     try {
       final response = await networkService.dio.get(
-        'http://10.0.2.2:3000/api/pdfs/$resultId/flashcards',
+        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$resultId/flashcards',
       );
 
       final List<dynamic> flashcardsJson =

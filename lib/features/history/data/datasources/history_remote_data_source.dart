@@ -15,7 +15,7 @@ class HistoryRemoteDataSourceImpl implements HistoryRemoteDataSource {
   Future<List<HistoryModel>> getHistory() async {
     try {
       final response = await networkService.dio.get(
-        'http://10.0.2.2:3000/api/history',
+        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/history',
       );
 
       final List<dynamic> data = response.data['data'] ?? [];
@@ -29,7 +29,7 @@ class HistoryRemoteDataSourceImpl implements HistoryRemoteDataSource {
   Future<void> deleteHistory(int resultId, String type) async {
     try {
       await networkService.dio.delete(
-        'http://10.0.2.2:3000/api/history/$resultId',
+        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/history/$resultId',
         queryParameters: {'type': type},
       );
     } catch (e) {

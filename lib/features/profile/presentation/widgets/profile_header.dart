@@ -27,14 +27,14 @@ class ProfileHeader extends StatelessWidget {
             children: [
               Text(
                 name,
-                style: const TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 4),
               Text(
                 email,
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 16),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),

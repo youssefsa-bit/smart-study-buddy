@@ -1,8 +1,9 @@
+import 'package:dio/dio.dart';
 import '../../../../core/services/network_service.dart';
 import '../models/mcq_model.dart';
 
 abstract class McqRemoteDataSource {
-  Future<QuizModel> generateQuiz(String pdfId);
+  Future<QuizModel> generateQuiz(String pdfId, {CancelToken? cancelToken});
   Future<QuizModel> getExistingQuiz(int resultId);
 }
 
@@ -12,10 +13,11 @@ class McqRemoteDataSourceImpl implements McqRemoteDataSource {
   McqRemoteDataSourceImpl({required this.networkService});
 
   @override
-  Future<QuizModel> generateQuiz(String pdfId) async {
+  Future<QuizModel> generateQuiz(String pdfId, {CancelToken? cancelToken}) async {
     try {
       final response = await networkService.dio.post(
         '/pdfs/$pdfId/quiz',
+        cancelToken: cancelToken,
       );
       if (response.data['success'] == true) {
         return QuizModel.fromjson(response.data);
@@ -30,7 +32,7 @@ class McqRemoteDataSourceImpl implements McqRemoteDataSource {
   @override
   Future<QuizModel> getExistingQuiz(int resultId) async {
     final response = await networkService.dio
-        .get('http://10.0.2.2:3000/api/pdfs/$resultId/quiz');
+        .get('https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$resultId/quiz');
     return QuizModel.fromjson(response.data);
   }
 }

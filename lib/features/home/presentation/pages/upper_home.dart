@@ -37,8 +37,10 @@ class UpperHome extends StatelessWidget {
 
                     return Text(
                       displayName,
-                      style: const TextStyle(
-                        color: AppColors.textPrimary,
+                      style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -51,7 +53,7 @@ class UpperHome extends StatelessWidget {
             Container(
                 padding: EdgeInsets.all(AppSizes.p12),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: Colors.transparent,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

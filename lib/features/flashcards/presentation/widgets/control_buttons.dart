@@ -25,13 +25,13 @@ class ControlButtons extends StatelessWidget {
         _buildButton(
           icon: Icons.chevron_left,
           onPressed: isFirst ? null : onPrevious,
-          color: AppColors.surfaceHighlight,
+          color: AppColors.isLightMode ? AppColors.textSecondary : AppColors.surfaceHighlight,
         ),
         const SizedBox(width: 20),
         _buildButton(
           icon: Icons.refresh,
           onPressed: onReset,
-          color: AppColors.surfaceHighlight,
+          color: AppColors.isLightMode ? AppColors.textSecondary : AppColors.surfaceHighlight,
         ),
         const SizedBox(width: 20),
         _buildButton(

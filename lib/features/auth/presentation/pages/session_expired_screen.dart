@@ -28,8 +28,8 @@ class SessionExpiredScreen extends StatelessWidget {
               AppSizes.gapV24,
               Text(
                 loc.sessionExpiredTitle,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -38,7 +38,7 @@ class SessionExpiredScreen extends StatelessWidget {
               Text(
                 loc.sessionExpiredDesc,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.grey, fontSize: 16),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
               ),
               const SizedBox(height: 40),
               SizedBox(

@@ -1,3 +1,4 @@
+import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -66,7 +67,7 @@ class RecentHistorySection extends StatelessWidget {
             Text(
               loc.historyRecent,
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
@@ -75,7 +76,7 @@ class RecentHistorySection extends StatelessWidget {
               onPressed: onDisplayAll,
               child: Text(
                 loc.historySeeAll,
-                style: TextStyle(color: Color(0xFF2E8CFF), fontSize: 16),
+                style: TextStyle(color: AppColors.primaryBlue, fontSize: 16),
               ),
             ),
           ],
@@ -84,10 +85,10 @@ class RecentHistorySection extends StatelessWidget {
         BlocBuilder<HistoryBloc, HistoryState>(
           builder: (context, state) {
             if (state is HistoryLoading) {
-              return const Center(
+              return Center(
                   child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: CircularProgressIndicator(color: Color(0xFF2E8CFF)),
+                padding: const EdgeInsets.all(20.0),
+                child: CircularProgressIndicator(color: AppColors.primaryBlue),
               ));
             }
             if (state is HistoryError) {

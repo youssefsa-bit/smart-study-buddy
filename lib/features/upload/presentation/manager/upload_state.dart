@@ -18,6 +18,7 @@ class UploadState extends Equatable {
   final String? resultData;
   final String? errorMessage;
   final int currentStepIndex;
+  final bool isDuplicate;
 
   const UploadState({
     this.selectedFile,
@@ -30,6 +31,7 @@ class UploadState extends Equatable {
     this.resultData,
     this.errorMessage,
     this.currentStepIndex = 0,
+    this.isDuplicate = false,
   });
 
   UploadState copyWith({
@@ -45,6 +47,7 @@ class UploadState extends Equatable {
     String? resultData,
     String? errorMessage,
     int? currentStepIndex,
+    bool? isDuplicate,
   }) {
     return UploadState(
       selectedFile: clearFile ? null : (selectedFile ?? this.selectedFile),
@@ -59,6 +62,7 @@ class UploadState extends Equatable {
       resultData: resultData ?? this.resultData,
       errorMessage: errorMessage ?? this.errorMessage,
       currentStepIndex: currentStepIndex ?? this.currentStepIndex,
+      isDuplicate: isDuplicate ?? this.isDuplicate,
     );
   }
 
@@ -74,5 +78,6 @@ class UploadState extends Equatable {
         resultData,
         errorMessage,
         currentStepIndex,
+        isDuplicate,
       ];
 }

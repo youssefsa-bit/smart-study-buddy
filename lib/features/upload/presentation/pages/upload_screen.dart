@@ -59,17 +59,42 @@ class _UploadScreenContent extends StatelessWidget {
       body: SafeArea(
         child: BlocConsumer<UploadBloc, UploadState>(
           listener: (context, state) {
+            if (state.isDuplicate && state.status == UploadRequestStatus.initial && state.selectedAction == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('File already uploaded. Selected automatically from library.'),
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+            }
+
             if (state.status == UploadRequestStatus.success &&
                 state.resultData != null) {
+              
+              if (state.isDuplicate) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('File already uploaded. Selected automatically.'),
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
+
               final String pdfId = state.resultData!;
               final String fileName = state.selectedPdfId != null
                   ? (state.selectedFileName ?? "Document")
                   : (state.selectedFile?.path.split('/').last ?? "Document");
 
-              final args = {
-                'pdfId': pdfId,
-                'fileName': fileName,
-              };
+              final bool isExistingDoc = state.isDuplicate || state.selectedPdfId != null;
+              final args = isExistingDoc
+                  ? {
+                      'resultId': int.tryParse(pdfId),
+                      'fileName': fileName,
+                    }
+                  : {
+                      'pdfId': pdfId,
+                      'fileName': fileName,
+                    };
 
               if (state.selectedAction == UploadAction.flashcards) {
                 Navigator.pushNamed(context, AppRoutesName.flashcards,
@@ -129,7 +154,7 @@ class _UploadScreenContent extends StatelessWidget {
                     AppSizes.gapV16,
                     Text(
                       loc.uploadScreenProcessing,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.textPrimary, fontSize: 16),
                     ),
                   ],
@@ -148,7 +173,7 @@ class _UploadScreenContent extends StatelessWidget {
                     children: [
                       Text(
                         loc.uploadScreenTitle,
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 28,
                             fontWeight: FontWeight.bold),
@@ -156,7 +181,7 @@ class _UploadScreenContent extends StatelessWidget {
                       AppSizes.gapV8,
                       Text(
                         loc.uploadScreenSubtitle,
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: AppColors.textSecondary, fontSize: 15),
                       ),
                     ],
@@ -181,7 +206,7 @@ class _UploadScreenContent extends StatelessWidget {
                           AppSizes.gapV24,
                           Text(
                             loc.uploadScreenOrChoose,
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: AppColors.textSecondary,
                                 fontSize: 14,
                                 letterSpacing: 1.2,
@@ -210,13 +235,13 @@ class _UploadScreenContent extends StatelessWidget {
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
                                       color: isSelected
-                                          ? const Color(0xFF101828)
-                                          : const Color(0xff111216),
+                                          ? AppColors.surface
+                                          : AppColors.background,
                                       borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
                                         color: isSelected
-                                            ? const Color(0xFF2E8CFF)
-                                            : const Color(0xFF23303F),
+                                            ? AppColors.primaryBlue
+                                            : AppColors.border,
                                         width: 1.5,
                                       ),
                                     ),
@@ -227,7 +252,7 @@ class _UploadScreenContent extends StatelessWidget {
                                         Icon(
                                           Icons.picture_as_pdf_rounded,
                                           color: isSelected
-                                              ? const Color(0xFF2E8CFF)
+                                              ? AppColors.primaryBlue
                                               : Colors.redAccent
                                                   .withValues(alpha: 0.8),
                                           size: 36,
@@ -240,8 +265,8 @@ class _UploadScreenContent extends StatelessWidget {
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                             color: isSelected
-                                                ? const Color(0xFF2E8CFF)
-                                                : Colors.white70,
+                                                ? AppColors.primaryBlue
+                                                : AppColors.textSecondary,
                                             fontSize: 12,
                                             fontWeight: isSelected
                                                 ? FontWeight.bold
@@ -259,7 +284,7 @@ class _UploadScreenContent extends StatelessWidget {
                         AppSizes.gapV24,
                         Text(
                           loc.uploadScreenChooseAction,
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: AppColors.textSecondary,
                               fontSize: 14,
                               letterSpacing: 1.2,
@@ -283,7 +308,7 @@ class _UploadScreenContent extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 16, bottom: 24),
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF2E8CFF),
+                                backgroundColor: AppColors.primaryBlue,
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 18),
                                 shape: RoundedRectangleBorder(

@@ -61,9 +61,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: AppColors.textPrimary),
         title: Text(loc.changePassSecurity,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
       ),
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
@@ -115,14 +115,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             child: ListView(
               padding: const EdgeInsets.all(24.0),
               children: [
-                const Icon(Icons.shield_outlined,
+                Icon(Icons.shield_outlined,
                     size: 80, color: AppColors.primaryBlue),
                 AppSizes.gapV16,
                 Text(
                   loc.menuChangePassword,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 22,
                       fontWeight: FontWeight.bold),
                 ),
@@ -142,7 +142,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 TextFormField(
                   controller: _currentPasswordController,
                   obscureText: _obscureCurrent,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: AppColors.textPrimary),
                   validator: (value) => (value == null || value.isEmpty)
                       ? loc.changePassCurrentEmpty
                       : null,
@@ -161,7 +161,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 TextFormField(
                   controller: _newPasswordController,
                   obscureText: _obscureNew,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: AppColors.textPrimary),
                   validator: (value) {
                     if (value == null || value.isEmpty)
                       return loc.changePassNewEmpty;
@@ -187,7 +187,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: _obscureConfirm,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: AppColors.textPrimary),
                   validator: (value) {
                     if (value == null || value.isEmpty)
                       return loc.changePassConfirmEmpty;
@@ -257,7 +257,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
       focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.primaryBlue)),
+          borderSide: BorderSide(color: AppColors.primaryBlue)),
       errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Colors.redAccent)),

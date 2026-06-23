@@ -6,6 +6,7 @@ import 'package:study_buddy/features/auth/presentation/manager/auth_event.dart';
 
 import 'core/constants/app_colors.dart';
 import 'core/manager/language_cubit.dart';
+import 'core/manager/theme_cubit.dart';
 import 'core/routes/app_routes.dart';
 import 'core/routes/app_routes_name.dart';
 import 'core/services/injection_container.dart' as di;
@@ -38,34 +39,50 @@ class StudyFlowApp extends StatelessWidget {
         BlocProvider(
           create: (context) => di.sl<LanguageCubit>(),
         ),
+        BlocProvider(
+          create: (context) => di.sl<ThemeCubit>(),
+        ),
       ],
-      child: BlocBuilder<LanguageCubit, Locale>(
-        builder: (context, locale) {
-          return MaterialApp(
-            navigatorKey: navigatorKey,
-            title: 'StudyFlow',
-            debugShowCheckedModeBanner: false,
-            locale: locale,
-            supportedLocales: const [
-              Locale('en'),
-              Locale('ar'),
-            ],
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            theme: ThemeData(
-              scaffoldBackgroundColor: AppColors.background,
-              colorScheme: const ColorScheme.dark(
-                primary: AppColors.primaryBlue,
-                surface: AppColors.surface,
-              ),
-              fontFamily: 'Inter',
-            ),
-            initialRoute: AppRoutesName.splash,
-            onGenerateRoute: AppRoutes.generateRoute,
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) {
+          return BlocBuilder<LanguageCubit, Locale>(
+            builder: (context, locale) {
+              return MaterialApp(
+                navigatorKey: navigatorKey,
+                title: 'StudyFlow',
+                debugShowCheckedModeBanner: false,
+                locale: locale,
+                supportedLocales: const [
+                  Locale('en'),
+                  Locale('ar'),
+                ],
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                themeMode: themeMode,
+                theme: ThemeData(
+                  scaffoldBackgroundColor: AppColors.background,
+                  colorScheme: ColorScheme.light(
+                    primary: AppColors.primaryBlue,
+                    surface: AppColors.surface,
+                  ),
+                  fontFamily: 'Inter',
+                ),
+                darkTheme: ThemeData(
+                  scaffoldBackgroundColor: AppColors.background,
+                  colorScheme: ColorScheme.dark(
+                    primary: AppColors.primaryBlue,
+                    surface: AppColors.surface,
+                  ),
+                  fontFamily: 'Inter',
+                ),
+                initialRoute: AppRoutesName.splash,
+                onGenerateRoute: AppRoutes.generateRoute,
+              );
+            },
           );
         },
       ),

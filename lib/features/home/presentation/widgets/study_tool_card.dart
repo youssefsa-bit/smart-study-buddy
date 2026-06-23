@@ -26,7 +26,7 @@ class StudyToolCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
       child: Container(
         width: double.infinity,
-        height: 230,
+        height: 235,
         decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
@@ -36,32 +36,40 @@ class StudyToolCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                decoration:
-                    BoxDecoration(color: imageColor, shape: BoxShape.circle),
-                child: Icon(
-                  icon,
-                  color: iconColor,
-                  size: 30,
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  decoration:
+                      BoxDecoration(color: imageColor, shape: BoxShape.circle),
+                  child: Icon(
+                    icon,
+                    color: iconColor,
+                    size: 30,
+                  ),
                 ),
               ),
               AppSizes.gapV16,
-              Text(
-                title,
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
               AppSizes.gapV8,
-              Text(
-                subTitle,
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 15,
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  subTitle,
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 15,
+                  ),
                 ),
               ),
             ],

@@ -30,3 +30,26 @@ class SummaryError extends SummaryState {
   @override
   List<Object?> get props => [message];
 }
+
+class SummaryPdfDownloading extends SummaryState {
+  final SummaryEntity summary;
+  const SummaryPdfDownloading(this.summary);
+  @override
+  List<Object?> get props => [summary];
+}
+
+class SummaryPdfDownloaded extends SummaryState {
+  final SummaryEntity summary;
+  final String savedPath;
+  const SummaryPdfDownloaded(this.summary, this.savedPath);
+  @override
+  List<Object?> get props => [summary, savedPath];
+}
+
+class SummaryPdfDownloadError extends SummaryState {
+  final SummaryEntity summary;
+  final String message;
+  const SummaryPdfDownloadError(this.summary, this.message);
+  @override
+  List<Object?> get props => [summary, message];
+}

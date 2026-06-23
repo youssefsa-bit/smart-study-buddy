@@ -1,3 +1,4 @@
+import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';

@@ -95,8 +95,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   top: 24.0, left: 24.0, right: 24.0, bottom: 12.0),
               child: Text(
                 loc.historyAppbarTitle,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: AppColors.textPrimary,
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),
@@ -107,18 +107,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
               child: TextField(
                 controller: _searchController,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: AppColors.textPrimary),
                 decoration: InputDecoration(
                   hintText: loc.historySearchHint,
-                  hintStyle: const TextStyle(color: AppColors.textSecondary),
+                  hintStyle: TextStyle(color: AppColors.textSecondary),
                   prefixIcon:
-                      const Icon(Icons.search, color: AppColors.textSecondary),
+                      Icon(Icons.search, color: AppColors.textSecondary),
                   suffixIcon: ValueListenableBuilder<TextEditingValue>(
                     valueListenable: _searchController,
                     builder: (_, value, __) => value.text.isEmpty
                         ? const SizedBox.shrink()
                         : IconButton(
-                            icon: const Icon(Icons.close,
+                            icon: Icon(Icons.close,
                                 color: AppColors.textSecondary),
                             onPressed: () {
                               _searchController.clear();
@@ -197,7 +197,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 },
                 builder: (context, state) {
                   if (state is HistoryLoading) {
-                    return const Center(
+                    return Center(
                         child: CircularProgressIndicator(
                             color: AppColors.primaryBlue));
                   } else if (state is HistoryError) {
@@ -216,13 +216,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.wifi_off_rounded,
+                            Icon(Icons.wifi_off_rounded,
                                 size: 80, color: AppColors.textSecondary),
                             const SizedBox(height: 16),
                             Text(
                               displayError,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   color: AppColors.textSecondary, fontSize: 16),
                             ),
                             const SizedBox(height: 24),
@@ -251,7 +251,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                   state.activeFilter != null
                               ? loc.historyNoResults
                               : loc.historyNoData,
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: AppColors.textSecondary, fontSize: 18),
                         ),
                       );

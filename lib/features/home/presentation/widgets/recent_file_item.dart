@@ -17,7 +17,7 @@ class RecentFileItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     IconData iconData = Icons.insert_drive_file_rounded;
-    Color iconColor = const Color(0xFF2E8CFF);
+    Color iconColor = AppColors.primaryBlue;
     if (material.type == 'pdf') {
       iconData = Icons.picture_as_pdf_rounded;
       iconColor = Colors.redAccent;
@@ -68,7 +68,7 @@ class RecentFileItem extends StatelessWidget {
                     ),
                   ],
                 )),
-            const Icon(Icons.more_vert_rounded, color: Color(0xFF6B7684)),
+            Icon(Icons.more_vert_rounded, color: AppColors.textSecondary),
           ],
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
@@ -73,7 +74,7 @@ class HistoryItemCard extends StatelessWidget {
     showMenu<String>(
       context: context,
       position: position,
-      color: const Color(0xFF2A2A2A),
+      color: AppColors.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       items: [
         PopupMenuItem<String>(
@@ -136,7 +137,7 @@ class HistoryItemCard extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 12),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E1E24),
+                color: AppColors.surfaceHighlight,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
@@ -149,8 +150,8 @@ class HistoryItemCard extends StatelessWidget {
                       children: [
                         Text(
                           cleanFileName,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
@@ -161,7 +162,7 @@ class HistoryItemCard extends StatelessWidget {
                         Text(
                           "${_formatType(item.type, loc)} • ${_formatDate(item.createdAt, context)}",
                           style: TextStyle(
-                            color: Colors.grey.shade400,
+                            color: AppColors.textSecondary,
                             fontSize: 13,
                           ),
                         ),

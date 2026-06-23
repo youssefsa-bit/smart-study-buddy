@@ -11,7 +11,7 @@ import '../manager/translation_state.dart';
 ///
 /// Place this around any text-bearing subtree in the summary screen.
 /// [targetLang] defaults to 'ar' but can be driven from user settings.
-class TranslatableTextWrapper extends StatelessWidget {
+class TranslatableTextWrapper extends StatefulWidget {
   final Widget child;
   final String targetLang;
 
@@ -21,6 +21,13 @@ class TranslatableTextWrapper extends StatelessWidget {
     this.targetLang = 'ar',
   });
 
+  @override
+  State<TranslatableTextWrapper> createState() => _TranslatableTextWrapperState();
+}
+
+class _TranslatableTextWrapperState extends State<TranslatableTextWrapper> {
+  Offset? _lastPointerPosition;
+
   void _onSelectionChanged(
     BuildContext context,
     String? selectedText,
@@ -29,25 +36,37 @@ class TranslatableTextWrapper extends StatelessWidget {
     if (trimmed.isEmpty) return;
 
     context.read<TranslationBloc>().add(
-          TranslateSelected(text: trimmed, targetLang: targetLang),
+          TranslateSelected(text: trimmed, targetLang: widget.targetLang),
         );
   }
 
   @override
   Widget build(BuildContext context) {
-    return SelectionArea(
-      onSelectionChanged: (value) =>
-          _onSelectionChanged(context, value?.plainText),
-      child: Stack(
-        children: [
-          child,
-          BlocBuilder<TranslationBloc, TranslationState>(
-            builder: (context, state) {
-              if (state is TranslationInitial) return const SizedBox.shrink();
-              return _TranslationPopup(state: state);
-            },
-          ),
-        ],
+    return Listener(
+      onPointerDown: (event) => _lastPointerPosition = event.position,
+      onPointerMove: (event) => _lastPointerPosition = event.position,
+      child: SelectionArea(
+        onSelectionChanged: (value) =>
+            _onSelectionChanged(context, value?.plainText),
+        child: Stack(
+          children: [
+            widget.child,
+            BlocBuilder<TranslationBloc, TranslationState>(
+              builder: (context, state) {
+                if (state is TranslationInitial) return const SizedBox.shrink();
+                
+                final screenHeight = MediaQuery.of(context).size.height;
+                final pointerY = _lastPointerPosition?.dy ?? (screenHeight / 2);
+                final showAtBottom = pointerY < screenHeight / 2;
+
+                return _TranslationPopup(
+                  state: state,
+                  showAtBottom: showAtBottom,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -55,18 +74,26 @@ class TranslatableTextWrapper extends StatelessWidget {
 
 class _TranslationPopup extends StatelessWidget {
   final TranslationState state;
+  final bool showAtBottom;
 
-  const _TranslationPopup({required this.state});
+  const _TranslationPopup({
+    required this.state,
+    required this.showAtBottom,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 24,
+      bottom: showAtBottom ? 100 : null,
+      top: showAtBottom ? null : 100,
       left: 16,
       right: 16,
       child: Material(
         color: Colors.transparent,
-        child: _PopupCard(state: state),
+        child: _PopupCard(
+          state: state,
+          showAtBottom: showAtBottom,
+        ),
       ),
     );
   }
@@ -74,15 +101,19 @@ class _TranslationPopup extends StatelessWidget {
 
 class _PopupCard extends StatelessWidget {
   final TranslationState state;
+  final bool showAtBottom;
 
-  const _PopupCard({required this.state});
+  const _PopupCard({
+    required this.state,
+    required this.showAtBottom,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedSize(
       duration: const Duration(milliseconds: 260),
       curve: Curves.easeInOut,
-      alignment: Alignment.bottomCenter,
+      alignment: showAtBottom ? Alignment.bottomCenter : Alignment.topCenter,
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
@@ -104,7 +135,7 @@ class _PopupCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(context),
-            const Divider(height: 1, color: Colors.white10),
+            Divider(height: 1, color: AppColors.border),
             _buildBody(),
           ],
         ),
@@ -118,21 +149,21 @@ class _PopupCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
       child: Row(
         children: [
-          const Icon(Icons.translate_rounded,
+          Icon(Icons.translate_rounded,
               color: AppColors.primaryBlue, size: 18),
           const SizedBox(width: 8),
           Text(
             loc.translationTitle,
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontWeight: FontWeight.bold,
               fontSize: 14,
             ),
           ),
           const Spacer(),
           IconButton(
-            icon: const Icon(Icons.close_rounded,
-                color: Colors.white54, size: 20),
+            icon: Icon(Icons.close_rounded,
+                color: AppColors.textSecondary, size: 20),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () =>
@@ -155,14 +186,14 @@ class _PopupCard extends StatelessWidget {
               loading.originalText,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white38,
+              style: TextStyle(
+                color: AppColors.textSecondary,
                 fontSize: 13,
                 fontStyle: FontStyle.italic,
               ),
             ),
             const SizedBox(height: 12),
-            const Center(
+            Center(
               child: SizedBox(
                 height: 22,
                 width: 22,
@@ -208,8 +239,8 @@ class _PopupCard extends StatelessWidget {
               loaded.translation.originalText,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white38,
+              style: TextStyle(
+                color: AppColors.textSecondary,
                 fontSize: 13,
                 fontStyle: FontStyle.italic,
               ),
@@ -218,8 +249,8 @@ class _PopupCard extends StatelessWidget {
             // Translated result
             Text(
               loaded.translation.translatedText,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColors.textPrimary,
                 fontSize: 16,
                 height: 1.55,
               ),

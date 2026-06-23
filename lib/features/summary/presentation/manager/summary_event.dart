@@ -1,4 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:study_buddy/l10n/app_localizations.dart';
+
+import '../../domain/entities/summary_entity.dart';
 
 abstract class SummaryEvent extends Equatable {
   const SummaryEvent();
@@ -16,4 +19,15 @@ class LoadSummary extends SummaryEvent {
 class FetchExistingSummary extends SummaryEvent {
   final int resultId;
   const FetchExistingSummary(this.resultId);
+}
+
+class DownloadSummaryPdf extends SummaryEvent {
+  final String pdfId;
+  final SummaryEntity summary;
+  final String fileName;
+  final AppLocalizations loc;
+  const DownloadSummaryPdf(
+      {required this.pdfId, required this.summary, required this.fileName, required this.loc});
+  @override
+  List<Object?> get props => [pdfId, summary, fileName];
 }

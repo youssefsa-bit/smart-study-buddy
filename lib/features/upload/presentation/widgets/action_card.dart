@@ -46,11 +46,11 @@ class ActionCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(AppSizes.p16),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF101828) : Color(0xff111216),
+          color: isSelected ? AppColors.surface : AppColors.background,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color:
-                isSelected ? const Color(0xFF2E8CFF) : const Color(0xFF23303F),
+                isSelected ? AppColors.primaryBlue : AppColors.border,
             width: 1.5,
           ),
         ),
@@ -60,15 +60,15 @@ class ActionCard extends StatelessWidget {
               padding: const EdgeInsets.all(AppSizes.p12),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? const Color(0xff002f4d)
-                    : const Color(0xff181b20),
+                    ? AppColors.surfaceHighlight
+                    : AppColors.surface,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 iconData,
                 color: isSelected
-                    ? const Color(0xff0f85dc)
-                    : const Color(0xff7c7f84),
+                    ? AppColors.primaryBlue
+                    : AppColors.textSecondary,
                 size: 24,
               ),
             ),
@@ -79,7 +79,7 @@ class ActionCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -88,7 +88,7 @@ class ActionCard extends StatelessWidget {
                   const SizedBox(height: 5),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 13,
                     ),
@@ -103,8 +103,8 @@ class ActionCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: isSelected
-                      ? const Color(0xFF2E8CFF)
-                      : const Color(0xFF3A4655),
+                      ? AppColors.primaryBlue
+                      : AppColors.border,
                   width: isSelected ? 6 : 2,
                 ),
               ),

@@ -45,14 +45,14 @@ class HomeScreen extends StatelessWidget {
                   bottom: AppSizes.p20,
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     AppSizes.gapV16,
                     UploadMaterialCard(onTap: onNavigateToUpload),
                     AppSizes.gapV24,
                     Text(
                       loc.studyTools,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 25,
                           letterSpacing: 1.2,
@@ -75,22 +75,6 @@ class HomeScreen extends StatelessWidget {
                         AppSizes.gapH16,
                         Expanded(
                           child: StudyToolCard(
-                            title: loc.flashcardsTitle,
-                            subTitle: loc.flashcardsDesc,
-                            icon: Icons.style_rounded,
-                            imageColor: AppColors.flashcardImg,
-                            iconColor: AppColors.flashcardGreen,
-                            onTap: () => onNavigateToUpload(
-                                action: UploadAction.flashcards),
-                          ),
-                        )
-                      ],
-                    ),
-                    AppSizes.gapV16,
-                    Row(
-                      children: [
-                        Expanded(
-                          child: StudyToolCard(
                             title: loc.mcqTitle,
                             subTitle: loc.mcqDesc,
                             icon: Icons.help_outline_rounded,
@@ -100,7 +84,24 @@ class HomeScreen extends StatelessWidget {
                                 onNavigateToUpload(action: UploadAction.mcq),
                           ),
                         ),
-                        const Expanded(child: SizedBox()),
+                      ],
+                    ),
+                    AppSizes.gapV16,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: StudyToolCard(
+                            title: loc.flashcardsTitle,
+                            subTitle: loc.flashcardsDesc,
+                            icon: Icons.style_rounded,
+                            imageColor: AppColors.flashcardImg,
+                            iconColor: AppColors.flashcardGreen,
+                            onTap: () => onNavigateToUpload(
+                                action: UploadAction.flashcards),
+                          ),
+                        ),
                       ],
                     ),
                     AppSizes.gapV24,

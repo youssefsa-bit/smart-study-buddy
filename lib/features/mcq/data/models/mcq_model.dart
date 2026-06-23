@@ -14,6 +14,15 @@ class QuestionModel extends QuestionEntity {
         options: List<String>.from(json['options'] ?? []),
         correctAnswer: json['correctAnswer'] ?? '');
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'text': text,
+      'options': options,
+      'correctAnswer': correctAnswer,
+    };
+  }
 }
 
 class QuizModel extends QuizEntity {
@@ -32,5 +41,24 @@ class QuizModel extends QuizEntity {
               .toList() ??
           [],
     );
+  }
+
+  factory QuizModel.fromCachedJson(Map<String, dynamic> json) {
+    return QuizModel(
+      quizId: json['quizId'] ?? 0,
+      questionCount: json['questionCount'] ?? 0,
+      questions: (json['questions'] as List?)
+              ?.map((q) => QuestionModel.fromJson(q))
+              .toList() ??
+          [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'quizId': quizId,
+      'questionCount': questionCount,
+      'questions': questions.map((q) => (q as QuestionModel).toJson()).toList(),
+    };
   }
 }

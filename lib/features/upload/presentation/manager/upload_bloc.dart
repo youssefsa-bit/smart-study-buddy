@@ -1,8 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:crypto/crypto.dart';
 
 import '../../domain/entities/pdf_file_entity.dart';
 import '../../domain/usecase/get_all_pdfs_usecase.dart';
 import '../../domain/usecase/upload_file_usecase.dart';
+import '../../data/datasource/upload_remote_data_source.dart';
 import 'upload_event.dart';
 import 'upload_state.dart';
 
@@ -31,14 +33,60 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
         selectedPdfId: event.pdfId,
         selectedFileName: event.fileName,
         status: UploadRequestStatus.initial,
+        isDuplicate: false,
       ));
     });
-    on<PickFileEvent>((event, emit) {
-      emit(state.copyWith(
-        selectedFile: event.file,
-        clearLibrary: true,
-        status: UploadRequestStatus.initial,
-      ));
+    on<PickFileEvent>((event, emit) async {
+      try {
+        final bytes = await event.file.readAsBytes();
+        final digest = sha256.convert(bytes).toString();
+        final pickedName = event.file.path.split('/').last;
+
+        PdfFileEntity? match;
+        for (var f in state.libraryFiles) {
+          if (f.hash != null && f.hash == digest) {
+            match = f;
+            break;
+          }
+        }
+        
+        if (match == null) {
+          for (var f in state.libraryFiles) {
+            if (f.fileName == pickedName) {
+              match = f;
+              break;
+            }
+          }
+        }
+
+        if (match != null && match.id.isNotEmpty) {
+          emit(state.copyWith(
+            clearFile: true,
+            selectedPdfId: match.id,
+            selectedFileName: match.fileName,
+            status: UploadRequestStatus.initial,
+            isDuplicate: true,
+          ));
+          
+          if (state.selectedAction != null) {
+            add(ProcessFileEvent());
+          }
+        } else {
+          emit(state.copyWith(
+            selectedFile: event.file,
+            clearLibrary: true,
+            status: UploadRequestStatus.initial,
+            isDuplicate: false,
+          ));
+        }
+      } catch (e) {
+        emit(state.copyWith(
+          selectedFile: event.file,
+          clearLibrary: true,
+          status: UploadRequestStatus.initial,
+          isDuplicate: false,
+        ));
+      }
     });
 
     on<RemoveFileEvent>((event, emit) {
@@ -46,6 +94,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
         clearFile: true,
         clearLibrary: true,
         status: UploadRequestStatus.initial,
+        isDuplicate: false,
       ));
     });
 
@@ -74,7 +123,30 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
         emit(state.copyWith(
           status: UploadRequestStatus.success,
           resultData: resultId,
+          isDuplicate: false,
         ));
+      } on DuplicateFileException catch (e) {
+        String? foundId = e.id;
+        
+        if ((foundId == null || foundId.isEmpty) && e.originalFilename != null) {
+           final match = state.libraryFiles.firstWhere(
+             (f) => f.fileName == e.originalFilename, 
+             orElse: () => const PdfFileEntity(id: '', fileName: '', createdAt: '')
+           );
+           if (match.id.isNotEmpty) {
+             foundId = match.id;
+           }
+        }
+
+        if (foundId != null && foundId.isNotEmpty) {
+          emit(state.copyWith(
+            status: UploadRequestStatus.success,
+            resultData: foundId,
+            isDuplicate: true,
+          ));
+        } else {
+          emit(state.copyWith(status: UploadRequestStatus.error, errorMessage: e.message));
+        }
       } catch (e) {
         emit(state.copyWith(status: UploadRequestStatus.error, errorMessage: e.toString()));
       }

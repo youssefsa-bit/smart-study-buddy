@@ -1,9 +1,13 @@
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+
 import '../../../../core/services/network_service.dart';
 import '../models/summary_model.dart';
 
 abstract class SummaryRemoteDataSource {
   Future<SummaryModel> getSummary(String pdfId);
   Future<SummaryModel> getExistingSummary(int resultId);
+  Future<String> exportSummaryPdf(String pdfId, String fileName);
 }
 
 class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
@@ -15,7 +19,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
   Future<SummaryModel> getSummary(String pdfId) async {
     try {
       final response = await networkService.dio.post(
-        'http://10.0.2.2:3000/api/pdfs/$pdfId/summary',
+        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$pdfId/summary',
       );
       return SummaryModel.fromJson(response.data);
     } catch (e) {
@@ -26,7 +30,30 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
   @override
   Future<SummaryModel> getExistingSummary(int resultId) async {
     final response = await networkService.dio
-        .get('http://10.0.2.2:3000/api/pdfs/$resultId/summary');
+        .get('https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$resultId/summary');
     return SummaryModel.fromJson(response.data);
+  }
+
+  @override
+  Future<String> exportSummaryPdf(String pdfId, String fileName) async {
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      String sanitized = fileName.replaceAll(RegExp(r'[^\w\s-]'), '').trim().replaceAll(' ', '_');
+      String savePath = '${dir.path}/${sanitized}_summary.pdf';
+      int counter = 1;
+      while (await File(savePath).exists()) {
+        savePath = '${dir.path}/${sanitized}_summary_$counter.pdf';
+        counter++;
+      }
+
+      await networkService.dio.download(
+        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$pdfId/summary/export',
+        savePath,
+      );
+
+      return savePath;
+    } catch (e) {
+      throw Exception('Failed to download PDF: $e');
+    }
   }
 }

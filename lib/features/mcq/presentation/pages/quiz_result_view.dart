@@ -55,14 +55,14 @@ class QuizResultView extends StatelessWidget {
               Text(
                 loc.mcqResultKeepStudying,
                 style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               Text(
                 loc.mcqResultScoreLabel(score, total),
-                style: const TextStyle(color: Colors.grey, fontSize: 16),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
               ),
               const Spacer(),
               SizedBox(

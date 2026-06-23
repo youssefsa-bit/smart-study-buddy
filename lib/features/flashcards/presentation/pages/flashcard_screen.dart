@@ -42,17 +42,48 @@ class FlashcardScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(loc.flashcardAppbarTitle,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text(
-                fileName,
-                style: TextStyle(fontSize: 15, color: Colors.grey),
-              )
-            ],
+          title: BlocBuilder<FlashcardBloc, FlashcardState>(
+            builder: (context, state) {
+              String subtitle = fileName;
+              if (state is FlashcardLoaded) {
+                subtitle =
+                    "$fileName • ${state.currentIndex + 1}/${state.cards.length}";
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(loc.flashcardAppbarTitle,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(fontSize: 15, color: Colors.grey),
+                    overflow: TextOverflow.ellipsis,
+                  )
+                ],
+              );
+            },
           ),
+          actions: [
+            BlocBuilder<FlashcardBloc, FlashcardState>(
+              builder: (context, state) {
+                if (state is FlashcardLoading) return const SizedBox.shrink();
+                return IconButton(
+                  icon:
+                      Icon(Icons.refresh_rounded, color: AppColors.primaryBlue),
+                  tooltip: loc.retry ?? 'Regenerate',
+                  onPressed: () {
+                    final idToUse = pdfId ?? resultId?.toString();
+                    if (idToUse != null) {
+                      context
+                          .read<FlashcardBloc>()
+                          .add(LoadFlashcards(idToUse));
+                    }
+                  },
+                );
+              },
+            ),
+          ],
         ),
         body: BlocBuilder<FlashcardBloc, FlashcardState>(
           builder: (context, state) {

@@ -90,7 +90,7 @@ class FlashcardView extends StatelessWidget {
                 child: Text(
                   text,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 22,
                     fontWeight: FontWeight.w600,
@@ -104,7 +104,7 @@ class FlashcardView extends StatelessWidget {
           Text(
             hintText,
             style:
-                const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                TextStyle(color: AppColors.textSecondary, fontSize: 14),
           ),
         ],
       ),

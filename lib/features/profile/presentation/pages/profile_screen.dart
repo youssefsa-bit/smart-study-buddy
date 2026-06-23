@@ -9,6 +9,7 @@ import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/manager/theme_cubit.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
@@ -47,15 +48,15 @@ class ProfileScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(loc.menuLanguage,
-                    style: const TextStyle(
-                        color: Colors.white,
+                    style: TextStyle(
+                        color: AppColors.textPrimary,
                         fontSize: 20,
                         fontWeight: FontWeight.bold)),
                 AppSizes.gapV24,
                 ListTile(
                   leading: const Text("🇬🇧", style: TextStyle(fontSize: 24)),
-                  title: const Text("English",
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  title: Text("English",
+                      style: TextStyle(color: AppColors.textPrimary, fontSize: 16)),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                   onTap: () {
@@ -65,8 +66,8 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Text("🇪🇬", style: TextStyle(fontSize: 24)),
-                  title: const Text("العربية",
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  title: Text("العربية",
+                      style: TextStyle(color: AppColors.textPrimary, fontSize: 16)),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                   onTap: () {
@@ -183,26 +184,33 @@ class ProfileScreen extends StatelessWidget {
                               color: AppColors.textSecondary, fontSize: 16)),
                       onTap: () => _showLanguageBottomSheet(context, loc),
                     ),
-                    ProfileMenuItem(
-                        icon: Icons.dark_mode_rounded,
-                        title: loc.menuThemeMode,
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.dark_mode_rounded,
-                                color: AppColors.primaryBlue, size: 18),
-                            AppSizes.gapH8,
-                            Text(loc.themeDark,
-                                style: TextStyle(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 16)),
-                          ],
-                        ),
-                        onTap: () {}),
-                    ProfileMenuItem(
-                        icon: Icons.settings_outlined,
-                        title: loc.menuSettings,
-                        onTap: () {}),
+                    BlocBuilder<ThemeCubit, ThemeMode>(
+                      builder: (context, themeMode) {
+                        final isLight = themeMode == ThemeMode.light;
+                        return ProfileMenuItem(
+                          icon: isLight ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                          title: loc.menuThemeMode,
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                isLight ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                                color: AppColors.primaryBlue,
+                                size: 18,
+                              ),
+                              AppSizes.gapH8,
+                              Text(isLight ? loc.light : loc.themeDark,
+                                  style: TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 16)),
+                            ],
+                          ),
+                          onTap: () {
+                            context.read<ThemeCubit>().toggleTheme();
+                          },
+                        );
+                      },
+                    ),
                     AppSizes.gapV24,
                     ProfileMenuItem(
                       icon: Icons.logout_rounded,

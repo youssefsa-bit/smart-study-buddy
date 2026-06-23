@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
+import 'package:study_buddy/core/manager/theme_cubit.dart';
 import 'package:study_buddy/features/history/presentation/pages/history_screen.dart';
 import 'package:study_buddy/features/home/presentation/pages/home_screen.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
@@ -70,7 +71,7 @@ class _MainScreenState extends State<MainScreen> {
         action: _action,
       ),
       HistoryScreen(),
-      const ProfileScreen(),
+      ProfileScreen(),
     ];
     return PopScope(
       canPop: false,
@@ -78,42 +79,46 @@ class _MainScreenState extends State<MainScreen> {
         if (didPop) return;
         SystemNavigator.pop();
       },
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        body: IndexedStack(
-          index: _currentIndex,
-          children: screens,
-        ),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            border: Border(top: BorderSide(color: Color(0xFF23303F), width: 1)),
-          ),
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) {
+          return Scaffold(
+            backgroundColor: AppColors.background,
+            body: IndexedStack(
+              index: _currentIndex,
+              children: screens,
             ),
-            child: BottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: _changeTab,
-              backgroundColor: AppColors.surface,
-              type: BottomNavigationBarType.fixed,
-              selectedItemColor: AppColors.primaryBlue,
-              unselectedItemColor: Colors.grey,
-              showSelectedLabels: true,
-              showUnselectedLabels: true,
-              selectedFontSize: 12,
-              unselectedFontSize: 12,
-              elevation: 0,
-              items: [
-                _buildNavItem(Icons.home_rounded, loc.navHome, 0),
-                _buildNavItem(Icons.file_upload_outlined, loc.navUpload, 1),
-                _buildNavItem(Icons.history_rounded, loc.navHistory, 2),
-                _buildNavItem(Icons.person_outline_rounded, loc.navProfile, 3),
-              ],
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: AppColors.border, width: 1)),
+              ),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
+                child: BottomNavigationBar(
+                  currentIndex: _currentIndex,
+                  onTap: _changeTab,
+                  backgroundColor: AppColors.surface,
+                  type: BottomNavigationBarType.fixed,
+                  selectedItemColor: AppColors.primaryBlue,
+                  unselectedItemColor: Colors.grey,
+                  showSelectedLabels: true,
+                  showUnselectedLabels: true,
+                  selectedFontSize: 12,
+                  unselectedFontSize: 12,
+                  elevation: 0,
+                  items: [
+                    _buildNavItem(Icons.home_rounded, loc.navHome, 0),
+                    _buildNavItem(Icons.file_upload_outlined, loc.navUpload, 1),
+                    _buildNavItem(Icons.history_rounded, loc.navHistory, 2),
+                    _buildNavItem(Icons.person_outline_rounded, loc.navProfile, 3),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

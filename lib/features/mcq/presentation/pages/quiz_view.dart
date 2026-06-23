@@ -17,28 +17,38 @@ class QuizView extends StatefulWidget {
 
 class _QuizViewState extends State<QuizView> {
   int currentIndex = 0;
-  int score = 0;
-  String? selectedOption;
-  bool isAnswered = false;
+  Map<int, String> userAnswers = {};
 
-  void _onOptionSelected(String optionLabel) {
-    if (isAnswered) return;
-
-    setState(() {
-      selectedOption = optionLabel;
-      isAnswered = true;
-      if (optionLabel == widget.quiz.questions[currentIndex].correctAnswer) {
-        score++;
+  int get score {
+    int s = 0;
+    userAnswers.forEach((index, answer) {
+      if (widget.quiz.questions[index].correctAnswer == answer) {
+        s++;
       }
     });
+    return s;
+  }
+
+  void _onOptionSelected(String optionLabel) {
+    if (userAnswers.containsKey(currentIndex)) return;
+
+    setState(() {
+      userAnswers[currentIndex] = optionLabel;
+    });
+  }
+
+  void _previousQuestion() {
+    if (currentIndex > 0) {
+      setState(() {
+        currentIndex--;
+      });
+    }
   }
 
   void _nextQuestion() {
     if (currentIndex < widget.quiz.questions.length - 1) {
       setState(() {
         currentIndex++;
-        selectedOption = null;
-        isAnswered = false;
       });
     } else {
       Navigator.pushReplacement(
@@ -58,6 +68,8 @@ class _QuizViewState extends State<QuizView> {
     final loc = AppLocalizations.of(context)!;
     final question = widget.quiz.questions[currentIndex];
     final progressValue = (currentIndex + 1) / widget.quiz.questions.length;
+    final selectedOption = userAnswers[currentIndex];
+    final isAnswered = userAnswers.containsKey(currentIndex);
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -76,7 +88,7 @@ class _QuizViewState extends State<QuizView> {
                 ),
                 child: Text(
                   "${currentIndex + 1}/${widget.quiz.questions.length}",
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: AppColors.primaryBlue,
                       fontWeight: FontWeight.bold),
                 ),
@@ -88,14 +100,14 @@ class _QuizViewState extends State<QuizView> {
             value: progressValue,
             backgroundColor: AppColors.surfaceHighlight,
             valueColor:
-                const AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
+                AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
             borderRadius: BorderRadius.circular(10),
           ),
           const SizedBox(height: 30),
           Text(
             question.text,
-            style: const TextStyle(
-                color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: AppColors.textPrimary, fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 30),
           Expanded(
@@ -116,36 +128,84 @@ class _QuizViewState extends State<QuizView> {
               },
             ),
           ),
-          if (isAnswered)
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryBlue,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                ),
-                onPressed: _nextQuestion,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      currentIndex == widget.quiz.questions.length - 1
-                          ? loc.mcqShowResult
-                          : loc.mcqNextQuestion,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              if (currentIndex > 0)
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).brightness == Brightness.light
+                            ? Colors.grey.shade300
+                            : AppColors.surfaceHighlight,
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                      ),
+                      onPressed: _previousQuestion,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.arrow_back_ios,
+                              color: AppColors.textPrimary, size: 14),
+                          const SizedBox(width: 2),
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                loc.mcqPreviousQuestion,
+                                style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 8),
-                    const Icon(Icons.arrow_forward_ios,
-                        color: Colors.white, size: 16),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              if (isAnswered)
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: currentIndex > 0 ? 8.0 : 0.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryBlue,
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                      ),
+                      onPressed: _nextQuestion,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                currentIndex == widget.quiz.questions.length - 1
+                                    ? loc.mcqShowResult
+                                    : loc.mcqNextQuestion,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 2),
+                          const Icon(Icons.arrow_forward_ios,
+                              color: Colors.white, size: 14),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ],
       ),
     );

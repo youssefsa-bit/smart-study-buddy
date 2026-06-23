@@ -1,3 +1,4 @@
+import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class OptionCard extends StatelessWidget {
@@ -20,9 +21,9 @@ class OptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color borderColor = Colors.grey[800]!;
-    Color bgColor = const Color(0xFF161B22);
-    Color labelColor = Colors.grey[400]!;
+    Color borderColor = AppColors.border;
+    Color bgColor = AppColors.surfaceHighlight;
+    Color labelColor = AppColors.textSecondary;
 
     if (isCorrect) {
       borderColor = Colors.greenAccent;
@@ -50,7 +51,7 @@ class OptionCard extends StatelessWidget {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: isCorrect ? Colors.greenAccent.withValues(alpha: 0.2) : (isWrong ? Colors.redAccent.withValues(alpha: 0.2) : Colors.grey[800]),
+                color: isCorrect ? Colors.greenAccent.withValues(alpha: 0.2) : (isWrong ? Colors.redAccent.withValues(alpha: 0.2) : AppColors.border),
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -59,7 +60,7 @@ class OptionCard extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 15)),
+              child: Text(text, style: TextStyle(color: AppColors.textPrimary, fontSize: 15)),
             ),
             if (isCorrect)
               const Icon(Icons.check_circle_outline, color: Colors.greenAccent),

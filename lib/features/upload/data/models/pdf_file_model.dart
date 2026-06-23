@@ -5,6 +5,7 @@ class PdfFileModel extends PdfFileEntity {
     required super.id,
     required super.fileName,
     required super.createdAt,
+    super.hash,
   });
 
   factory PdfFileModel.fromJson(Map<String, dynamic> json) {
@@ -12,6 +13,7 @@ class PdfFileModel extends PdfFileEntity {
       id: json['id'].toString(),
       fileName: json['fileName'] ?? 'Unknown File',
       createdAt: json['createdAt'] ?? '',
+      hash: json['hash']?.toString(),
     );
   }
 }

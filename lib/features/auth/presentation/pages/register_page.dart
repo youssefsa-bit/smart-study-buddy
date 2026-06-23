@@ -26,12 +26,14 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -57,13 +59,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   AppSizes.gapV24,
                   Text(loc.createAccount,
-                      style: const TextStyle(
-                          color: Colors.white,
+                      style: TextStyle(
+                          color: AppColors.textPrimary,
                           fontSize: 28,
                           fontWeight: FontWeight.bold)),
                   AppSizes.gapV8,
                   Text(loc.fillYourDetails,
-                      style: const TextStyle(color: AppColors.textGrey)),
+                      style: TextStyle(color: AppColors.textGrey)),
                   AppSizes.gapV24,
                   CustomTextField(
                     controller: _nameController,
@@ -119,6 +121,22 @@ class _RegisterPageState extends State<RegisterPage> {
                       return null;
                     },
                   ),
+                  AppSizes.gapV16,
+                  CustomTextField(
+                    controller: _confirmPasswordController,
+                    labelText: loc.registerConfirmPassword,
+                    prefixIcon: Icons.done_all_outlined,
+                    isPassword: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return loc.errorEmptyPassword;
+                      }
+                      if (value != _passwordController.text) {
+                        return loc.errorPasswordsDoNotMatch;
+                      }
+                      return null;
+                    },
+                  ),
                   AppSizes.gapV24,
                   AppSizes.gapV8,
                   BlocConsumer<AuthBloc, AuthState>(
@@ -141,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     builder: (context, state) {
                       if (state is AuthLoading) {
-                        return const Center(
+                        return Center(
                             child: CircularProgressIndicator(
                                 color: AppColors.primaryBlue));
                       }
@@ -170,11 +188,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       child: RichText(
                         text: TextSpan(
                           text: loc.alreadyHaveAnAccount,
-                          style: const TextStyle(color: AppColors.textGrey),
+                          style: TextStyle(color: AppColors.textGrey),
                           children: [
                             TextSpan(
                                 text: loc.login,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     color: AppColors.primaryBlue,
                                     fontWeight: FontWeight.bold)),
                           ],

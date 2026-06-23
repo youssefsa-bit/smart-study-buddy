@@ -60,9 +60,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color: AppColors.textPrimary),
         title: Text(loc.menuEditProfile,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
       ),
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
@@ -107,14 +107,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: ListView(
               padding: const EdgeInsets.all(24.0),
               children: [
-                const Icon(Icons.person_pin_rounded,
+                Icon(Icons.person_pin_rounded,
                     size: 80, color: AppColors.primaryBlue),
                 AppSizes.gapV16,
                 Text(
                   loc.editProfileSubtitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 22,
                       fontWeight: FontWeight.bold),
                 ),
@@ -133,7 +133,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 AppSizes.gapV8,
                 TextFormField(
                   controller: _nameController,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: AppColors.textPrimary),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return loc.editProfileNameEmpty;
@@ -146,7 +146,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: AppColors.surface,
-                    prefixIcon: const Icon(Icons.person_outline,
+                    prefixIcon: Icon(Icons.person_outline,
                         color: AppColors.textSecondary),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -154,7 +154,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide:
-                            const BorderSide(color: AppColors.primaryBlue)),
+                            BorderSide(color: AppColors.primaryBlue)),
                     errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: const BorderSide(color: Colors.redAccent)),
