@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
-import '../../l10n/app_localizations.dart';
-
-class CustomDialog {
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';class CustomDialog {
   static void showConfirmation({
     required BuildContext context,
     required String title,

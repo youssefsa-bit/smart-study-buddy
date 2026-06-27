@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_filex/open_filex.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/core_widgets/processing_status_view.dart';
 import '../../../../core/services/injection_container.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../translation/presentation/manager/translation_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../../translation/presentation/manager/translation_bloc.dart';
 import '../../../translation/presentation/widgets/translatable_text_wrapper.dart';
 import '../../../upload/domain/entities/upload_action.dart';
 import '../manager/summary_bloc.dart';
@@ -95,57 +95,20 @@ class SummaryScreen extends StatelessWidget {
                       icon = Icons.warning_amber_rounded;
                   }
 
-                  messenger.showSnackBar(
-                    SnackBar(
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: color,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      content: Row(
-                        children: [
-                          Icon(icon, color: Colors.white, size: 20),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              message,
-                              style: const TextStyle(color: Colors.white),
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                      duration: const Duration(seconds: 4),
-                    ),
+                  CustomSnackBar.show(
+                    context: context,
+                    message: message,
+                    isError: color == Colors.redAccent,
+                    customIcon: icon,
                   );
                 },
               );
             } else if (state is SummaryPdfDownloadError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  backgroundColor: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  content: Row(
-                    children: [
-                      const Icon(Icons.error_rounded,
-                          color: Colors.white, size: 20),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          state.message,
-                          style: const TextStyle(color: Colors.white),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  duration: const Duration(seconds: 4),
-                ),
+              CustomSnackBar.show(
+                context: context,
+                message: state.message,
+                isError: true,
+                customIcon: Icons.error_rounded,
               );
             }
           },

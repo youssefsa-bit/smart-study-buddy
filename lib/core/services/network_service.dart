@@ -15,7 +15,7 @@ class NetworkService {
   void init() {
     dio = Dio(
       BaseOptions(
-        baseUrl: "https://snuffingly-rumless-sherita.ngrok-free.dev/api",
+        baseUrl: "https://smart-study-buddy-production.up.railway.app/api",
         connectTimeout: const Duration(seconds: 5),
         receiveTimeout: const Duration(minutes: 5),
         followRedirects: false,

@@ -21,6 +21,8 @@
   "errorPasswordShort": "يجب أن تتكون من ٨ أحرف على الأقل",
   "errorPasswordUppercase": "يجب أن تحتوي على حرف إنجليزي كبير على الأقل",
   "errorPasswordNumber": "يجب أن تحتوي على رقم واحد على الأقل",
+  "registerConfirmPassword": "تأكيد كلمة المرور",
+  "errorPasswordsDoNotMatch": "كلمات المرور غير متطابقة",
   "signUp": "تسجيل",
   "alreadyHaveAnAccount": "لديك حساب بالفعل؟ ",
   "studyTools": "أدوات الدراسة",
@@ -114,6 +116,12 @@
   "mcqPreviousQuestion": "السؤال السابق",
   "mcqResultKeepStudying": "استمر في التعلم!",
   "mcqResultScoreLabel": "لقد أجبت بشكل صحيح على {score} من أصل {total} أسئلة",
+  "@mcqResultScoreLabel": {
+    "placeholders": {
+      "score": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
   "mcqResultDoneBtn": "تم",
   "historyAppbarTitle": "السجل",
   "historyUnknownFileType": "نوع الملف غير معروف",
@@ -137,5 +145,11 @@
   "deleteHistoryDesc": "هل أنت متأكد أنك تريد حذف هذا الملف نهائياً؟",
   "deleteHistoryBtn": "حذف",
   "historyDeletedSuccess": "تم الحذف بنجاح",
-  "translationTitle" : "الترجمة"
+  "translationTitle" : "الترجمة",
+  "pdfStudySummary": "ملخص الدراسة",
+  "pdfGeneratedBy": "تم الإنشاء بواسطة Study Buddy",
+  "themeLight": "فاتح",
+  "fileAlreadyUploaded": "تم رفع الملف مسبقًا، وتم اختياره تلقائيًا من المكتبة.",
+  "fileAlreadySelected": "تم رفع الملف مسبقًا، وتم اختياره تلقائيًا."
+
 }

@@ -3,9 +3,7 @@ import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
 import '../../features/upload/domain/entities/upload_action.dart';
-import '../../l10n/app_localizations.dart';
-
-class ProcessingStatusView extends StatelessWidget {
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';class ProcessingStatusView extends StatelessWidget {
   final UploadAction action;
   final String fileName;
   final int currentStepIndex;

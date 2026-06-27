@@ -4,7 +4,6 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/app_assets.dart';
-import '../constants/app_colors.dart';
 import '../../core/services/injection_container.dart' as di;
 import '../routes/app_routes_name.dart';
 

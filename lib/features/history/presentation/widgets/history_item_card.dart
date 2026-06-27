@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 import '../../../../core/core_widgets/custom_dialog.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../domain/entities/history_item.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../domain/entities/history_item.dart';
 import '../manager/history_bloc.dart';
 import '../manager/history_event.dart';
 import '../manager/history_state.dart';

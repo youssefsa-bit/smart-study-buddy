@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../../../../core/services/network_service.dart';
-import '../../domain/entities/pdf_file_entity.dart';
 import '../models/pdf_file_model.dart';
 
 class DuplicateFileException implements Exception {

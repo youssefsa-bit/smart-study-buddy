@@ -1,4 +1,3 @@
-import 'package:study_buddy/core/constants/app_colors.dart';
 import 'dart:ui';
 
 class AppColors {

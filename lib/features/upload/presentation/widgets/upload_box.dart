@@ -5,8 +5,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
-import '../../../../l10n/app_localizations.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class UploadBox extends StatelessWidget {
   final File? selectedFile;
   final String? fileNameFromLibrary;

@@ -13,8 +13,7 @@ import 'core/services/injection_container.dart' as di;
 import 'features/auth/presentation/manager/auth_bloc.dart';
 import 'features/history/presentation/manager/history_bloc.dart';
 import 'features/history/presentation/manager/history_event.dart';
-import 'l10n/app_localizations.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {

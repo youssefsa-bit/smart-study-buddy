@@ -8,8 +8,7 @@ import 'package:study_buddy/features/home/presentation/pages/home_screen.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
 import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dart';
 
-import '../../../../l10n/app_localizations.dart';
-import '../../../history/presentation/manager/history_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../../history/presentation/manager/history_bloc.dart';
 import '../../../history/presentation/manager/history_event.dart';
 import '../../../profile/presentation/pages/profile_screen.dart';
 

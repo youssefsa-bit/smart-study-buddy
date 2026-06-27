@@ -5,9 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:study_buddy/l10n/app_localizations.dart';
-
-import '../../features/summary/domain/entities/summary_entity.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../features/summary/domain/entities/summary_entity.dart';
 
 class PdfService {
   /// Builds a formatted PDF from [summary], saves it to the app's documents

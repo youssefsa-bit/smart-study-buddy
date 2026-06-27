@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../domain/entities/mcq_entity.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../domain/entities/mcq_entity.dart';
 import '../widgets/options_card.dart';
 import 'quiz_result_view.dart';
 

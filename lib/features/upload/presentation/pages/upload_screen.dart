@@ -10,8 +10,7 @@ import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../domain/entities/upload_action.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../domain/entities/upload_action.dart';
 import '../manager/upload_bloc.dart';
 import '../manager/upload_event.dart';
 import '../manager/upload_state.dart';
@@ -60,23 +59,19 @@ class _UploadScreenContent extends StatelessWidget {
         child: BlocConsumer<UploadBloc, UploadState>(
           listener: (context, state) {
             if (state.isDuplicate && state.status == UploadRequestStatus.initial && state.selectedAction == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('File already uploaded. Selected automatically from library.'),
-                    duration: Duration(seconds: 3),
-                  ),
-                );
+              CustomSnackBar.show(
+                context: context,
+                message: AppLocalizations.of(context)!.fileAlreadyUploaded,
+              );
             }
 
             if (state.status == UploadRequestStatus.success &&
                 state.resultData != null) {
               
               if (state.isDuplicate) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('File already uploaded. Selected automatically.'),
-                    duration: Duration(seconds: 3),
-                  ),
+                CustomSnackBar.show(
+                  context: context,
+                  message: AppLocalizations.of(context)!.fileAlreadySelected,
                 );
               }
 

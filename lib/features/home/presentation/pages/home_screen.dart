@@ -6,8 +6,7 @@ import 'package:study_buddy/features/home/presentation/pages/upper_home.dart';
 import 'package:study_buddy/features/home/presentation/widgets/study_tool_card.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
 
-import '../../../../l10n/app_localizations.dart';
-import '../widgets/upload_material_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../widgets/upload_material_card.dart';
 
 class HomeScreen extends StatelessWidget {
   final Function({UploadAction? action}) onNavigateToUpload;

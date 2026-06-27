@@ -5,8 +5,7 @@ import 'package:study_buddy/core/utils/app_sizes.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_dialog.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../manager/profile_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
 

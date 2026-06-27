@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../manager/translation_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../manager/translation_bloc.dart';
 import '../manager/translation_event.dart';
 import '../manager/translation_state.dart';
 

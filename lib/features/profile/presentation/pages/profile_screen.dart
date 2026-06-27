@@ -8,8 +8,7 @@ import '../../../../core/manager/language_cubit.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
-import '../../../../l10n/app_localizations.dart';
-import '../../../../core/manager/theme_cubit.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../../../core/manager/theme_cubit.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
@@ -72,6 +71,63 @@ class ProfileScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12)),
                   onTap: () {
                     context.read<LanguageCubit>().changeLanguage('ar');
+                    Navigator.pop(ctx);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+  void _showThemeBottomSheet(BuildContext context, AppLocalizations loc) {
+    final currentTheme = context.read<ThemeCubit>().state;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(loc.menuThemeMode,
+                    style:  TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold)),
+                AppSizes.gapV24,
+                ListTile(
+                  leading: const Icon(Icons.light_mode_rounded, color: Colors.orangeAccent, size: 24),
+                  title: Text(loc.themeLight,
+                      style:  TextStyle(color: AppColors.textPrimary, fontSize: 16)),
+                  trailing: currentTheme == ThemeMode.light
+                      ?  Icon(Icons.check, color: AppColors.primaryBlue)
+                      : null,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  onTap: () {
+                    context.read<ThemeCubit>().changeTheme(ThemeMode.light);
+                    Navigator.pop(ctx);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.dark_mode_rounded, color: Colors.blueAccent, size: 24),
+                  title: Text(loc.themeDark,
+                      style:  TextStyle(color: AppColors.textPrimary, fontSize: 16)),
+                  trailing: currentTheme == ThemeMode.dark
+                      ?  Icon(Icons.check, color: AppColors.primaryBlue)
+                      : null,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  onTap: () {
+                    context.read<ThemeCubit>().changeTheme(ThemeMode.dark);
                     Navigator.pop(ctx);
                   },
                 ),
@@ -186,8 +242,9 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     BlocBuilder<ThemeCubit, ThemeMode>(
                       builder: (context, themeMode) {
+                        final localLoc = AppLocalizations.of(context)!;
                         final isLight = themeMode == ThemeMode.light;
-                        return ProfileMenuItem(
+                          return ProfileMenuItem(
                           icon: isLight ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
                           title: loc.menuThemeMode,
                           trailing: Row(
@@ -199,14 +256,14 @@ class ProfileScreen extends StatelessWidget {
                                 size: 18,
                               ),
                               AppSizes.gapH8,
-                              Text(isLight ? loc.light : loc.themeDark,
+                              Text(isLight ? loc.themeLight : loc.themeDark,
                                   style: TextStyle(
                                       color: AppColors.textSecondary,
                                       fontSize: 16)),
                             ],
                           ),
                           onTap: () {
-                            context.read<ThemeCubit>().toggleTheme();
+                            _showThemeBottomSheet(context, localLoc);
                           },
                         );
                       },
