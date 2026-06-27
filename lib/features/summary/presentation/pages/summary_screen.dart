@@ -6,7 +6,8 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/core_widgets/processing_status_view.dart';
 import '../../../../core/services/injection_container.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../../translation/presentation/manager/translation_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../translation/presentation/manager/translation_bloc.dart';
 import '../../../translation/presentation/widgets/translatable_text_wrapper.dart';
 import '../../../upload/domain/entities/upload_action.dart';
 import '../manager/summary_bloc.dart';
@@ -17,9 +18,6 @@ class SummaryScreen extends StatelessWidget {
   final String? pdfId;
   final int? resultId;
   final String fileName;
-
-  /// The language code to translate selected text into.
-  /// Defaults to 'ar'; wire this to your locale/settings as needed.
   final String translationTargetLang;
 
   const SummaryScreen({
@@ -57,40 +55,39 @@ class SummaryScreen extends StatelessWidget {
             if (state is SummaryPdfDownloaded) {
               final parts = state.savedPath.split(RegExp(r'[/\\]'));
               final name = parts.isNotEmpty ? parts.last : state.savedPath;
-
-              // Capture messenger before the async gap to avoid BuildContext warnings
-              final messenger = ScaffoldMessenger.of(context);
-
+              final successMessage = '${loc.downloadSuccess}\n${loc.savedAt} $name\n${state.savedPath}';
+              CustomSnackBar.show(
+                context: context,
+                message: successMessage,
+                isError: false,
+                customIcon: Icons.download_done_rounded,
+              );
               OpenFilex.open(state.savedPath, type: 'application/pdf').then(
                 (result) {
+                  if (result.type != ResultType.done) {
                   String message;
                   Color color;
                   IconData icon;
 
                   switch (result.type) {
-                    case ResultType.done:
-                      message = 'PDF saved — opening…';
-                      color = AppColors.primaryGreen;
-                      icon = Icons.picture_as_pdf_rounded;
-                      break;
                     case ResultType.noAppToOpen:
                       message =
-                          'PDF saved but no PDF viewer is installed.\nFile: $name';
+                          loc.errorNoPdfApp(name);
                       color = Colors.orange;
                       icon = Icons.warning_amber_rounded;
                       break;
                     case ResultType.permissionDenied:
-                      message = 'Permission denied: ${result.message}';
+                      message = loc.errorPermissionDenied(result.message);
                       color = Colors.redAccent;
                       icon = Icons.lock_outline_rounded;
                       break;
                     case ResultType.fileNotFound:
-                      message = 'File not found: $name';
+                      message = loc.errorFileNotFound(name);
                       color = Colors.redAccent;
                       icon = Icons.error_outline_rounded;
                       break;
-                    case ResultType.error:
-                      message = 'Saved but could not open: ${result.message}';
+                    default:
+                      message = loc.errorUnexpectedOpen(result.message);
                       color = Colors.orange;
                       icon = Icons.warning_amber_rounded;
                   }
@@ -101,6 +98,7 @@ class SummaryScreen extends StatelessWidget {
                     isError: color == Colors.redAccent,
                     customIcon: icon,
                   );
+                  }
                 },
               );
             } else if (state is SummaryPdfDownloadError) {
@@ -164,10 +162,7 @@ class SummaryScreen extends StatelessWidget {
                         style: const TextStyle(color: Colors.redAccent)),
                   );
                 }
-
-                // Resolve the summary from any state that carries it
                 final summary = _summaryFromState(state);
-
                 if (summary != null) {
                   return TranslatableTextWrapper(
                     targetLang: translationTargetLang,
@@ -202,7 +197,6 @@ class SummaryScreen extends StatelessWidget {
                                 icon: Icons.flag_rounded,
                                 content: summary.conclusion,
                               ),
-                              // Extra bottom padding so the FAB never covers text
                               const SizedBox(height: 120),
                             ]),
                           ),
@@ -215,7 +209,6 @@ class SummaryScreen extends StatelessWidget {
                 return const SizedBox.shrink();
               },
             ),
-            // ── Download FAB ────────────────────────────────────────────
             floatingActionButton: BlocBuilder<SummaryBloc, SummaryState>(
               builder: (context, state) {
                 final summary = _summaryFromState(state);
@@ -268,10 +261,6 @@ class SummaryScreen extends StatelessWidget {
     );
   }
 
-  // ── Helpers ─────────────────────────────────────────────────────────────
-
-  /// Extracts the SummaryEntity from any state that carries one,
-  /// so the content stays visible during download.
   dynamic _summaryFromState(SummaryState state) {
     if (state is SummaryLoaded) return state.summary;
     if (state is SummaryPdfDownloading) return state.summary;

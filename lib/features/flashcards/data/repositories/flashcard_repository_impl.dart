@@ -13,11 +13,6 @@ class FlashcardRepositoryImpl implements FlashcardRepository {
 
   @override
   Stream<List<Flashcard>> generateFlashcardsStream(String pdfId, {CancelToken? cancelToken}) {
-    // For streams, we just pass through. Caching a stream directly here is complex.
-    // If we wanted to cache generated stream data, we'd do it at the bloc level or wait until it's fully generated.
-    // Since we only cache the final result, and stream doesn't give resultId easily,
-    // we'll rely on caching when getting existing flashcards, OR we could intercept the stream.
-    // For now, pass through.
     return remoteDataSource.generateFlashcardsStream(pdfId, cancelToken: cancelToken);
   }
 

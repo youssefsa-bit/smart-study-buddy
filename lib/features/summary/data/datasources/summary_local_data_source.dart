@@ -20,8 +20,6 @@ class SummaryLocalDataSourceImpl implements SummaryLocalDataSource {
     final key = '$cachePrefix$resultId';
     final jsonString = json.encode(summary.toJson());
     await sharedPreferences.setString(key, jsonString);
-
-    // Manage cache size
     List<String> keys = sharedPreferences.getStringList(cacheKeysList) ?? [];
     if (!keys.contains(key)) {
       keys.add(key);

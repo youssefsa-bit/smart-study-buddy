@@ -32,7 +32,7 @@ class McqRemoteDataSourceImpl implements McqRemoteDataSource {
   @override
   Future<QuizModel> getExistingQuiz(int resultId) async {
     final response = await networkService.dio
-        .get('https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$resultId/quiz');
+        .get('/pdfs/$resultId/quiz');
     return QuizModel.fromjson(response.data);
   }
 }

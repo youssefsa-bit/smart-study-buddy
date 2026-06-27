@@ -150,6 +150,44 @@
   "pdfGeneratedBy": "تم الإنشاء بواسطة Study Buddy",
   "themeLight": "فاتح",
   "fileAlreadyUploaded": "تم رفع الملف مسبقًا، وتم اختياره تلقائيًا من المكتبة.",
-  "fileAlreadySelected": "تم رفع الملف مسبقًا، وتم اختياره تلقائيًا."
-
+  "fileAlreadySelected": "تم رفع الملف مسبقًا، وتم اختياره تلقائيًا.",
+  "downloadSuccess": "تم تحميل الملف بنجاح!",
+  "savedAt": "المسار:",
+  "errorNoPdfApp": "لا يوجد تطبيق لفتح ملفات PDF.\nالملف: {name}",
+  "@errorNoPdfApp": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "errorPermissionDenied": "تم رفض الصلاحية: {message}",
+  "@errorPermissionDenied": {
+    "placeholders": {
+      "message": {"type": "String"}
+    }
+  },
+  "errorFileNotFound": "الملف غير موجود: {name}",
+  "@errorFileNotFound": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "errorUnexpectedOpen": "حدث خطأ أثناء الفتح: {message}",
+  "@errorUnexpectedOpen": {
+    "placeholders": {
+      "message": {"type": "String"}
+    }
+  },
+  "onboardingTitle1": "مرحباً بك في Smart Study Buddy",
+  "onboardingDesc1": "رفيقك الأكاديمي الذكي لتعلم أفضل.",
+  "onboardingTitle2": "بطاقات ذكية",
+  "onboardingDesc2": "قم بإنشاء بطاقات تعليمية تلقائياً من محاضراتك.",
+  "onboardingTitle3": "ختبارات تفاعلية",
+  "onboardingDesc3": "اختبر معلوماتك من خلال أسئلة اختيارات من متعدد.",
+  "onboardingTitle4": "ملخصات فورية",
+  "onboardingDesc4": "احصل على ملخصات شاملة لتوفير وقتك.",
+  "onboardingSkip": "تخطي",
+  "onboardingGetStarted": "ابدأ الآن",
+  "onboardingNext": "التالي",
+  "translationLanguageTitle": "لغة الترجمة",
+  "flashcardStreamingWarning": "جاري إنشاء باقي البطاقات، يرجى الانتظار..."
 }

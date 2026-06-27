@@ -19,7 +19,7 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
   Future<SummaryModel> getSummary(String pdfId) async {
     try {
       final response = await networkService.dio.post(
-        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$pdfId/summary',
+        '/pdfs/$pdfId/summary',
       );
       return SummaryModel.fromJson(response.data);
     } catch (e) {
@@ -30,24 +30,33 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
   @override
   Future<SummaryModel> getExistingSummary(int resultId) async {
     final response = await networkService.dio
-        .get('https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$resultId/summary');
+        .get('/pdfs/$resultId/summary');
     return SummaryModel.fromJson(response.data);
   }
 
   @override
   Future<String> exportSummaryPdf(String pdfId, String fileName) async {
     try {
-      final dir = await getApplicationDocumentsDirectory();
+      String saveDirPath = '';
+
+      if (Platform.isAndroid) {
+        saveDirPath = '/storage/emulated/0/Download';
+      } else {
+        final Directory? dir = await getDownloadsDirectory();
+        saveDirPath = dir?.path ?? (await getApplicationDocumentsDirectory()).path;
+      }
+
       String sanitized = fileName.replaceAll(RegExp(r'[^\w\s-]'), '').trim().replaceAll(' ', '_');
-      String savePath = '${dir.path}/${sanitized}_summary.pdf';
+      String savePath = '$saveDirPath/${sanitized}_summary.pdf';
+
       int counter = 1;
       while (await File(savePath).exists()) {
-        savePath = '${dir.path}/${sanitized}_summary_$counter.pdf';
+        savePath = '$saveDirPath/${sanitized}_summary_$counter.pdf';
         counter++;
       }
 
       await networkService.dio.download(
-        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$pdfId/summary/export',
+        '/pdfs/$pdfId/summary/export',
         savePath,
       );
 

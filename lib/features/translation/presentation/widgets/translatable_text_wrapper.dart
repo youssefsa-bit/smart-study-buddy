@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/app_colors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../manager/translation_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../manager/translation_bloc.dart';
+import 'package:study_buddy/core/services/injection_container.dart' as di;
 import '../manager/translation_event.dart';
 import '../manager/translation_state.dart';
 
-/// Wraps [child] and shows a dynamic translation popup when text is selected.
-///
-/// Place this around any text-bearing subtree in the summary screen.
-/// [targetLang] defaults to 'ar' but can be driven from user settings.
+
 class TranslatableTextWrapper extends StatefulWidget {
   final Widget child;
   final String targetLang;
@@ -30,12 +29,13 @@ class _TranslatableTextWrapperState extends State<TranslatableTextWrapper> {
   void _onSelectionChanged(
     BuildContext context,
     String? selectedText,
-  ) {
+  ) async{
     final trimmed = selectedText?.trim() ?? '';
     if (trimmed.isEmpty) return;
-
+    final prefs = di.sl<SharedPreferences>();
+    final targetLang = prefs.getString('TRANSLATION_TARGET_LANG') ?? 'ar';
     context.read<TranslationBloc>().add(
-          TranslateSelected(text: trimmed, targetLang: widget.targetLang),
+          TranslateSelected(text: trimmed, targetLang: targetLang),
         );
   }
 
@@ -233,7 +233,6 @@ class _PopupCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Original snippet
             Text(
               loaded.translation.originalText,
               maxLines: 2,
@@ -245,7 +244,6 @@ class _PopupCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            // Translated result
             Text(
               loaded.translation.translatedText,
               style: TextStyle(

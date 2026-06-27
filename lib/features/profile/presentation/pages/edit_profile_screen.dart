@@ -5,7 +5,9 @@ import 'package:study_buddy/core/utils/app_sizes.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_dialog.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../manager/profile_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../../auth/presentation/manager/auth_bloc.dart';
+import '../../../auth/presentation/manager/auth_event.dart';
+import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
 
@@ -73,6 +75,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               message: listenerLoc.editProfileSuccess,
               isError: false,
             );
+            if (state.user != null) {
+              context.read<AuthBloc>().add(UpdateAuthNameEvent(newName: state.user!.name));
+            }
             Navigator.pop(context);
           } else if (state.status == ProfileStatus.error &&
               state.action == ProfileAction.updateName) {

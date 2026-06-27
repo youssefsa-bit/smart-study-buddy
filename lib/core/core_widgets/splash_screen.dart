@@ -25,8 +25,8 @@ class _SplashScreenState extends State<SplashScreen> {
         _handleNavigation();
       });
       _isInit = false;
-      }
     }
+  }
   void _handleNavigation() async {
     await Future.delayed(const Duration(seconds: 2));
 
@@ -35,19 +35,25 @@ class _SplashScreenState extends State<SplashScreen> {
     String nextRoute = AppRoutesName.login;
     try {
       final prefs = di.sl<SharedPreferences>();
-      final String? token = prefs.getString('ACCESS_TOKEN');
-      if (token != null && token.isNotEmpty) {
-        try {
-          if (JwtDecoder.isExpired(token)) {
+      bool isFirstTime = prefs.getBool('IS_FIRST_TIME') ?? true;
+
+      if (isFirstTime) {
+        nextRoute = AppRoutesName.onboarding;
+      } else {
+        final String? token = prefs.getString('ACCESS_TOKEN');
+        if (token != null && token.isNotEmpty) {
+          try {
+            if (JwtDecoder.isExpired(token)) {
+              await prefs.remove('ACCESS_TOKEN');
+              nextRoute = AppRoutesName.sessionExpired;
+            } else {
+              nextRoute = AppRoutesName.main;
+            }
+          } catch (e) {
+            print("JWT Decoder Error: $e");
             await prefs.remove('ACCESS_TOKEN');
-            nextRoute = AppRoutesName.sessionExpired;
-          } else {
-            nextRoute = AppRoutesName.main;
+            nextRoute = AppRoutesName.login;
           }
-        } catch (e) {
-          print("JWT Decoder Error: $e");
-          await prefs.remove('ACCESS_TOKEN');
-          nextRoute = AppRoutesName.login;
         }
       }
     } catch (e) {
@@ -58,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacementNamed(context, nextRoute);
     }
   }
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,

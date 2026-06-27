@@ -8,9 +8,11 @@ import '../../features/auth/presentation/pages/session_expired_screen.dart';
 import '../../features/flashcards/presentation/pages/flashcard_screen.dart';
 import '../../features/main_layout/presentation/pages/main_screen.dart';
 import '../../features/mcq/presentation/pages/mcq_screen.dart';
+import '../../features/onboarding/presentation/pages/onboarding_screen.dart';
 import '../../features/profile/presentation/manager/profile_bloc.dart';
 import '../../features/profile/presentation/pages/change_password_screen.dart';
 import '../../features/profile/presentation/pages/edit_profile_screen.dart';
+import '../../features/profile/presentation/pages/translation_language_screen.dart';
 import '../core_widgets/splash_screen.dart';
 import 'app_routes_name.dart';
 
@@ -71,6 +73,10 @@ class AppRoutes {
 
       case AppRoutesName.sessionExpired:
         return MaterialPageRoute(builder: (_) => const SessionExpiredScreen());
+      case AppRoutesName.onboarding:
+        return MaterialPageRoute(builder: (_) => const OnboardingScreen());
+      case AppRoutesName.translationLanguage:
+        return MaterialPageRoute(builder: (_) => const TranslationLanguageScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

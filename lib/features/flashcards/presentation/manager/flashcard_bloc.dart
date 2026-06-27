@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/features/flashcards/domain/usecases/get_existing_flashcards_usecase.dart';
-
 import '../../domain/entities/flashcard.dart';
 import '../../domain/usecases/get_flashcards_usecase.dart';
 import 'flashcard_event.dart';
@@ -44,7 +42,6 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
       try {
         List<Flashcard> accumulatedCards = [];
         List<Flashcard> reviewDeck = [];
-
         bool hasError = false;
 
         await emit.forEach<List<Flashcard>>(
@@ -75,6 +72,7 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
               isFlipped: state is FlashcardLoaded
                   ? (state as FlashcardLoaded).isFlipped
                   : false,
+              isStreaming: true,
             );
           },
           onError: (error, stackTrace) {
@@ -85,24 +83,23 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
         );
 
         if (hasError) return;
-
         if (reviewDeck.isNotEmpty) {
           reviewDeck.shuffle();
           accumulatedCards = [...accumulatedCards, ...reviewDeck];
-
-          emit(FlashcardLoaded(
-            cards: accumulatedCards,
-            currentIndex: state is FlashcardLoaded
-                ? (state as FlashcardLoaded).currentIndex
-                : 0,
-            isFlipped: state is FlashcardLoaded
-                ? (state as FlashcardLoaded).isFlipped
-                : false,
-          ));
-        }
-
-        if (accumulatedCards.isEmpty) {
-          emit(const FlashcardError("No flashcards generated."));
+          if (accumulatedCards.isEmpty) {
+            emit(const FlashcardError("No flashcards generated."));
+          } else {
+            emit(FlashcardLoaded(
+              cards: accumulatedCards,
+              currentIndex: state is FlashcardLoaded
+                  ? (state as FlashcardLoaded).currentIndex
+                  : 0,
+              isFlipped: state is FlashcardLoaded
+                  ? (state as FlashcardLoaded).isFlipped
+                  : false,
+              isStreaming: false,
+            ));
+          }
         }
       } on DioException catch (e) {
         _progressTimer?.cancel();
@@ -126,7 +123,8 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
           emit(FlashcardLoaded(cards: flashcards));
         }
       } catch (e) {
-        if (e.toString().contains('404') || e.toString().contains('No flashcards found')) {
+        if (e.toString().contains('404') ||
+            e.toString().contains('No flashcards found')) {
           add(LoadFlashcards(event.resultId.toString()));
         } else {
           emit(FlashcardError("Failed to fetch existing flashcards: $e"));
@@ -173,6 +171,7 @@ class FlashcardBloc extends Bloc<FlashcardEvent, FlashcardState> {
       }
     });
   }
+
   @override
   Future<void> close() {
     _progressTimer?.cancel();

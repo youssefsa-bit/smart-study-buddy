@@ -21,7 +21,6 @@ class McqLocalDataSourceImpl implements McqLocalDataSource {
     final jsonString = json.encode(quiz.toJson());
     await sharedPreferences.setString(key, jsonString);
 
-    // Manage cache size
     List<String> keys = sharedPreferences.getStringList(cacheKeysList) ?? [];
     if (!keys.contains(key)) {
       keys.add(key);

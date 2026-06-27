@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_dialog.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
@@ -232,6 +231,13 @@ class ProfileScreen extends StatelessWidget {
                               context, AppRoutesName.changePassword,
                               arguments: context.read<ProfileBloc>());
                         }),
+                    ProfileMenuItem(
+                      icon: Icons.translate_rounded,
+                      title: loc.translationLanguageTitle,
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutesName.translationLanguage);
+                      },
+                    ),
                     ProfileMenuItem(
                       icon: Icons.language_rounded,
                       title: loc.menuLanguage,

@@ -13,7 +13,6 @@ class QuestionEntity extends Equatable {
       required this.correctAnswer});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [id,text,options,correctAnswer];
 }
 
@@ -28,6 +27,5 @@ class QuizEntity extends Equatable{
   });
 
   @override
-  // TODO: implement props
   List<Object?> get props => [quizId,questionCount,questions];
 }

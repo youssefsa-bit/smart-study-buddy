@@ -5,14 +5,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../features/summary/domain/entities/summary_entity.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../features/summary/domain/entities/summary_entity.dart';
 
 class PdfService {
-  /// Builds a formatted PDF from [summary], saves it to the app's documents
-  /// directory and returns the absolute file path.
-  ///
-  /// Filename: `{name}_generated_summary.pdf`
-  /// Auto-increments if the file already exists.
   Future<String> saveSummaryAsPdf(
       {required SummaryEntity summary,
       required String fileName,
@@ -43,22 +39,15 @@ class PdfService {
     }
   }
 
-  // ── PDF builder ──────────────────────────────────────────────────────────
-
   Future<Uint8List> _buildPdf(
       {required SummaryEntity summary,
       required String fileName,
       required AppLocalizations loc}) async {
     final doc = pw.Document();
-
-    // Use Cairo font which supports both Arabic and Latin characters cleanly
     final ttf = await PdfGoogleFonts.cairoRegular();
     final ttfBold = await PdfGoogleFonts.cairoBold();
-    
-    // Determine layout direction based on locale
     final isRtl = loc.localeName == 'ar';
 
-    // ── colours ───────────────────────────────────────────────────────────
     const bgColor = PdfColor.fromInt(0xFF0D0D0D);
     const surfaceColor = PdfColor.fromInt(0xFF1A1C20);
     const blueColor = PdfColor.fromInt(0xFF246BFD);
@@ -67,7 +56,6 @@ class PdfService {
     const white = PdfColors.white;
     const grey = PdfColor.fromInt(0xFFB0B0B0);
 
-    // ── text styles ───────────────────────────────────────────────────────
     final titleStyle = pw.TextStyle(
         font: ttfBold, fontSize: 13, color: white);
     final bodyStyle = pw.TextStyle(
@@ -79,8 +67,6 @@ class PdfService {
     final brandStyle = pw.TextStyle(
         font: ttf, fontSize: 9, color: blueColor, fontStyle: pw.FontStyle.italic);
 
-    // ── helper: bullet item ───────────────────────────────────────────────
-    // Using a geometric circle for the bullet to avoid font glyph issues.
     pw.Widget bullet(String text) {
       return pw.Padding(
         padding: const pw.EdgeInsets.only(bottom: 8),
@@ -107,11 +93,6 @@ class PdfService {
       );
     }
 
-    // ── helper: section card ──────────────────────────────────────────────
-    // The pdf package cannot paginate a pw.Container that is taller than a page.
-    // If it tries, it unwraps the children, losing all padding/constraints and
-    // causing text to overflow. To fix this, we return a list of pw.Containers
-    // (one for the title, one for each child) so MultiPage paginates between them naturally.
     List<pw.Widget> cardItems({
       required String title,
       required List<pw.Widget> children,
@@ -123,7 +104,6 @@ class PdfService {
 
       final List<pw.Widget> result = [];
 
-      // Title item (Top rounded)
       result.add(
         pw.Container(
           width: double.infinity,
@@ -153,7 +133,6 @@ class PdfService {
         ),
       );
 
-      // Children items
       for (int i = 0; i < children.length; i++) {
         final isLast = i == children.length - 1;
         result.add(
@@ -181,7 +160,6 @@ class PdfService {
       return result;
     }
 
-    // ── page ──────────────────────────────────────────────────────────────
     doc.addPage(
       pw.MultiPage(
         pageTheme: pw.PageTheme(
@@ -194,7 +172,6 @@ class PdfService {
           ),
         ),
         build: (_) => [
-          // ── header ────────────────────────────────────────────────────
           pw.Container(
             width: double.infinity,
             margin: const pw.EdgeInsets.only(bottom: 18),
@@ -217,26 +194,19 @@ class PdfService {
             ),
           ),
 
-          // ── main topic ────────────────────────────────────────────────
           ...cardItems(
             title: loc.summaryMainTopic,
             highlight: true,
             children: [pw.Text(summary.mainTopic, style: bodyStyle)],
           ),
-
-          // ── key concepts ──────────────────────────────────────────────
           ...cardItems(
             title: loc.summaryKeyConcepts,
             children: summary.keyConcepts.map(bullet).toList(),
           ),
-
-          // ── important details ─────────────────────────────────────────
           ...cardItems(
             title: loc.summaryImportantDetails,
             children: summary.importantDetails.map(bullet).toList(),
           ),
-
-          // ── conclusion ────────────────────────────────────────────────
           ...cardItems(
             title: loc.summaryConclusion,
             children: [pw.Text(summary.conclusion, style: bodyStyle)],

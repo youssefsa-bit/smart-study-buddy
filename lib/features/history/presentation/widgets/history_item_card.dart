@@ -2,7 +2,6 @@ import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart' hide TextDirection;
-
 import '../../../../core/core_widgets/custom_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../domain/entities/history_item.dart';
 import '../manager/history_bloc.dart';
@@ -168,7 +167,6 @@ class HistoryItemCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Three-dots button or loading spinner
                   if (isDeleting)
                     const SizedBox(
                       width: 20,

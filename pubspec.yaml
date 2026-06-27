@@ -52,6 +52,7 @@ dependencies:
   path_provider: ^2.1.5
   open_filex: ^4.5.1
   crypto: ^3.0.7
+  smooth_page_indicator: ^1.2.1
 
 dev_dependencies:
 

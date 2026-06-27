@@ -19,7 +19,7 @@ class FlashcardRemoteDataSourceImpl implements FlashcardRemoteDataSource {
   Stream<List<FlashcardModel>> generateFlashcardsStream(String pdfId, {CancelToken? cancelToken}) async* {
     try {
       final response = await networkService.dio.post<ResponseBody>(
-        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$pdfId/flashcards/stream',
+        '/pdfs/$pdfId/flashcards/stream',
         cancelToken: cancelToken,
         options: Options(
           responseType: ResponseType.stream,
@@ -63,7 +63,7 @@ class FlashcardRemoteDataSourceImpl implements FlashcardRemoteDataSource {
   Future<List<FlashcardModel>> getExistingFlashcards(int resultId) async {
     try {
       final response = await networkService.dio.get(
-        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs/$resultId/flashcards',
+        '/pdfs/$resultId/flashcards',
       );
 
       final List<dynamic> flashcardsJson =

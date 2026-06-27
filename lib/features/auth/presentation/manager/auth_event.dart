@@ -12,5 +12,11 @@ class RegisterRequested extends AuthEvent {
   final String password;
   RegisterRequested(this.name, this.email, this.password);
 }
-
 class CheckAuthStatus extends AuthEvent {}
+
+class UpdateAuthNameEvent extends AuthEvent{
+  final String newName;
+   UpdateAuthNameEvent({required this.newName});
+  @override
+  List<Object> get props => [newName];
+}

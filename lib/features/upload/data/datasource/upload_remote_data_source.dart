@@ -1,4 +1,3 @@
-// lib/features/upload/data/datasource/upload_remote_data_source.dart
 
 import 'dart:io';
 
@@ -34,7 +33,7 @@ class UploadRemoteDataSourceImpl implements UploadRemoteDataSource {
       });
 
       final response = await networkService.dio.post(
-        'https://snuffingly-rumless-sherita.ngrok-free.dev/api/pdfs',
+        '/pdfs',
         data: formData,
       );
 

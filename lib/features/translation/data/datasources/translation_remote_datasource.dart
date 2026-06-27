@@ -35,3 +35,4 @@ class TranslationRemoteDataSourceImpl implements TranslationRemoteDataSource {
     );
   }
 }
+

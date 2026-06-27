@@ -19,14 +19,14 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
   @override
   Future<UserProfileModel> getProfile() async {
-    final response = await networkService.dio.get('/profile'); //
+    final response = await networkService.dio.get('/profile');
     return UserProfileModel.fromJson(response.data['data']['user']);
   }
 
   @override
   Future<UserProfileModel> updateName(String name) async {
     final response = await networkService.dio.patch(
-      '/profile', // [cite: 358-368]
+      '/profile',
       data: {"name": name},
     );
     return UserProfileModel.fromJson(response.data['data']['user']);
@@ -36,7 +36,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   Future<void> changePassword(
       String currentPassword, String newPassword) async {
     await networkService.dio.patch(
-      '/profile/password', // [cite: 369-381]
+      '/profile/password',
       data: {
         "currentPassword": currentPassword,
         "newPassword": newPassword,

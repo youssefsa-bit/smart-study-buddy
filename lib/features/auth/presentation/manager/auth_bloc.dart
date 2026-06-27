@@ -19,6 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginRequested>(_onLoginRequested);
     on<RegisterRequested>(_onRegisterRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
+    on<UpdateAuthNameEvent>(_onUpdateAuthName);
   }
 
   Future<void> _onLoginRequested(
@@ -59,6 +60,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (e) {
       emit(AuthFailure(e.toString()));
+    }
+  }
+
+  void _onUpdateAuthName(UpdateAuthNameEvent event, Emitter<AuthState> emit) {
+    if (state is AuthSuccess) {
+      final currentState = state as AuthSuccess;
+      emit(AuthSuccess(
+        message: currentState.message,
+        name: event.newName,
+      ));
     }
   }
 }

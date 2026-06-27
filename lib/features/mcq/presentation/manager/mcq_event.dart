@@ -11,7 +11,6 @@ class GenerateMcqEvent extends McqEvent {
   const GenerateMcqEvent(this.pdfId);
 
   @override
-  // TODO: implement props
   List<Object?> get props => [pdfId];
 }
 
@@ -20,6 +19,5 @@ class GetExistingMCQ extends McqEvent {
   const GetExistingMCQ(this.resultId);
 
   @override
-  // TODO: implement props
   List<Object?> get props => [resultId];
 }

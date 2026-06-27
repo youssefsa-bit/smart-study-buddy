@@ -27,11 +27,7 @@ class HistoryRepositoryImpl implements HistoryRepository {
 
   @override
   Future<void> deleteHistory(int resultId, String type) async {
-    // Delete from remote first.
     await remoteDataSource.deleteHistory(resultId, type);
-
-    // Then remove the item from the local cache so the offline list
-    // stays consistent without needing a full refresh.
     final cached = await localDataSource.getCachedHistory();
     final updated = cached
         .where((item) => !(item.resultId == resultId &&

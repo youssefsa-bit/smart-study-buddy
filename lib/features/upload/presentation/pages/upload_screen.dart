@@ -10,7 +10,8 @@ import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../domain/entities/upload_action.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../domain/entities/upload_action.dart';
 import '../manager/upload_bloc.dart';
 import '../manager/upload_event.dart';
 import '../manager/upload_state.dart';
@@ -184,7 +185,6 @@ class _UploadScreenContent extends StatelessWidget {
                 ),
                 Expanded(
                   child: SingleChildScrollView(
-                    //physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24.0, vertical: 16.0),
                     child: Column(

@@ -17,7 +17,6 @@ class AppColors {
   static Color get darkBlue => isLightMode ? const Color(0xFFE3F2FD) : const Color(0xff023657);
   static Color get darkGreen => isLightMode ? const Color(0xFFE8F5E9) : const Color(0xff061e28);
   
-  // --- Primary & Accents ---
   static Color get primaryBlue => const Color(0xFF246BFD);
   static Color get primaryGreen => const Color(0xFF1E9B9E);
   static Color get mcqOrange => const Color(0xFFFF7A00);
@@ -26,13 +25,11 @@ class AppColors {
   static Color get flashcardImg => isLightMode ? const Color(0xFFE8F5E9) : const Color(0xff0e2c27);
   static Color get summarizePurple => const Color(0xFF8A2BE2);
   
-  // --- Text Colors ---
   static Color get textPrimary =>
       isLightMode ? const Color(0xFF111827) : const Color(0xFFFFFFFF);
   static Color get textSecondary =>
       isLightMode ? const Color(0xFF6B7280) : const Color(0xFFA0A0A0);
       
-  // --- Borders & Dividers ---
   static Color get border =>
       isLightMode ? const Color(0xFFE5E7EB) : const Color(0xFF2A2A2A);
   static Color get leading =>

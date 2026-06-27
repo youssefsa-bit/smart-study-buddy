@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../domain/usecases/translate_text_usecase.dart';
 import 'translation_event.dart';
 import 'translation_state.dart';
@@ -20,7 +19,6 @@ class TranslationBloc extends Bloc<TranslationEvent, TranslationState> {
     TranslateSelected event,
     Emitter<TranslationState> emit,
   ) async {
-    // Cancel any in-flight request before starting a new one
     _cancelToken?.cancel();
     _cancelToken = CancelToken();
 
