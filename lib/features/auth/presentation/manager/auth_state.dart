@@ -1,3 +1,5 @@
+import '../../domain/entities/auth_message.dart';
+
 abstract class AuthState {}
 
 class AuthInitial extends AuthState {}
@@ -5,10 +7,9 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class AuthSuccess extends AuthState {
-  final String message;
+  final AuthMessage? message;
   final String name;
-  AuthSuccess({required this.message, required this.name});
-}
+  AuthSuccess({required this.name, this.message,});}
 
 class AuthFailure extends AuthState {
   final String error;

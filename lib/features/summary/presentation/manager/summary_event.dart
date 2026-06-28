@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../domain/entities/summary_entity.dart';
 
 abstract class SummaryEvent extends Equatable {

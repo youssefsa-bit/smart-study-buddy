@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../domain/entities/upload_action.dart';
 
 class ActionCard extends StatelessWidget {

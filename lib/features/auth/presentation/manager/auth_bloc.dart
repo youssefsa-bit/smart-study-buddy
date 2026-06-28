@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/features/auth/domain/usecases/check_auth_status_usecase.dart';
 
+import '../../domain/entities/auth_message.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 import 'auth_event.dart';
@@ -27,8 +28,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     try {
       final user = await loginUseCase(event.email, event.password);
-      emit(AuthSuccess(message: "Welcome back!", name: user.name!));
-    } catch (e) {
+      emit(AuthSuccess(
+        message: AuthMessage.loginSuccess,
+        name: user.name!,
+      ));    } catch (e) {
       emit(AuthFailure(e.toString()));
     }
   }
@@ -40,7 +43,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final user =
           await registerUseCase(event.name, event.email, event.password);
       emit(AuthSuccess(
-          message: "Account created successfully!", name: user.name!));
+        message: AuthMessage.registerSuccess,
+        name: user.name!,
+      ));
     } catch (e) {
       emit(AuthFailure(e.toString()));
     }
@@ -52,7 +57,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       if (cachedName != null) {
         emit(AuthSuccess(
-          message: "Welcome back",
+          message: AuthMessage.welcomeBack,
           name: cachedName,
         ));
       } else {

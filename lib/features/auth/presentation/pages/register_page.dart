@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/constants/app_assets.dart';
+import 'package:study_buddy/core/extensions/auth_error_extension.dart';
+import 'package:study_buddy/core/extensions/auth_message_extension.dart';
 import 'package:study_buddy/core/routes/app_routes_name.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/services/injection_container.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../manager/auth_bloc.dart';
 import '../manager/auth_event.dart';
 import '../manager/auth_state.dart';
@@ -57,7 +61,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     AppAssets.logoDarkBlue,
                     width: double.infinity,
                     height: 250,
-                  ),
+                  ).animate().fade(duration: 500.ms).scale(delay: 500.ms),
                   AppSizes.gapV24,
                   Text(loc.createAccount,
                       style: TextStyle(
@@ -145,15 +149,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       if (state is AuthSuccess) {
                         CustomSnackBar.show(
                           context: context,
-                          message: state.message,
-                          isError: false,
+                          message: state.message?.localized(loc) ?? "",                          isError: false,
                         );
                         Navigator.pushReplacementNamed(
                             context, AppRoutesName.login);
                       } else if (state is AuthFailure) {
                         CustomSnackBar.show(
                           context: context,
-                          message: state.error,
+                          message: state.error.localized(loc),
                           isError: true,
                         );
                       }

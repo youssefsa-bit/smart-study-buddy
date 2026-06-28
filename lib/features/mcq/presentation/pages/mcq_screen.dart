@@ -6,7 +6,8 @@ import 'package:study_buddy/features/mcq/presentation/pages/quiz_view.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/processing_status_view.dart';
 import '../../../../core/services/injection_container.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../../upload/domain/entities/upload_action.dart';
 import '../manager/mcq_event.dart';
 import '../manager/mcq_state.dart';

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/utils/app_sizes.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class SessionExpiredScreen extends StatelessWidget {
   const SessionExpiredScreen({super.key});

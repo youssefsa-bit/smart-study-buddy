@@ -6,7 +6,8 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/core_widgets/processing_status_view.dart';
 import '../../../../core/services/injection_container.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../../translation/presentation/manager/translation_bloc.dart';
 import '../../../translation/presentation/widgets/translatable_text_wrapper.dart';
 import '../../../upload/domain/entities/upload_action.dart';

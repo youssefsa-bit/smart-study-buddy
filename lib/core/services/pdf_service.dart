@@ -7,7 +7,8 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 import '../../features/summary/domain/entities/summary_entity.dart';
-import '../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class PdfService {
   Future<String> saveSummaryAsPdf(

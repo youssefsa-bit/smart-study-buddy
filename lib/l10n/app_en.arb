@@ -189,5 +189,12 @@
   "onboardingGetStarted": "Get Started",
   "onboardingNext": "Next",
   "translationLanguageTitle": "Translation Language",
-  "flashcardStreamingWarning": "Generating remaining flashcards, please wait..."
+  "flashcardStreamingWarning": "Generating remaining flashcards, please wait...",
+  "loginSuccess": "Welcome back!",
+  "registerSuccess": "Account created successfully!",
+  "welcomeBackMessage": "Welcome back!",
+  "invalidCredentials": "Invalid email or password.",
+  "emailAlreadyExists": "This email is already registered.",
+  "networkError": "Please check your internet connection.",
+  "somethingWentWrong": "Something went wrong."
 }

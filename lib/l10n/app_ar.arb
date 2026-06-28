@@ -189,5 +189,12 @@
   "onboardingGetStarted": "ابدأ الآن",
   "onboardingNext": "التالي",
   "translationLanguageTitle": "لغة الترجمة",
-  "flashcardStreamingWarning": "جاري إنشاء باقي البطاقات، يرجى الانتظار..."
+  "flashcardStreamingWarning": "جاري إنشاء باقي البطاقات، يرجى الانتظار...",
+  "loginSuccess": "مرحبًا بعودتك!",
+  "registerSuccess": "تم إنشاء الحساب بنجاح!",
+  "welcomeBackMessage": "مرحبًا بعودتك!",
+  "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+  "emailAlreadyExists": "هذا البريد الإلكتروني مستخدم بالفعل.",
+  "networkError": "يرجى التحقق من اتصال الإنترنت.",
+  "somethingWentWrong": "حدث خطأ ما."
 }

@@ -4,7 +4,8 @@ import 'package:study_buddy/core/constants/app_colors.dart';
 
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../domain/entities/history_item.dart';
 import '../manager/history_bloc.dart';
 import '../manager/history_event.dart';

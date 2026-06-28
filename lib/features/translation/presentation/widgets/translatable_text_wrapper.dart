@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:study_buddy/core/services/injection_container.dart' as di;
 
 import '../../../../core/constants/app_colors.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../manager/translation_bloc.dart';
 import '../manager/translation_event.dart';
 import '../manager/translation_state.dart';

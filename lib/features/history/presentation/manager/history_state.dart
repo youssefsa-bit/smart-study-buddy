@@ -7,11 +7,13 @@ class HistoryInitial extends HistoryState {}
 class HistoryLoading extends HistoryState {}
 
 class HistoryLoaded extends HistoryState {
+
   final List<HistoryItem> historyItems;
   final List<HistoryItem> filteredItems;
   final String searchQuery;
   final String? activeFilter;
   final int? deletingResultId;
+  final bool isRefreshing;
 
   HistoryLoaded({
     required this.historyItems,
@@ -19,6 +21,7 @@ class HistoryLoaded extends HistoryState {
     this.searchQuery = '',
     this.activeFilter,
     this.deletingResultId,
+    this.isRefreshing = false,
   });
 
   HistoryLoaded copyWith({
@@ -27,6 +30,7 @@ class HistoryLoaded extends HistoryState {
     String? searchQuery,
     Object? activeFilter = _sentinel,
     Object? deletingResultId = _sentinel,
+    bool? isRefreshing,
   }) {
     return HistoryLoaded(
       historyItems: historyItems ?? this.historyItems,
@@ -38,6 +42,7 @@ class HistoryLoaded extends HistoryState {
       deletingResultId: deletingResultId == _sentinel
           ? this.deletingResultId
           : deletingResultId as int?,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
     );
   }
 }

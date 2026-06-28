@@ -4,7 +4,9 @@ import 'package:study_buddy/core/constants/app_colors.dart';
 
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../../../core/utils/app_sizes.dart';
 import '../../domain/entities/history_item.dart';
 import '../manager/history_bloc.dart';
 import '../manager/history_event.dart';
@@ -245,27 +247,52 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   } else if (state is HistoryLoaded) {
                     final items = state.filteredItems;
                     if (items.isEmpty) {
-                      return Center(
-                        child: Text(
-                          state.searchQuery.isNotEmpty ||
-                                  state.activeFilter != null
-                              ? loc.historyNoResults
-                              : loc.historyNoData,
-                          style: TextStyle(
-                              color: AppColors.textSecondary, fontSize: 18),
+                      return RefreshIndicator(
+                        color: AppColors.primaryBlue,
+                        onRefresh: () async {
+                          context.read<HistoryBloc>().add(LoadHistory());
+                          await Future.delayed(const Duration(milliseconds: 500));
+                        },
+                        child: CustomScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                          slivers: [
+                            SliverFillRemaining(
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.history_rounded, size: 80, color: AppColors.textSecondary.withValues(alpha: 0.5)),
+                                    AppSizes.gapV16,
+                                    Text(
+                                      loc.historyNoData,
+                                      style: TextStyle(color: AppColors.textSecondary, fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     }
-                    return ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.all(20),
-                      itemCount: items.length,
-                      itemBuilder: (context, index) {
-                        return HistoryItemCard(
-                          item: items[index],
-                          onTap: () => _navigateToResult(context, items[index]),
-                        );
+                    return RefreshIndicator(
+                      color: AppColors.primaryBlue,
+                      onRefresh: () async {
+                        context.read<HistoryBloc>().add(LoadHistory());
+                          await Future.delayed(const Duration(milliseconds: 100));
                       },
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics()),
+                        padding: const EdgeInsets.all(20),
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          return HistoryItemCard(
+                            item: items[index],
+                            onTap: () => _navigateToResult(context, items[index]),
+                          );
+                        },
+                      ),
                     );
                   }
                   return const SizedBox.shrink();

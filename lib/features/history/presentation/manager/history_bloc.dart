@@ -24,10 +24,14 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     LoadHistory event,
     Emitter<HistoryState> emit,
   ) async {
-    emit(HistoryLoading());
+    if (state is HistoryLoaded) {
+      emit((state as HistoryLoaded).copyWith(isRefreshing: true));
+    } else {
+      emit(HistoryLoading());
+    }
     try {
       final items = await getHistoryUseCase.call();
-      emit(HistoryLoaded(historyItems: items, filteredItems: items));
+      emit(HistoryLoaded(historyItems: items, filteredItems: items,isRefreshing: false));
     } catch (e) {
       emit(HistoryError(e.toString()));
     }

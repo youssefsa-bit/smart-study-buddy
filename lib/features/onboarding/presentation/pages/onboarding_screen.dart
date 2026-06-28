@@ -5,7 +5,8 @@ import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/routes/app_routes_name.dart';
 import 'package:study_buddy/core/services/injection_container.dart' as di;
 
-import '../../../../l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
