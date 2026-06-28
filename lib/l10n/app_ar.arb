@@ -177,6 +177,7 @@
       "message": {"type": "String"}
     }
   },
+  "openedExistingResult": "لقد قمت بإنشاء هذا الملف مسبقاً، تم فتح النسخة المحفوظة لك.",
   "onboardingTitle1": "مرحباً بك في Smart Study Buddy",
   "onboardingDesc1": "رفيقك الأكاديمي الذكي لتعلم أفضل.",
   "onboardingTitle2": "بطاقات ذكية",
@@ -196,5 +197,6 @@
   "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
   "emailAlreadyExists": "هذا البريد الإلكتروني مستخدم بالفعل.",
   "networkError": "يرجى التحقق من اتصال الإنترنت.",
-  "somethingWentWrong": "حدث خطأ ما."
+  "somethingWentWrong": "حدث خطأ ما.",
+  "errorServerOrAiFailed": "عذراً، تعذر الاتصال بالخادم أو فشل استخراج البيانات."
 }

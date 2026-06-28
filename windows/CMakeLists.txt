@@ -4,7 +4,7 @@ project(study_buddy LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "study_buddy")
+set(BINARY_NAME "Smart_Study_Buddy")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:crypto/crypto.dart';
-
+import 'package:path/path.dart' as p;
 import '../../domain/entities/pdf_file_entity.dart';
 import '../../domain/usecase/get_all_pdfs_usecase.dart';
 import '../../domain/usecase/upload_file_usecase.dart';
@@ -21,6 +21,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
           String cleanName = file.fileName.trim();
           uniqueFilesMap[cleanName] = file;
         }
+
         final List<PdfFileEntity> uniqueFilesList = uniqueFilesMap.values.toList();
         emit(state.copyWith(libraryFiles: uniqueFilesList));
       } catch (e) {
@@ -40,7 +41,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       try {
         final bytes = await event.file.readAsBytes();
         final digest = sha256.convert(bytes).toString();
-        final pickedName = event.file.path.split('/').last;
+        final pickedName =  p.basename(event.file.path);
 
         PdfFileEntity? match;
         for (var f in state.libraryFiles) {
@@ -67,10 +68,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
             status: UploadRequestStatus.initial,
             isDuplicate: true,
           ));
-          
-          if (state.selectedAction != null) {
-            add(ProcessFileEvent());
-          }
+
         } else {
           emit(state.copyWith(
             selectedFile: event.file,
@@ -93,6 +91,7 @@ class UploadBloc extends Bloc<UploadEvent, UploadState> {
       emit(state.copyWith(
         clearFile: true,
         clearLibrary: true,
+        clearAction: true,
         status: UploadRequestStatus.initial,
         isDuplicate: false,
       ));

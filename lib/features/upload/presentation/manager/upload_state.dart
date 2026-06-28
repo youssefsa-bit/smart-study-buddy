@@ -41,6 +41,7 @@ class UploadState extends Equatable {
     bool clearLibrary = false,
     String? selectedFileName,
     UploadAction? selectedAction,
+    bool clearAction = false,
     UploadRequestStatus? status,
     List<PdfFileEntity>? libraryFiles,
     String? loadingMessage,
@@ -55,7 +56,7 @@ class UploadState extends Equatable {
       selectedPdfId: clearLibrary ? null : (selectedPdfId ?? this.selectedPdfId),
       selectedFileName: clearLibrary ? null : (selectedFileName ?? this.selectedFileName),
 
-      selectedAction: selectedAction ?? this.selectedAction,
+      selectedAction: clearAction ? null : (selectedAction ?? this.selectedAction),
       status: status ?? this.status,
       libraryFiles: libraryFiles ?? this.libraryFiles,
       loadingMessage: loadingMessage ?? this.loadingMessage,

@@ -151,6 +151,7 @@
   "themeLight": "Light",
   "fileAlreadyUploaded": "File already uploaded. Selected automatically from library.",
   "fileAlreadySelected": "File already uploaded. Selected automatically.",
+  "openedExistingResult": "You have generated this previously. The saved version has been opened for you.",
   "downloadSuccess": "File downloaded successfully!",
   "savedAt": "Saved at:",
   "errorNoPdfApp": "No app found to open PDF files.\nFile: {name}",
@@ -196,5 +197,6 @@
   "invalidCredentials": "Invalid email or password.",
   "emailAlreadyExists": "This email is already registered.",
   "networkError": "Please check your internet connection.",
-  "somethingWentWrong": "Something went wrong."
+  "somethingWentWrong": "Something went wrong.",
+  "errorServerOrAiFailed": "Sorry, unable to connect to the server or failed to extract data."
 }

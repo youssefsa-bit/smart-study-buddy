@@ -8,6 +8,7 @@ import '../../../../core/core_widgets/processing_status_view.dart';
 import '../../../../core/services/injection_container.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../core/utils/app_sizes.dart';
 import '../../../translation/presentation/manager/translation_bloc.dart';
 import '../../../translation/presentation/widgets/translatable_text_wrapper.dart';
 import '../../../upload/domain/entities/upload_action.dart';
@@ -51,13 +52,14 @@ class SummaryScreen extends StatelessWidget {
       child: Builder(builder: (context) {
         final loc = AppLocalizations.of(context)!;
 
-        return BlocListener<SummaryBloc, SummaryState>(
+        return BlocConsumer<SummaryBloc, SummaryState>(
           listener: (context, state) {
             if (state is SummaryPdfDownloaded) {
               final parts = state.savedPath.split(RegExp(r'[/\\]'));
               final name = parts.isNotEmpty ? parts.last : state.savedPath;
               final successMessage =
-                  '${loc.downloadSuccess}\n${loc.savedAt} $name\n${state.savedPath}';
+                  '${loc.downloadSuccess}\n${loc.savedAt} $name\n${state
+                  .savedPath}';
               CustomSnackBar.show(
                 context: context,
                 message: successMessage,
@@ -65,7 +67,7 @@ class SummaryScreen extends StatelessWidget {
                 customIcon: Icons.download_done_rounded,
               );
               OpenFilex.open(state.savedPath, type: 'application/pdf').then(
-                (result) {
+                    (result) {
                   if (result.type != ResultType.done) {
                     String message;
                     Color color;
@@ -102,161 +104,202 @@ class SummaryScreen extends StatelessWidget {
                   }
                 },
               );
-            } else if (state is SummaryPdfDownloadError) {
+            }
+            else if (state is SummaryPdfDownloadError) {
               CustomSnackBar.show(
                 context: context,
                 message: state.message,
                 isError: true,
                 customIcon: Icons.error_rounded,
               );
+            } else if (state is SummaryError) {
+              final errorStr = state.message.toLowerCase();
+              String displayMsg = state.message;
+              IconData icon = Icons.error_outline_rounded;
+              if (errorStr.contains('stream failed') ||
+                  errorStr.contains('ai service') ||
+                  errorStr.contains('500') || errorStr.contains('server')) {
+                displayMsg = loc.errorServerOrAiFailed;
+                icon = Icons.dns_rounded;
+              } else if (errorStr.contains('connection') ||
+                  errorStr.contains('timeout')) {
+                displayMsg = loc.errorNoConnection;
+                icon = Icons.wifi_off_rounded;
+              }
+              CustomSnackBar.show(context: context,
+                  message: displayMsg,
+                  isError: true,
+                  customIcon: icon);
             }
           },
-          child: Scaffold(
-            backgroundColor: AppColors.background,
-            appBar: AppBar(
+          builder: (context, state) {
+            return Scaffold(
               backgroundColor: AppColors.background,
-              elevation: 0,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(loc.summaryAppbarTitle,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
-                  Text(
-                    fileName,
-                    style: const TextStyle(fontSize: 15, color: Colors.grey),
-                  ),
-                ],
-              ),
-              actions: [
-                BlocBuilder<SummaryBloc, SummaryState>(
-                  builder: (context, state) {
-                    if (state is SummaryLoading) return const SizedBox.shrink();
-                    return IconButton(
-                      icon: Icon(Icons.refresh_rounded,
-                          color: AppColors.primaryBlue),
-                      tooltip: loc.retry ?? 'Regenerate',
+              appBar: AppBar(
+                backgroundColor: AppColors.background,
+                elevation: 0,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(loc.summaryAppbarTitle,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    SizedBox(
+                      height: 22,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        child: Text(
+                          fileName,
+                          style: const TextStyle(fontSize: 15, color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                actions: [
+
+                  if (state is SummaryLoaded || state is SummaryError)
+                    IconButton(
+                      icon: Icon(Icons.refresh_rounded, color: AppColors.primaryBlue),
                       onPressed: () {
                         final idToUse = pdfId ?? resultId?.toString();
-                        if (idToUse != null) {
-                          context.read<SummaryBloc>().add(LoadSummary(idToUse));
-                        }
+                        if (idToUse != null) context.read<SummaryBloc>().add(LoadSummary(idToUse));
                       },
+                    ),
+                ],
+              ),
+              body: BlocBuilder<SummaryBloc, SummaryState>(
+                builder: (context, state) {
+                  if (state is SummaryLoading) {
+                    return ProcessingStatusView(
+                      action: UploadAction.summarize,
+                      fileName: loc.summaryGenerating,
+                      currentStepIndex: state.stepIndex,
                     );
-                  },
-                ),
-              ],
-            ),
-            body: BlocBuilder<SummaryBloc, SummaryState>(
-              builder: (context, state) {
-                if (state is SummaryLoading) {
-                  return ProcessingStatusView(
-                    action: UploadAction.summarize,
-                    fileName: loc.summaryGenerating,
-                    currentStepIndex: state.stepIndex,
-                  );
-                }
+                  }
 
-                if (state is SummaryError) {
-                  return Center(
-                    child: Text(state.message,
-                        style: const TextStyle(color: Colors.redAccent)),
-                  );
-                }
-                final summary = _summaryFromState(state);
-                if (summary != null) {
-                  return TranslatableTextWrapper(
-                    targetLang: translationTargetLang,
-                    child: CustomScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      slivers: [
-                        SliverPadding(
-                          padding: const EdgeInsets.all(20.0),
-                          sliver: SliverList(
-                            delegate: SliverChildListDelegate([
-                              _buildSectionCard(
-                                title: loc.summaryMainTopic,
-                                icon: Icons.lightbulb_outline,
-                                content: summary.mainTopic,
-                                isHighlight: true,
-                              ),
-                              const SizedBox(height: 20),
-                              _buildListCard(
-                                title: loc.summaryKeyConcepts,
-                                icon: Icons.key_rounded,
-                                items: summary.keyConcepts,
-                              ),
-                              const SizedBox(height: 20),
-                              _buildListCard(
-                                title: loc.summaryImportantDetails,
-                                icon: Icons.format_list_bulleted_rounded,
-                                items: summary.importantDetails,
-                              ),
-                              const SizedBox(height: 20),
-                              _buildSectionCard(
-                                title: loc.summaryConclusion,
-                                icon: Icons.flag_rounded,
-                                content: summary.conclusion,
-                              ),
-                              const SizedBox(height: 120),
-                            ]),
+                  if (state is SummaryError) {
+                    final errorStr = state.message.toLowerCase();
+                    String displayMsg = state.message;
+                    IconData displayIcon = Icons.error_outline_rounded;
+                    if (errorStr.contains('stream failed') || errorStr.contains('ai service') ||
+                        errorStr.contains('500') || errorStr.contains('server')) {
+                      displayMsg = loc.errorServerOrAiFailed;
+                      displayIcon = Icons.dns_rounded;
+                    } else if (errorStr.contains('connection') || errorStr.contains('timeout')) {
+                      displayMsg = loc.errorNoConnection;
+                      displayIcon = Icons.wifi_off_rounded;
+                    }
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(displayIcon, size: 80, color: AppColors.textSecondary),
+                          Text(displayMsg, textAlign: TextAlign.center),
+                          AppSizes.gapV24,
+                          ElevatedButton(onPressed: () => context.read<SummaryBloc>().add(LoadSummary(pdfId ?? resultId!.toString())), child: Text(loc.retry)),
+                        ],
+                      ),
+                    );
+                  }
+                  final summary = _summaryFromState(state);
+                  if (summary != null) {
+                    return TranslatableTextWrapper(
+                      targetLang: translationTargetLang,
+                      child: CustomScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        slivers: [
+                          SliverPadding(
+                            padding: const EdgeInsets.all(20.0),
+                            sliver: SliverList(
+                              delegate: SliverChildListDelegate([
+                                _buildSectionCard(
+                                  title: loc.summaryMainTopic,
+                                  icon: Icons.lightbulb_outline,
+                                  content: summary.mainTopic,
+                                  isHighlight: true,
+                                ),
+                                const SizedBox(height: 20),
+                                _buildListCard(
+                                  title: loc.summaryKeyConcepts,
+                                  icon: Icons.key_rounded,
+                                  items: summary.keyConcepts,
+                                ),
+                                const SizedBox(height: 20),
+                                _buildListCard(
+                                  title: loc.summaryImportantDetails,
+                                  icon: Icons.format_list_bulleted_rounded,
+                                  items: summary.importantDetails,
+                                ),
+                                const SizedBox(height: 20),
+                                _buildSectionCard(
+                                  title: loc.summaryConclusion,
+                                  icon: Icons.flag_rounded,
+                                  content: summary.conclusion,
+                                ),
+                                const SizedBox(height: 120),
+                              ]),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    );
+                  }
+
+                  return const SizedBox.shrink();
+                },
+              ),
+              floatingActionButton: BlocBuilder<SummaryBloc, SummaryState>(
+                builder: (context, state) {
+                  final summary = _summaryFromState(state);
+                  if (summary == null) return const SizedBox.shrink();
+
+                  final isDownloading = state is SummaryPdfDownloading;
+
+                  return FloatingActionButton.extended(
+                    onPressed: isDownloading
+                        ? null
+                        : () {
+                      context.read<SummaryBloc>().add(
+                        DownloadSummaryPdf(
+                            pdfId: pdfId ?? resultId!.toString(),
+                            summary: summary,
+                            fileName: fileName,
+                            loc: loc),
+                      );
+                    },
+                    backgroundColor: isDownloading
+                        ? (AppColors.isLightMode
+                        ? Colors.grey.shade400
+                        : AppColors.surface)
+                        : AppColors.primaryBlue,
+                    elevation: 6,
+                    icon: isDownloading
+                        ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.white70),
+                      ),
+                    )
+                        : const Icon(Icons.download_rounded,
+                        color: Colors.white),
+                    label: Text(
+                      isDownloading ? 'Generating PDF…' : 'Download PDF',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   );
-                }
+                },
+              ),
+            );
+          },
 
-                return const SizedBox.shrink();
-              },
-            ),
-            floatingActionButton: BlocBuilder<SummaryBloc, SummaryState>(
-              builder: (context, state) {
-                final summary = _summaryFromState(state);
-                if (summary == null) return const SizedBox.shrink();
-
-                final isDownloading = state is SummaryPdfDownloading;
-
-                return FloatingActionButton.extended(
-                  onPressed: isDownloading
-                      ? null
-                      : () {
-                          context.read<SummaryBloc>().add(
-                                DownloadSummaryPdf(
-                                    pdfId: pdfId ?? resultId!.toString(),
-                                    summary: summary,
-                                    fileName: fileName,
-                                    loc: loc),
-                              );
-                        },
-                  backgroundColor: isDownloading
-                      ? (AppColors.isLightMode
-                          ? Colors.grey.shade400
-                          : AppColors.surface)
-                      : AppColors.primaryBlue,
-                  elevation: 6,
-                  icon: isDownloading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white70),
-                          ),
-                        )
-                      : const Icon(Icons.download_rounded, color: Colors.white),
-                  label: Text(
-                    isDownloading ? 'Generating PDF…' : 'Download PDF',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
         );
       }),
     );
@@ -344,7 +387,8 @@ class SummaryScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          ...items.map((item) => Padding(
+          ...items.map((item) =>
+              Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,

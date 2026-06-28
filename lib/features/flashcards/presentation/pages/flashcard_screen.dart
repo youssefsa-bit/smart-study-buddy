@@ -39,7 +39,34 @@ class FlashcardScreen extends StatelessWidget {
 
         return bloc;
       },
-      child: BlocBuilder<FlashcardBloc, FlashcardState>(
+      child: BlocConsumer<FlashcardBloc, FlashcardState>(
+        listener: (context, state) {
+          if (state is FlashcardError) {
+            final errorStr = state.message.toLowerCase();
+            String displayMsg = state.message;
+            IconData icon = Icons.error_outline_rounded;
+            if (errorStr.contains('stream failed') ||
+                errorStr.contains('ai service') ||
+                errorStr.contains('no flashcards') ||
+                errorStr.contains('500') ||
+                errorStr.contains('server')){
+              displayMsg = loc.errorServerOrAiFailed;
+              icon = Icons.dns_rounded;
+            }else if (errorStr.contains('connection') ||
+                errorStr.contains('timeout') ||
+                errorStr.contains('network') ||
+                errorStr.contains('socket')) {
+              displayMsg = loc.errorNoConnection;
+              icon = Icons.wifi_off_rounded;
+            }
+            CustomSnackBar.show(
+              context: context,
+              message: displayMsg,
+              isError: true,
+              customIcon: icon,
+            );
+          }
+        },
         builder: (context, state) {
           final bool isStreamingData = state is FlashcardLoading ||
               (state is FlashcardLoaded && state.isStreaming);
@@ -65,42 +92,29 @@ class FlashcardScreen extends StatelessWidget {
                 leading: isStreamingData
                     ? const SizedBox.shrink()
                     : const BackButton(),
-                title: Builder(
-                  builder: (context) {
-                    String subtitle = fileName;
-                    if (state is FlashcardLoaded) {
-                      subtitle =
-                          "$fileName • ${state.currentIndex + 1}/${state.cards.length}";
-                    }
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(loc.flashcardAppbarTitle,
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
-                        Text(
-                          subtitle,
-                          style:
-                              const TextStyle(fontSize: 15, color: Colors.grey),
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      ],
-                    );
-                  },
-                ),
-                actions: [
-                  if (state is FlashcardLoaded && state.isStreaming)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16.0),
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.primaryBlue,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(loc.flashcardAppbarTitle,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    SizedBox(
+                      height: 22,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        child: Text(
+                          fileName,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
-                    ),
+                    )
+                  ],
+                ),
+                actions: [
                   if (state is! FlashcardLoading)
                     IconButton(
                       icon: Icon(Icons.refresh_rounded,
@@ -132,14 +146,58 @@ class FlashcardScreen extends StatelessWidget {
                   }
 
                   if (state is FlashcardError) {
+                    final errorStr = state.message.toLowerCase();
+                    String displayMsg = state.message;
+                    IconData displayIcon = Icons.error_outline_rounded;
+
+                    if (errorStr.contains('stream failed') ||
+                        errorStr.contains('ai service') ||
+                        errorStr.contains('no flashcards') ||
+                        errorStr.contains('500') ||
+                        errorStr.contains('server')) {
+                      displayMsg = loc.errorServerOrAiFailed;
+                      displayIcon = Icons.dns_rounded;
+                    } else if (errorStr.contains('connection') ||
+                        errorStr.contains('timeout') ||
+                        errorStr.contains('network') ||
+                        errorStr.contains('socket')) {
+                      displayMsg = loc.errorNoConnection;
+                      displayIcon = Icons.wifi_off_rounded;
+                    }
                     return Center(
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
-                        child: Text(
-                          state.message,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              color: Colors.redAccent, fontSize: 16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(displayIcon,
+                                size: 80, color: AppColors.textSecondary),
+                            const SizedBox(height: 16),
+                            Text(
+                                displayMsg,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.redAccent, fontSize: 16),
+                            ),
+                            const SizedBox(height: 24),
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primaryBlue,
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                final idToUse = pdfId ?? resultId?.toString();
+                                if (idToUse != null) {
+                                  context
+                                      .read<FlashcardBloc>()
+                                      .add(LoadFlashcards(idToUse));
+                                }
+                              },
+                              icon: const Icon(Icons.refresh,
+                                  color: Colors.white),
+                              label: Text(loc.retry ?? 'Retry'),
+                            ),
+                          ],
                         ),
                       ),
                     );
@@ -154,6 +212,39 @@ class FlashcardScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    "${state.currentIndex + 1} / ${state.cards.length}",
+                                    style: TextStyle(
+                                      color: AppColors.primaryBlue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      letterSpacing: 1.2,
+                                    ),
+                                  ),
+                                  if (state.isStreaming) ...[
+                                    const SizedBox(width: 12),
+                                    const SizedBox(
+                                      width: 14,
+                                      height: 14,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ]
+                                ],
+                              ),
+                              Icon(Icons.style_rounded,
+                                  color: AppColors.primaryBlue.withValues(alpha: 0.5),
+                                  size: 24),
+                            ],
+                          ),
+                          AppSizes.gapV16,
                           ProgressBarHeader(currentCard: progressValue),
                           const Spacer(),
                           FlashcardView(
@@ -195,7 +286,11 @@ class FlashcardScreen extends StatelessWidget {
                     );
                   }
 
-                  return const SizedBox.shrink();
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.primaryBlue,
+                    ),
+                  );
                 },
               ),
             ),
