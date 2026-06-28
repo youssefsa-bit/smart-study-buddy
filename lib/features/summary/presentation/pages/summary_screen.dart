@@ -35,7 +35,6 @@ class SummaryScreen extends StatelessWidget {
         BlocProvider<SummaryBloc>(
           create: (context) {
             final bloc = sl<SummaryBloc>();
-            print(resultId);
             if (resultId != null) {
               bloc.add(FetchExistingSummary(resultId!));
             } else if (pdfId != null) {
