@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_dialog.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/manager/language_cubit.dart';
+import '../../../../core/manager/theme_cubit.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../../../core/manager/theme_cubit.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
 import '../manager/profile_state.dart';
@@ -54,7 +56,8 @@ class ProfileScreen extends StatelessWidget {
                 ListTile(
                   leading: const Text("🇬🇧", style: TextStyle(fontSize: 24)),
                   title: Text("English",
-                      style: TextStyle(color: AppColors.textPrimary, fontSize: 16)),
+                      style: TextStyle(
+                          color: AppColors.textPrimary, fontSize: 16)),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                   onTap: () {
@@ -65,7 +68,8 @@ class ProfileScreen extends StatelessWidget {
                 ListTile(
                   leading: const Text("🇪🇬", style: TextStyle(fontSize: 24)),
                   title: Text("العربية",
-                      style: TextStyle(color: AppColors.textPrimary, fontSize: 16)),
+                      style: TextStyle(
+                          color: AppColors.textPrimary, fontSize: 16)),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                   onTap: () {
@@ -80,6 +84,7 @@ class ProfileScreen extends StatelessWidget {
       },
     );
   }
+
   void _showThemeBottomSheet(BuildContext context, AppLocalizations loc) {
     final currentTheme = context.read<ThemeCubit>().state;
 
@@ -97,17 +102,19 @@ class ProfileScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(loc.menuThemeMode,
-                    style:  TextStyle(
+                    style: TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 20,
                         fontWeight: FontWeight.bold)),
                 AppSizes.gapV24,
                 ListTile(
-                  leading: const Icon(Icons.light_mode_rounded, color: Colors.orangeAccent, size: 24),
+                  leading: const Icon(Icons.light_mode_rounded,
+                      color: Colors.orangeAccent, size: 24),
                   title: Text(loc.themeLight,
-                      style:  TextStyle(color: AppColors.textPrimary, fontSize: 16)),
+                      style: TextStyle(
+                          color: AppColors.textPrimary, fontSize: 16)),
                   trailing: currentTheme == ThemeMode.light
-                      ?  Icon(Icons.check, color: AppColors.primaryBlue)
+                      ? Icon(Icons.check, color: AppColors.primaryBlue)
                       : null,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
@@ -117,11 +124,13 @@ class ProfileScreen extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.dark_mode_rounded, color: Colors.blueAccent, size: 24),
+                  leading: const Icon(Icons.dark_mode_rounded,
+                      color: Colors.blueAccent, size: 24),
                   title: Text(loc.themeDark,
-                      style:  TextStyle(color: AppColors.textPrimary, fontSize: 16)),
+                      style: TextStyle(
+                          color: AppColors.textPrimary, fontSize: 16)),
                   trailing: currentTheme == ThemeMode.dark
-                      ?  Icon(Icons.check, color: AppColors.primaryBlue)
+                      ? Icon(Icons.check, color: AppColors.primaryBlue)
                       : null,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
@@ -235,7 +244,8 @@ class ProfileScreen extends StatelessWidget {
                       icon: Icons.translate_rounded,
                       title: loc.translationLanguageTitle,
                       onTap: () {
-                        Navigator.pushNamed(context, AppRoutesName.translationLanguage);
+                        Navigator.pushNamed(
+                            context, AppRoutesName.translationLanguage);
                       },
                     ),
                     ProfileMenuItem(
@@ -250,14 +260,18 @@ class ProfileScreen extends StatelessWidget {
                       builder: (context, themeMode) {
                         final localLoc = AppLocalizations.of(context)!;
                         final isLight = themeMode == ThemeMode.light;
-                          return ProfileMenuItem(
-                          icon: isLight ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                        return ProfileMenuItem(
+                          icon: isLight
+                              ? Icons.light_mode_rounded
+                              : Icons.dark_mode_rounded,
                           title: loc.menuThemeMode,
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                isLight ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                                isLight
+                                    ? Icons.light_mode_rounded
+                                    : Icons.dark_mode_rounded,
                                 color: AppColors.primaryBlue,
                                 size: 18,
                               ),

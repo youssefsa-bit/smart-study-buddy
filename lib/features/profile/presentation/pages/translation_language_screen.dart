@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/services/injection_container.dart' as di;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../../../l10n/app_localizations.dart';
+
 class TranslationLanguageScreen extends StatefulWidget {
   const TranslationLanguageScreen({super.key});
 
@@ -79,9 +81,9 @@ class _TranslationLanguageScreenState extends State<TranslationLanguageScreen> {
             ),
             child: ListTile(
               contentPadding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               leading:
-              Text(lang['flag']!, style: const TextStyle(fontSize: 28)),
+                  Text(lang['flag']!, style: const TextStyle(fontSize: 28)),
               title: Text(
                 lang['name']!,
                 style: TextStyle(
@@ -92,7 +94,7 @@ class _TranslationLanguageScreenState extends State<TranslationLanguageScreen> {
               ),
               trailing: isSelected
                   ? Icon(Icons.check_circle_rounded,
-                  color: AppColors.primaryBlue, size: 28)
+                      color: AppColors.primaryBlue, size: 28)
                   : const SizedBox.shrink(),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16)),

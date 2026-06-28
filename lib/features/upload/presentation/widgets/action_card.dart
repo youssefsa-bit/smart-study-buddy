@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../domain/entities/upload_action.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../domain/entities/upload_action.dart';
 
 class ActionCard extends StatelessWidget {
   final UploadAction action;
@@ -48,8 +49,7 @@ class ActionCard extends StatelessWidget {
           color: isSelected ? AppColors.surface : AppColors.background,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color:
-                isSelected ? AppColors.primaryBlue : AppColors.border,
+            color: isSelected ? AppColors.primaryBlue : AppColors.border,
             width: 1.5,
           ),
         ),
@@ -58,9 +58,8 @@ class ActionCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSizes.p12),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColors.surfaceHighlight
-                    : AppColors.surface,
+                color:
+                    isSelected ? AppColors.surfaceHighlight : AppColors.surface,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
@@ -101,9 +100,7 @@ class ActionCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected
-                      ? AppColors.primaryBlue
-                      : AppColors.border,
+                  color: isSelected ? AppColors.primaryBlue : AppColors.border,
                   width: isSelected ? 6 : 2,
                 ),
               ),

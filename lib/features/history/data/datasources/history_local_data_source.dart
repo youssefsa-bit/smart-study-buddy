@@ -8,6 +8,7 @@ abstract class HistoryLocalDataSource {
   Future<List<HistoryModel>> getCachedHistory();
 
   Future<void> cacheHistory(List<HistoryModel> items, {int maxItems = 20});
+  Future<void> clearFeatureCache(int resultId, String type);
 }
 
 class HistoryLocalDataSourceImpl implements HistoryLocalDataSource {
@@ -39,5 +40,17 @@ class HistoryLocalDataSourceImpl implements HistoryLocalDataSource {
         items.length > maxItems ? items.sublist(0, maxItems) : items;
     final encoded = json.encode(toCache.map((e) => e.toJson()).toList());
     await sharedPreferences.setString(_cacheKey, encoded);
+  }
+
+  @override
+  Future<void> clearFeatureCache(int resultId, String type) async {
+    final typeUpper = type.toUpperCase();
+    if (typeUpper == 'SUMMARY') {
+      await sharedPreferences.remove('CACHED_SUMMARY_$resultId');
+    } else if (typeUpper == 'FLASHCARD' || typeUpper == 'FLASHCARDS') {
+      await sharedPreferences.remove('CACHED_FLASHCARDS_$resultId');
+    } else if (typeUpper == 'MCQ' || typeUpper == 'QUIZ') {
+      await sharedPreferences.remove('CACHED_MCQ_$resultId');
+    }
   }
 }

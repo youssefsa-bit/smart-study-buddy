@@ -71,7 +71,6 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   ) async {
     final current = state;
     if (current is! HistoryLoaded) return;
-
     emit(current.copyWith(deletingResultId: event.resultId));
 
     try {

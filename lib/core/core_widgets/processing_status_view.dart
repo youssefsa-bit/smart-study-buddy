@@ -3,7 +3,9 @@ import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
 import '../../features/upload/domain/entities/upload_action.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';class ProcessingStatusView extends StatelessWidget {
+import '../../l10n/app_localizations.dart';
+
+class ProcessingStatusView extends StatelessWidget {
   final UploadAction action;
   final String fileName;
   final int currentStepIndex;
@@ -68,8 +70,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';class ProcessingSta
                     color: AppColors.surfaceHighlight,
                     borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
                   ),
-                  child: Icon(headerIcon,
-                      color: AppColors.primaryBlue, size: 40),
+                  child:
+                      Icon(headerIcon, color: AppColors.primaryBlue, size: 40),
                 ),
                 Positioned(
                   top: -6,
@@ -77,7 +79,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';class ProcessingSta
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                        color: AppColors.flashcardGreen, shape: BoxShape.circle),
+                        color: AppColors.flashcardGreen,
+                        shape: BoxShape.circle),
                     child: const Icon(Icons.auto_awesome,
                         color: Colors.white, size: 14),
                   ),

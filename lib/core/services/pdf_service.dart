@@ -5,8 +5,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import '../../features/summary/domain/entities/summary_entity.dart';
+import '../../l10n/app_localizations.dart';
 
 class PdfService {
   Future<String> saveSummaryAsPdf(
@@ -56,16 +57,16 @@ class PdfService {
     const white = PdfColors.white;
     const grey = PdfColor.fromInt(0xFFB0B0B0);
 
-    final titleStyle = pw.TextStyle(
-        font: ttfBold, fontSize: 13, color: white);
+    final titleStyle = pw.TextStyle(font: ttfBold, fontSize: 13, color: white);
     final bodyStyle = pw.TextStyle(
         font: ttf, fontSize: 10, color: grey, lineSpacing: 2, height: 1.4);
-    final h1Style = pw.TextStyle(
-        font: ttfBold, fontSize: 20, color: white);
-    final subStyle = pw.TextStyle(
-        font: ttf, fontSize: 11, color: grey);
+    final h1Style = pw.TextStyle(font: ttfBold, fontSize: 20, color: white);
+    final subStyle = pw.TextStyle(font: ttf, fontSize: 11, color: grey);
     final brandStyle = pw.TextStyle(
-        font: ttf, fontSize: 9, color: blueColor, fontStyle: pw.FontStyle.italic);
+        font: ttf,
+        fontSize: 9,
+        color: blueColor,
+        fontStyle: pw.FontStyle.italic);
 
     pw.Widget bullet(String text) {
       return pw.Padding(
@@ -193,7 +194,6 @@ class PdfService {
               ],
             ),
           ),
-
           ...cardItems(
             title: loc.summaryMainTopic,
             highlight: true,

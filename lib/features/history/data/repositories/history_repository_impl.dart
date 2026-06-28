@@ -34,5 +34,6 @@ class HistoryRepositoryImpl implements HistoryRepository {
             item.type.toUpperCase() == type.toUpperCase()))
         .toList();
     await localDataSource.cacheHistory(updated, maxItems: 20);
+    await localDataSource.clearFeatureCache(resultId, type);
   }
 }

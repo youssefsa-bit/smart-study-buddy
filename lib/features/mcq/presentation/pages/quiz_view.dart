@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../domain/entities/mcq_entity.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../domain/entities/mcq_entity.dart';
 import '../widgets/options_card.dart';
 import 'quiz_result_view.dart';
 
@@ -98,15 +99,16 @@ class _QuizViewState extends State<QuizView> {
           LinearProgressIndicator(
             value: progressValue,
             backgroundColor: AppColors.surfaceHighlight,
-            valueColor:
-                AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
             borderRadius: BorderRadius.circular(10),
           ),
           const SizedBox(height: 30),
           Text(
             question.text,
             style: TextStyle(
-                color: AppColors.textPrimary, fontSize: 22, fontWeight: FontWeight.bold),
+                color: AppColors.textPrimary,
+                fontSize: 22,
+                fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 30),
           Expanded(
@@ -135,10 +137,12 @@ class _QuizViewState extends State<QuizView> {
                     padding: const EdgeInsets.only(right: 8.0),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).brightness == Brightness.light
-                            ? Colors.grey.shade300
-                            : AppColors.surfaceHighlight,
-                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                        backgroundColor:
+                            Theme.of(context).brightness == Brightness.light
+                                ? Colors.grey.shade300
+                                : AppColors.surfaceHighlight,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 8),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15)),
                       ),
@@ -169,11 +173,13 @@ class _QuizViewState extends State<QuizView> {
               if (isAnswered)
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.only(left: currentIndex > 0 ? 8.0 : 0.0),
+                    padding:
+                        EdgeInsets.only(left: currentIndex > 0 ? 8.0 : 0.0),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryBlue,
-                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 8),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15)),
                       ),

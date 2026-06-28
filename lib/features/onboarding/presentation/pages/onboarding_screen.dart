@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/routes/app_routes_name.dart';
 import 'package:study_buddy/core/services/injection_container.dart' as di;
+
+import '../../../../l10n/app_localizations.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -101,16 +102,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: isLastPage
                       ? const SizedBox.shrink()
                       : TextButton(
-                    onPressed: () => _pageController.jumpToPage(3),
-                    child: Text(
-                      loc.onboardingSkip,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
+                          onPressed: () => _pageController.jumpToPage(3),
+                          child: Text(
+                            loc.onboardingSkip,
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
                 ),
                 SizedBox(
                   width: 220,
@@ -149,8 +150,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
             SafeArea(
                 child: SizedBox(
-                  height: 15,
-                )),
+              height: 15,
+            )),
           ],
         ),
       ),
@@ -159,8 +160,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _buildPage(BuildContext context,
       {required IconData icon,
-        required String title,
-        required String description}) {
+      required String title,
+      required String description}) {
     return Padding(
       padding: const EdgeInsets.all(40.0),
       child: Column(

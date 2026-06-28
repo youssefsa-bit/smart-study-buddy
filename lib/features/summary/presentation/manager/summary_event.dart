@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/summary_entity.dart';
 
 abstract class SummaryEvent extends Equatable {
@@ -26,7 +27,10 @@ class DownloadSummaryPdf extends SummaryEvent {
   final String fileName;
   final AppLocalizations loc;
   const DownloadSummaryPdf(
-      {required this.pdfId, required this.summary, required this.fileName, required this.loc});
+      {required this.pdfId,
+      required this.summary,
+      required this.fileName,
+      required this.loc});
   @override
   List<Object?> get props => [pdfId, summary, fileName];
 }

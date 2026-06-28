@@ -10,7 +10,7 @@ import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/routes/app_routes_name.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../../core/utils/app_sizes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/upload_action.dart';
 import '../manager/upload_bloc.dart';
 import '../manager/upload_event.dart';
@@ -59,7 +59,9 @@ class _UploadScreenContent extends StatelessWidget {
       body: SafeArea(
         child: BlocConsumer<UploadBloc, UploadState>(
           listener: (context, state) {
-            if (state.isDuplicate && state.status == UploadRequestStatus.initial && state.selectedAction == null) {
+            if (state.isDuplicate &&
+                state.status == UploadRequestStatus.initial &&
+                state.selectedAction == null) {
               CustomSnackBar.show(
                 context: context,
                 message: AppLocalizations.of(context)!.fileAlreadyUploaded,
@@ -68,7 +70,6 @@ class _UploadScreenContent extends StatelessWidget {
 
             if (state.status == UploadRequestStatus.success &&
                 state.resultData != null) {
-              
               if (state.isDuplicate) {
                 CustomSnackBar.show(
                   context: context,
@@ -81,7 +82,8 @@ class _UploadScreenContent extends StatelessWidget {
                   ? (state.selectedFileName ?? "Document")
                   : (state.selectedFile?.path.split('/').last ?? "Document");
 
-              final bool isExistingDoc = state.isDuplicate || state.selectedPdfId != null;
+              final bool isExistingDoc =
+                  state.isDuplicate || state.selectedPdfId != null;
               final args = isExistingDoc
                   ? {
                       'resultId': int.tryParse(pdfId),
@@ -150,8 +152,8 @@ class _UploadScreenContent extends StatelessWidget {
                     AppSizes.gapV16,
                     Text(
                       loc.uploadScreenProcessing,
-                      style: TextStyle(
-                          color: AppColors.textPrimary, fontSize: 16),
+                      style:
+                          TextStyle(color: AppColors.textPrimary, fontSize: 16),
                     ),
                   ],
                 ),

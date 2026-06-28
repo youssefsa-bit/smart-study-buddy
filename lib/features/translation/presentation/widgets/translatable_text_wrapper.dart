@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../core/constants/app_colors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../manager/translation_bloc.dart';
 import 'package:study_buddy/core/services/injection_container.dart' as di;
+
+import '../../../../core/constants/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../manager/translation_bloc.dart';
 import '../manager/translation_event.dart';
 import '../manager/translation_state.dart';
-
 
 class TranslatableTextWrapper extends StatefulWidget {
   final Widget child;
@@ -20,7 +20,8 @@ class TranslatableTextWrapper extends StatefulWidget {
   });
 
   @override
-  State<TranslatableTextWrapper> createState() => _TranslatableTextWrapperState();
+  State<TranslatableTextWrapper> createState() =>
+      _TranslatableTextWrapperState();
 }
 
 class _TranslatableTextWrapperState extends State<TranslatableTextWrapper> {
@@ -29,7 +30,7 @@ class _TranslatableTextWrapperState extends State<TranslatableTextWrapper> {
   void _onSelectionChanged(
     BuildContext context,
     String? selectedText,
-  ) async{
+  ) async {
     final trimmed = selectedText?.trim() ?? '';
     if (trimmed.isEmpty) return;
     final prefs = di.sl<SharedPreferences>();
@@ -53,7 +54,7 @@ class _TranslatableTextWrapperState extends State<TranslatableTextWrapper> {
             BlocBuilder<TranslationBloc, TranslationState>(
               builder: (context, state) {
                 if (state is TranslationInitial) return const SizedBox.shrink();
-                
+
                 final screenHeight = MediaQuery.of(context).size.height;
                 final pointerY = _lastPointerPosition?.dy ?? (screenHeight / 2);
                 final showAtBottom = pointerY < screenHeight / 2;
@@ -148,8 +149,7 @@ class _PopupCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
       child: Row(
         children: [
-          Icon(Icons.translate_rounded,
-              color: AppColors.primaryBlue, size: 18),
+          Icon(Icons.translate_rounded, color: AppColors.primaryBlue, size: 18),
           const SizedBox(width: 8),
           Text(
             loc.translationTitle,

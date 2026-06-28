@@ -8,7 +8,8 @@ import 'package:study_buddy/features/home/presentation/pages/home_screen.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
 import 'package:study_buddy/features/upload/presentation/pages/upload_screen.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../../history/presentation/manager/history_bloc.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../history/presentation/manager/history_bloc.dart';
 import '../../../history/presentation/manager/history_event.dart';
 import '../../../profile/presentation/pages/profile_screen.dart';
 
@@ -88,7 +89,8 @@ class _MainScreenState extends State<MainScreen> {
             ),
             bottomNavigationBar: Container(
               decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: AppColors.border, width: 1)),
+                border:
+                    Border(top: BorderSide(color: AppColors.border, width: 1)),
               ),
               child: Theme(
                 data: Theme.of(context).copyWith(
@@ -111,7 +113,8 @@ class _MainScreenState extends State<MainScreen> {
                     _buildNavItem(Icons.home_rounded, loc.navHome, 0),
                     _buildNavItem(Icons.file_upload_outlined, loc.navUpload, 1),
                     _buildNavItem(Icons.history_rounded, loc.navHistory, 2),
-                    _buildNavItem(Icons.person_outline_rounded, loc.navProfile, 3),
+                    _buildNavItem(
+                        Icons.person_outline_rounded, loc.navProfile, 3),
                   ],
                 ),
               ),

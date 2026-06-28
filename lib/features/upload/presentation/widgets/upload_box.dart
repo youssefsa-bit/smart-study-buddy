@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
+
 class UploadBox extends StatelessWidget {
   final File? selectedFile;
   final String? fileNameFromLibrary;
@@ -57,7 +58,8 @@ class UploadBox extends StatelessWidget {
                   Text(
                     displayFileName,
                     style: TextStyle(
-                        color: AppColors.textPrimary, fontWeight: FontWeight.bold),
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.bold),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -120,7 +122,8 @@ class UploadBox extends StatelessWidget {
                       fontWeight: FontWeight.bold)),
               AppSizes.gapV8,
               Text(loc.uploadBoxPdfOnly,
-                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 13)),
               AppSizes.gapV16,
               Container(
                 padding:

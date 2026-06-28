@@ -6,7 +6,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/core_widgets/processing_status_view.dart';
 import '../../../../core/services/injection_container.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../translation/presentation/manager/translation_bloc.dart';
 import '../../../translation/presentation/widgets/translatable_text_wrapper.dart';
 import '../../../upload/domain/entities/upload_action.dart';
@@ -35,6 +35,7 @@ class SummaryScreen extends StatelessWidget {
         BlocProvider<SummaryBloc>(
           create: (context) {
             final bloc = sl<SummaryBloc>();
+            print(resultId);
             if (resultId != null) {
               bloc.add(FetchExistingSummary(resultId!));
             } else if (pdfId != null) {
@@ -55,7 +56,8 @@ class SummaryScreen extends StatelessWidget {
             if (state is SummaryPdfDownloaded) {
               final parts = state.savedPath.split(RegExp(r'[/\\]'));
               final name = parts.isNotEmpty ? parts.last : state.savedPath;
-              final successMessage = '${loc.downloadSuccess}\n${loc.savedAt} $name\n${state.savedPath}';
+              final successMessage =
+                  '${loc.downloadSuccess}\n${loc.savedAt} $name\n${state.savedPath}';
               CustomSnackBar.show(
                 context: context,
                 message: successMessage,
@@ -65,39 +67,38 @@ class SummaryScreen extends StatelessWidget {
               OpenFilex.open(state.savedPath, type: 'application/pdf').then(
                 (result) {
                   if (result.type != ResultType.done) {
-                  String message;
-                  Color color;
-                  IconData icon;
+                    String message;
+                    Color color;
+                    IconData icon;
 
-                  switch (result.type) {
-                    case ResultType.noAppToOpen:
-                      message =
-                          loc.errorNoPdfApp(name);
-                      color = Colors.orange;
-                      icon = Icons.warning_amber_rounded;
-                      break;
-                    case ResultType.permissionDenied:
-                      message = loc.errorPermissionDenied(result.message);
-                      color = Colors.redAccent;
-                      icon = Icons.lock_outline_rounded;
-                      break;
-                    case ResultType.fileNotFound:
-                      message = loc.errorFileNotFound(name);
-                      color = Colors.redAccent;
-                      icon = Icons.error_outline_rounded;
-                      break;
-                    default:
-                      message = loc.errorUnexpectedOpen(result.message);
-                      color = Colors.orange;
-                      icon = Icons.warning_amber_rounded;
-                  }
+                    switch (result.type) {
+                      case ResultType.noAppToOpen:
+                        message = loc.errorNoPdfApp(name);
+                        color = Colors.orange;
+                        icon = Icons.warning_amber_rounded;
+                        break;
+                      case ResultType.permissionDenied:
+                        message = loc.errorPermissionDenied(result.message);
+                        color = Colors.redAccent;
+                        icon = Icons.lock_outline_rounded;
+                        break;
+                      case ResultType.fileNotFound:
+                        message = loc.errorFileNotFound(name);
+                        color = Colors.redAccent;
+                        icon = Icons.error_outline_rounded;
+                        break;
+                      default:
+                        message = loc.errorUnexpectedOpen(result.message);
+                        color = Colors.orange;
+                        icon = Icons.warning_amber_rounded;
+                    }
 
-                  CustomSnackBar.show(
-                    context: context,
-                    message: message,
-                    isError: color == Colors.redAccent,
-                    customIcon: icon,
-                  );
+                    CustomSnackBar.show(
+                      context: context,
+                      message: message,
+                      isError: color == Colors.redAccent,
+                      customIcon: icon,
+                    );
                   }
                 },
               );

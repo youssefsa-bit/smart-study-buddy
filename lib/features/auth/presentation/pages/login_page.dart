@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:study_buddy/core/constants/app_assets.dart';
 import 'package:study_buddy/core/routes/app_routes_name.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
+
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/services/injection_container.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../manager/auth_bloc.dart';
 import '../manager/auth_event.dart';
 import '../manager/auth_state.dart';
@@ -135,8 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () => Navigator.pushReplacementNamed(
                             context, AppRoutesName.register),
                         child: Text(loc.newHereCreateAccount,
-                            style:
-                                TextStyle(color: AppColors.primaryBlue)),
+                            style: TextStyle(color: AppColors.primaryBlue)),
                       ),
                     ),
                   ],

@@ -5,7 +5,8 @@ import 'package:study_buddy/core/utils/app_sizes.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/core_widgets/custom_dialog.dart';
 import '../../../../core/core_widgets/custom_snackbar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';import '../../../auth/presentation/manager/auth_bloc.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../auth/presentation/manager/auth_bloc.dart';
 import '../../../auth/presentation/manager/auth_event.dart';
 import '../manager/profile_bloc.dart';
 import '../manager/profile_event.dart';
@@ -63,7 +64,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         elevation: 0,
         iconTheme: IconThemeData(color: AppColors.textPrimary),
         title: Text(loc.menuEditProfile,
-            style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+            style: TextStyle(
+                color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
       ),
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
@@ -76,7 +78,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               isError: false,
             );
             if (state.user != null) {
-              context.read<AuthBloc>().add(UpdateAuthNameEvent(newName: state.user!.name));
+              context
+                  .read<AuthBloc>()
+                  .add(UpdateAuthNameEvent(newName: state.user!.name));
             }
             Navigator.pop(context);
           } else if (state.status == ProfileStatus.error &&
@@ -157,8 +161,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         borderSide: BorderSide.none),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
-                        borderSide:
-                            BorderSide(color: AppColors.primaryBlue)),
+                        borderSide: BorderSide(color: AppColors.primaryBlue)),
                     errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: const BorderSide(color: Colors.redAccent)),

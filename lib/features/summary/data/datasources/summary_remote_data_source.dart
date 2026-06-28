@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/services/network_service.dart';
@@ -29,8 +30,13 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
 
   @override
   Future<SummaryModel> getExistingSummary(int resultId) async {
-    final response = await networkService.dio
-        .get('/pdfs/$resultId/summary');
+    final response = await networkService.dio.get('/pdfs/$resultId/summary');
+    if (response.data != null &&
+        response.data['data'] != null &&
+        response.data['data']['summary'] == null) {
+      final docId = response.data['data']['document']['id'].toString();
+      throw Exception('SUMMARY_NULL:$docId');
+    }
     return SummaryModel.fromJson(response.data);
   }
 
@@ -43,10 +49,14 @@ class SummaryRemoteDataSourceImpl implements SummaryRemoteDataSource {
         saveDirPath = '/storage/emulated/0/Download';
       } else {
         final Directory? dir = await getDownloadsDirectory();
-        saveDirPath = dir?.path ?? (await getApplicationDocumentsDirectory()).path;
+        saveDirPath =
+            dir?.path ?? (await getApplicationDocumentsDirectory()).path;
       }
 
-      String sanitized = fileName.replaceAll(RegExp(r'[^\w\s-]'), '').trim().replaceAll(' ', '_');
+      String sanitized = fileName
+          .replaceAll(RegExp(r'[^\w\s-]'), '')
+          .trim()
+          .replaceAll(' ', '_');
       String savePath = '$saveDirPath/${sanitized}_summary.pdf';
 
       int counter = 1;

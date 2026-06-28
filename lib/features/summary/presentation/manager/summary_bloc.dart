@@ -48,7 +48,13 @@ class SummaryBloc extends Bloc<SummaryEvent, SummaryState> {
         final summary = await getExistingSummaryUseCase.call(event.resultId);
         emit(SummaryLoaded(summary));
       } catch (e) {
-        emit(SummaryError("Failed to fetch existing summary: $e"));
+        final errorStr = e.toString();
+        if (errorStr.contains('SUMMARY_NULL:')) {
+          final docId = errorStr.split('SUMMARY_NULL:').last.trim();
+          add(LoadSummary(docId));
+        } else {
+          emit(SummaryError("Failed to fetch existing summary: $e"));
+        }
       }
     });
 
