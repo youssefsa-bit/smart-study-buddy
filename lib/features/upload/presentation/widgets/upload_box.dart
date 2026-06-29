@@ -60,7 +60,8 @@ class UploadBox extends StatelessWidget {
                     style: TextStyle(
                         color: AppColors.textPrimary,
                         fontWeight: FontWeight.bold),
-                    maxLines: 1,
+                    maxLines: 2,
+                    softWrap: true,
                     overflow: TextOverflow.ellipsis,
                   ),
                   AppSizes.gapV8,

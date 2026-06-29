@@ -184,8 +184,8 @@
   "onboardingDesc2": "قم بإنشاء بطاقات تعليمية تلقائياً من محاضراتك.",
   "onboardingTitle3": "ختبارات تفاعلية",
   "onboardingDesc3": "اختبر معلوماتك من خلال أسئلة اختيارات من متعدد.",
-  "onboardingTitle4": "ملخصات فورية",
-  "onboardingDesc4": "احصل على ملخصات شاملة لتوفير وقتك.",
+  "onboardingTitle4": "ملخصات ذكية",
+  "onboardingDesc4": "احصل على ملخصات دقيقة وقم بترجمتها إلى أي لغة بضغطة واحدة.",
   "onboardingSkip": "تخطي",
   "onboardingGetStarted": "ابدأ الآن",
   "onboardingNext": "التالي",
@@ -198,5 +198,13 @@
   "emailAlreadyExists": "هذا البريد الإلكتروني مستخدم بالفعل.",
   "networkError": "يرجى التحقق من اتصال الإنترنت.",
   "somethingWentWrong": "حدث خطأ ما.",
-  "errorServerOrAiFailed": "عذراً، تعذر الاتصال بالخادم أو فشل استخراج البيانات."
-}
+  "errorServerOrAiFailed": "عذراً، تعذر الاتصال بالخادم أو فشل استخراج البيانات.",
+  "flashcardSmartRepetition": "تم التوليد بنجاح! العدد الإجمالي يتضمن تكراراً للبطاقات الصعبة لضمان ثبات المعلومة.",
+  "flashcardUniqueDeck": "تم فتح مجموعة البطاقات الأساسية الخاصة بك.",
+  "mcqGeneratingQuestion": "جارٍ إنشاء السؤال {number}...",
+
+  "mcqFinalizingQuiz": "جارٍ الانتهاء من الاختبار...",
+
+  "mcqQuestionsGenerated": "تم إنشاء {generated} من {total} سؤال",
+  "summaryTranslateTitle": "ترجمة أي جزء",
+  "summaryTranslateDescription": "حدد أي جزء من الملخص لترجمته فوراً. لتغيير لغة الترجمة، انتقل إلى الملف الشخصي > لغة الترجمة."}

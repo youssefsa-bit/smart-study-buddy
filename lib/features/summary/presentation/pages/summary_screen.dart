@@ -15,6 +15,7 @@ import '../../../upload/domain/entities/upload_action.dart';
 import '../manager/summary_bloc.dart';
 import '../manager/summary_event.dart';
 import '../manager/summary_state.dart';
+import '../translate_hint_card.dart';
 
 class SummaryScreen extends StatelessWidget {
   final String? pdfId;
@@ -214,6 +215,8 @@ class SummaryScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(20.0),
                             sliver: SliverList(
                               delegate: SliverChildListDelegate([
+                                const TranslateHintCard(),
+                                const SizedBox(height: 20),
                                 _buildSectionCard(
                                   title: loc.summaryMainTopic,
                                   icon: Icons.lightbulb_outline,
@@ -247,7 +250,11 @@ class SummaryScreen extends StatelessWidget {
                     );
                   }
 
-                  return const SizedBox.shrink();
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.primaryBlue,
+                    ),
+                  );
                 },
               ),
               floatingActionButton: BlocBuilder<SummaryBloc, SummaryState>(

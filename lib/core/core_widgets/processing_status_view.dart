@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:study_buddy/core/constants/app_colors.dart';
 import 'package:study_buddy/core/utils/app_sizes.dart';
@@ -5,8 +7,7 @@ import 'package:study_buddy/core/utils/app_sizes.dart';
 import '../../features/upload/domain/entities/upload_action.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
-class ProcessingStatusView extends StatelessWidget {
+class ProcessingStatusView extends StatefulWidget {
   final UploadAction action;
   final String fileName;
   final int currentStepIndex;
@@ -18,12 +19,52 @@ class ProcessingStatusView extends StatelessWidget {
       required this.currentStepIndex});
 
   @override
+  State<ProcessingStatusView> createState() => _ProcessingStatusViewState();
+}
+
+class _ProcessingStatusViewState extends State<ProcessingStatusView> {
+  Timer? _timer;
+  int fakeQuestionCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.action != UploadAction.mcq) return;
+    _timer = Timer.periodic(
+      const Duration(seconds: 4),
+      (timer) {
+        if (!mounted) return;
+
+        setState(() {
+          if (fakeQuestionCount < 19) {
+            fakeQuestionCount++;
+          }
+        });
+      },
+    );
+  }
+
+  String progressMessage(AppLocalizations loc) {
+    if (fakeQuestionCount < 19) {
+      return loc.mcqGeneratingQuestion(fakeQuestionCount + 1);
+    }
+
+    return loc.mcqFinalizingQuiz;
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     String title = "";
     IconData headerIcon = Icons.article;
     List<String> steps = [];
-    switch (action) {
+    switch (widget.action) {
       case UploadAction.flashcards:
         title = loc.processFlashcardsTitle;
         headerIcon = Icons.style_outlined;
@@ -95,7 +136,7 @@ class ProcessingStatusView extends StatelessWidget {
                     fontSize: 22,
                     fontWeight: FontWeight.bold)),
             AppSizes.gapV8,
-            Text(fileName,
+            Text(widget.fileName,
                 style: TextStyle(color: AppColors.textSecondary, fontSize: 15)),
             AppSizes.gapV24,
             Column(
@@ -103,21 +144,56 @@ class ProcessingStatusView extends StatelessWidget {
               children: List.generate(
                 steps.length,
                 (index) {
-                  return _buildStepItem(index, steps[index], currentStepIndex);
+                  return _buildStepItem(
+                      index, steps[index], widget.currentStepIndex);
                 },
               ),
             ),
-            if (currentStepIndex >= steps.length - 2) ...[
+            if (widget.action == UploadAction.mcq &&
+                widget.currentStepIndex == steps.length - 1) ...[
               AppSizes.gapV24,
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  loc.uploadScreenProcessingLong,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 13,
-                    height: 1.5,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceHighlight,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Column(
+                    children: [
+                      LinearProgressIndicator(
+                        value: fakeQuestionCount / 20,
+                        minHeight: 8,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      const SizedBox(height: 18),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 250),
+                        transitionBuilder: (child, animation) =>
+                            ScaleTransition(scale: animation, child: child),
+                        child: Text(
+                          loc.mcqQuestionsGenerated(fakeQuestionCount, 20,),
+                          key: ValueKey(fakeQuestionCount),
+                          style: const TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 400),
+                        child: Text(
+                          progressMessage(loc),
+                          key: ValueKey(progressMessage),
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

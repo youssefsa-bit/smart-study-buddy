@@ -184,8 +184,8 @@
   "onboardingDesc2": "Automatically generate flashcards from your lecture slides.",
   "onboardingTitle3": "Interactive Quizzes",
   "onboardingDesc3": "Test your knowledge with AI-curated multiple choice questions.",
-  "onboardingTitle4": "Instant Summaries",
-  "onboardingDesc4": "Get comprehensive summaries to save your time.",
+  "onboardingTitle4": "Smart Summaries",
+  "onboardingDesc4": "Generate concise AI-powered summaries and translate them into your preferred language with a single tap.",
   "onboardingSkip": "Skip",
   "onboardingGetStarted": "Get Started",
   "onboardingNext": "Next",
@@ -198,5 +198,25 @@
   "emailAlreadyExists": "This email is already registered.",
   "networkError": "Please check your internet connection.",
   "somethingWentWrong": "Something went wrong.",
-  "errorServerOrAiFailed": "Sorry, unable to connect to the server or failed to extract data."
+  "errorServerOrAiFailed": "Sorry, unable to connect to the server or failed to extract data.",
+  "flashcardSmartRepetition": "Generated successfully! The total count includes repetition of hard cards to ensure retention.",
+  "flashcardUniqueDeck": "Your unique flashcard deck has been opened.",
+  "mcqGeneratingQuestion": "Generating question {number}...",
+  "@mcqGeneratingQuestion": {
+    "placeholders": {
+      "number": {}
+    }
+  },
+
+  "mcqFinalizingQuiz": "Finalizing your quiz...",
+
+  "mcqQuestionsGenerated": "{generated} / {total} Questions Generated",
+  "@mcqQuestionsGenerated": {
+    "placeholders": {
+      "generated": {},
+      "total": {}
+    }
+  },
+  "summaryTranslateTitle": "Translate any text",
+  "summaryTranslateDescription": "Select any part of the summary to translate it instantly. Change your translation language anytime from Profile > Translation Language."
 }

@@ -6,17 +6,15 @@ import 'package:study_buddy/core/utils/app_sizes.dart';
 import 'package:study_buddy/features/flashcards/presentation/widgets/control_buttons.dart';
 import 'package:study_buddy/features/flashcards/presentation/widgets/progress_bar_header.dart';
 import 'package:study_buddy/features/upload/domain/entities/upload_action.dart';
-
 import '../../../../core/core_widgets/custom_snackbar.dart';
 import '../../../../core/services/injection_container.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import '../manager/flashcard_bloc.dart';
 import '../manager/flashcard_event.dart';
 import '../manager/flashcard_state.dart';
 import '../widgets/flashcard_view.dart';
 
-class FlashcardScreen extends StatelessWidget {
+class FlashcardScreen extends StatefulWidget {
   final String? pdfId;
   final int? resultId;
   final String fileName;
@@ -25,16 +23,23 @@ class FlashcardScreen extends StatelessWidget {
       {super.key, this.pdfId, required this.fileName, this.resultId});
 
   @override
+  State<FlashcardScreen> createState() => _FlashcardScreenState();
+}
+
+class _FlashcardScreenState extends State<FlashcardScreen> {
+  bool _hasShownDoneMessage = false;
+
+  @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     return BlocProvider<FlashcardBloc>(
       create: (BuildContext context) {
         final bloc = sl<FlashcardBloc>();
 
-        if (resultId != null) {
-          bloc.add(LoadExistingFlashcards(resultId!));
-        } else if (pdfId != null) {
-          bloc.add(LoadFlashcards(pdfId!));
+        if (widget.resultId != null) {
+          bloc.add(LoadExistingFlashcards(widget.resultId!));
+        } else if (widget.pdfId != null) {
+          bloc.add(LoadFlashcards(widget.pdfId!));
         }
 
         return bloc;
@@ -49,10 +54,10 @@ class FlashcardScreen extends StatelessWidget {
                 errorStr.contains('ai service') ||
                 errorStr.contains('no flashcards') ||
                 errorStr.contains('500') ||
-                errorStr.contains('server')){
+                errorStr.contains('server')) {
               displayMsg = loc.errorServerOrAiFailed;
               icon = Icons.dns_rounded;
-            }else if (errorStr.contains('connection') ||
+            } else if (errorStr.contains('connection') ||
                 errorStr.contains('timeout') ||
                 errorStr.contains('network') ||
                 errorStr.contains('socket')) {
@@ -65,6 +70,26 @@ class FlashcardScreen extends StatelessWidget {
               isError: true,
               customIcon: icon,
             );
+          }
+          if (state is FlashcardLoaded && !state.isStreaming) {
+            if (!_hasShownDoneMessage) {
+              _hasShownDoneMessage = true;
+              if (widget.resultId != null) {
+                CustomSnackBar.show(
+                  context: context,
+                  message: loc.flashcardUniqueDeck,
+                  isError: false,
+                  customIcon: Icons.library_books_rounded,
+                );
+              } else if (widget.pdfId != null) {
+                CustomSnackBar.show(
+                  context: context,
+                  message: loc.flashcardSmartRepetition,
+                  isError: false,
+                  customIcon: Icons.repeat_rounded,
+                );
+              }
+            }
           }
         },
         builder: (context, state) {
@@ -104,7 +129,7 @@ class FlashcardScreen extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         physics: const BouncingScrollPhysics(),
                         child: Text(
-                          fileName,
+                          widget.fileName,
                           style: const TextStyle(
                             fontSize: 15,
                             color: Colors.grey,
@@ -125,7 +150,8 @@ class FlashcardScreen extends StatelessWidget {
                       onPressed: isStreamingData
                           ? null
                           : () {
-                              final idToUse = pdfId ?? resultId?.toString();
+                              _hasShownDoneMessage = false;
+                              final idToUse = widget.pdfId ?? widget.resultId?.toString();
                               if (idToUse != null) {
                                 context
                                     .read<FlashcardBloc>()
@@ -174,7 +200,7 @@ class FlashcardScreen extends StatelessWidget {
                                 size: 80, color: AppColors.textSecondary),
                             const SizedBox(height: 16),
                             Text(
-                                displayMsg,
+                              displayMsg,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                   color: Colors.redAccent, fontSize: 16),
@@ -186,7 +212,8 @@ class FlashcardScreen extends StatelessWidget {
                                 foregroundColor: Colors.white,
                               ),
                               onPressed: () {
-                                final idToUse = pdfId ?? resultId?.toString();
+                                final idToUse =
+                                    widget.pdfId ?? widget.resultId?.toString();
                                 if (idToUse != null) {
                                   context
                                       .read<FlashcardBloc>()
@@ -240,7 +267,8 @@ class FlashcardScreen extends StatelessWidget {
                                 ],
                               ),
                               Icon(Icons.style_rounded,
-                                  color: AppColors.primaryBlue.withValues(alpha: 0.5),
+                                  color: AppColors.primaryBlue
+                                      .withValues(alpha: 0.5),
                                   size: 24),
                             ],
                           ),
